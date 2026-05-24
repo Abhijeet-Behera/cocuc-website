@@ -1,0 +1,17 @@
+.activitiesSection {
+  background-color: var(--color-white);
+}
+
+.sermonsSection {
+  background-color: var(--color-surface);
+}
+
+.buttonContainer {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.sermonButton {
+  background-color: var(--color-text);
+  color: var(--color-white);
+}

@@ -1,0 +1,5 @@
+{
+  "INPUT_FILE_PATH": "content.md",
+  "OUTPUT_FILE_PATH": "extracted_text.txt",
+  "LINKS_OUTPUT_PATH": "links.txt"
+}

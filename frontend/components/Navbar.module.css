@@ -124,76 +124,154 @@
   color: var(--color-white);
 }
 
-/* Nav Link */
+/* Nav Link — context-aware pill hover */
 .navLink {
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-family: var(--font-heading);
   text-decoration: none;
   white-space: nowrap;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
 }
+
+/* Scrolled state — white navbar, dark text, use primary tint on hover */
 .navLinkScrolled {
   color: var(--color-text);
 }
-.navLinkTransparent {
-  color: var(--color-white);
+.navLinkScrolled:hover {
+  background: rgba(139, 0, 0, 0.08); /* subtle primary tint, visible on white */
+  color: var(--color-primary);
+  border-color: rgba(139, 0, 0, 0.15);
 }
 
-/* Dropdown */
+/* Transparent state — over dark hero, use white frosted pill, clearly visible */
+.navLinkTransparent {
+  color: rgba(255,255,255,0.92);
+}
+.navLinkTransparent:hover {
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(8px);
+  color: var(--color-white);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Dropdown Trigger — same context-aware pill hover */
 .dropdownContainer {
   position: relative;
 }
 
 .dropdownToggle {
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-family: var(--font-heading);
   cursor: pointer;
-  padding: 0.5rem 0;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
 }
 
+.dropdownChevron {
+  font-size: 0.55rem;
+  transition: transform 0.3s ease;
+  opacity: 0.65;
+}
+
+.dropdownContainer:hover .dropdownChevron {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* On SCROLLED (white bg) — primary tint, visible */
+.dropdownContainer:hover .dropdownToggle.navLinkScrolled {
+  background: rgba(139, 0, 0, 0.08);
+  color: var(--color-primary);
+  border-color: rgba(139, 0, 0, 0.15);
+}
+
+/* On TRANSPARENT (dark hero bg) — white frosted pill, clearly visible */
+.dropdownContainer:hover .dropdownToggle.navLinkTransparent {
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(8px);
+  color: var(--color-white);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Dropdown Panel */
 .dropdownMenu {
   position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: var(--color-white);
-  box-shadow: var(--shadow-md);
-  border-radius: var(--radius-md);
+  top: 100%; /* NO gap — must be flush or mouse leaves the hover zone */
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  border-radius: 14px;
   min-width: 220px;
-  padding: 0.5rem 0;
+  padding: 0.6rem;
+  padding-top: 1rem; /* Visual gap created with padding, not position gap */
   display: flex;
   flex-direction: column;
+  gap: 2px;
   z-index: 200;
   border: 1px solid rgba(0,0,0,0.05);
-  
+
   opacity: 0;
   visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.2s ease-in-out;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.25s;
+  pointer-events: none;
+}
+
+/* Small arrow pointer above items */
+.dropdownMenu::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-left: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0,0,0,0.05);
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 2px 0 0 0;
 }
 
 .dropdownContainer:hover .dropdownMenu {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
+  pointer-events: all;
 }
 
+/* Dropdown Items — clean full-width pill hover */
 .dropdownItem {
-  padding: 0.6rem 1.25rem;
+  padding: 0.6rem 1rem;
   color: var(--color-text);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 500;
   text-decoration: none;
-  transition: background 0.2s;
+  transition: background 0.18s ease, color 0.18s ease, padding-left 0.2s ease;
   font-family: var(--font-body);
+  border-radius: 8px;
+  display: block;
+  line-height: 1.4;
 }
 
 .dropdownItem:hover {
-  background-color: var(--color-surface);
+  background: #f5f0ff; /* Very soft warm lavender — not harsh, feels premium */
   color: var(--color-primary);
+  padding-left: 1.3rem; /* Subtle indent to feel tactile */
 }
 
 .hamburger {
@@ -276,16 +354,40 @@
     position: static;
     box-shadow: none;
     border: none;
-    padding-left: 1rem;
+    border-radius: 0;
+    padding: 0;
+    padding-left: 0.5rem;
     min-width: 100%;
-    transform: none;
+    transform: none !important;
     visibility: visible;
     opacity: 1;
-    display: none;
+    pointer-events: all;
+    display: none; /* hidden by default — JS controls via .dropdownMenuOpen */
   }
-  
+
+  /* JS-controlled accordion open class for mobile */
+  .dropdownMenuOpen {
+    display: flex !important;
+    transform: none !important;
+  }
+
+  .dropdownItem {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.88rem;
+    color: #444;
+  }
+
+  .dropdownToggle {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+  }
+
+  /* Do NOT use CSS hover on mobile — controlled by JS click */
   .dropdownContainer:hover .dropdownMenu {
-    display: flex;
-    transform: none;
+    display: none;
   }
 }

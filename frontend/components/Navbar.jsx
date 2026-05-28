@@ -9,6 +9,7 @@ import styles from './Navbar.module.css'
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState(null) // tracks which dropdown is open on mobile
   const navRef = useRef(null)
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export default function Navbar() {
         
         <button 
           className={`${styles.hamburger} ${scrolled ? styles.hamburgerScrolled : styles.hamburgerTransparent}`}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onClick={() => { setMobileMenuOpen(!mobileMenuOpen); setOpenDropdown(null) }}
           aria-label="Toggle mobile menu"
         >
           {mobileMenuOpen ? '✕' : '☰'}
@@ -104,11 +105,11 @@ export default function Navbar() {
 
         <div className={`${styles.menu} ${mobileMenuOpen ? styles.menuOpen : ''}`}>
           <NavLink href="/" scrolled={scrolled}>Home</NavLink>
-          <NavDropdown title="About" items={aboutMenu} scrolled={scrolled} />
-          <NavDropdown title="Activities" items={activitiesMenu} scrolled={scrolled} />
-          <NavDropdown title="Prayer Time" items={prayerMenu} scrolled={scrolled} />
-          <NavDropdown title="Events" items={eventsMenu} scrolled={scrolled} />
-          <NavDropdown title="Faith & Hope" items={faithMenu} scrolled={scrolled} />
+          <NavDropdown title="About" items={aboutMenu} scrolled={scrolled} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+          <NavDropdown title="Activities" items={activitiesMenu} scrolled={scrolled} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+          <NavDropdown title="Prayer Time" items={prayerMenu} scrolled={scrolled} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+          <NavDropdown title="Events" items={eventsMenu} scrolled={scrolled} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
+          <NavDropdown title="Faith & Hope" items={faithMenu} scrolled={scrolled} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} />
           <NavLink href="/blog" scrolled={scrolled}>Blog</NavLink>
           
           <div className={`${styles.socials} ${scrolled ? styles.socialsScrolled : styles.socialsTransparent}`}>
@@ -181,17 +182,32 @@ function NavLink({ href, children, scrolled }) {
   )
 }
 
-function NavDropdown({ title, items, scrolled }) {
+function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown }) {
+  const isMobileOpen = openDropdown === title
+
+  const handleToggle = () => {
+    // Toggle: if already open close it, else open this one (closes others)
+    setOpenDropdown(isMobileOpen ? null : title)
+  }
+
   return (
     <div className={styles.dropdownContainer}>
-      <div className={`${styles.dropdownToggle} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`}>
+      <div 
+        className={`${styles.dropdownToggle} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`}
+        onClick={handleToggle} /* Mobile: JS accordion toggle */
+      >
         {title}
-        <span style={{ fontSize: '0.7rem' }}>▼</span>
+        <span 
+          className={styles.dropdownChevron}
+          style={{ transform: isMobileOpen ? 'rotate(180deg)' : undefined }}
+        >▼</span>
       </div>
       
-      <div className={styles.dropdownMenu}>
+      <div className={`${styles.dropdownMenu} ${isMobileOpen ? styles.dropdownMenuOpen : ''}`}>
         {items.map((item, i) => (
-          <Link key={i} href={item.href} className={styles.dropdownItem}>
+          <Link key={i} href={item.href} className={styles.dropdownItem}
+            onClick={() => setOpenDropdown(null)} /* Close on link click */
+          >
             {item.name}
           </Link>
         ))}

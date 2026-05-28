@@ -26,6 +26,7 @@ export default function AboutUs() {
           </p>
         </div>
 
+        {/* 
         <div>
           <h2 style={{ fontSize: '2.5rem', color: 'var(--color-primary)', textAlign: 'center', marginBottom: '3rem' }}>Board Members</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
@@ -48,6 +49,7 @@ export default function AboutUs() {
             ))}
           </div>
         </div>
+        */}
       </section>
     </div>
   )

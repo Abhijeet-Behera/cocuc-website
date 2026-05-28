@@ -22,14 +22,41 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  flex-wrap: nowrap;
 }
 
 .logo {
   font-family: var(--font-heading);
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   font-weight: 800;
   letter-spacing: -0.5px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.logoImage {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover .logoImage {
+  transform: scale(1.05);
+}
+
 
 .logoScrolled {
   color: var(--color-primary);
@@ -41,8 +68,9 @@
 
 .menu {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 .socials {
@@ -102,6 +130,7 @@
   font-size: 0.95rem;
   font-family: var(--font-heading);
   text-decoration: none;
+  white-space: nowrap;
 }
 .navLinkScrolled {
   color: var(--color-text);
@@ -120,6 +149,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
 }
 
 .dropdownMenu {
@@ -150,3 +180,14 @@
   background-color: var(--color-surface);
   color: var(--color-primary);
 }
+
+@media (max-width: 768px) {
+  .logoImage {
+    height: 34px;
+  }
+  .logo {
+    font-size: 1.2rem;
+  }
+}
+
+

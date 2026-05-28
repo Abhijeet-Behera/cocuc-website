@@ -6,6 +6,9 @@ import styles from './layout.module.css'
 export const metadata = {
   title: 'Union Church Bhubaneswar',
   description: 'Welcome to Church of Christ (Union Church), Bhubaneswar. Join us for worship, sermons, and community.',
+  icons: {
+    icon: '/favicon.png',
+  },
 }
 
 export default function RootLayout({ children }) {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Navbar.module.css'
 
@@ -71,7 +72,17 @@ export default function Navbar() {
     <nav className={`${styles.nav} ${scrolled ? styles.navScrolled : styles.navTransparent}`}>
       <div className={`container ${styles.container}`}>
         <Link href="/" className={`${styles.logo} ${scrolled ? styles.logoScrolled : styles.logoTransparent}`}>
-          UNION CHURCH
+          <div className={styles.logoWrapper}>
+            <Image 
+              src="/church-logo.png" 
+              alt="Union Church Bhubaneswar Logo" 
+              width={48} 
+              height={48} 
+              className={styles.logoImage}
+              priority
+            />
+            <span>UNION CHURCH</span>
+          </div>
         </Link>
         <div className={styles.menu}>
           <NavLink href="/" scrolled={scrolled}>Home</NavLink>

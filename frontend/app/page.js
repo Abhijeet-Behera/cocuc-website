@@ -1,9 +1,8 @@
-import Link from 'next/link'
-import YouTubeFeed from '@/components/YouTubeFeed'
 import LatestBlogs from '@/components/LatestBlogs'
 import Reveal from '@/components/Reveal'
 import HeroSection from '@/components/HeroSection'
 import ActivitiesGrid from '@/components/ActivitiesGrid'
+import LatestVideos from '@/components/LatestVideos'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -18,19 +17,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Visual Video Library */}
+      {/* Latest Videos — zig-zag three-playlist section */}
       <section id="sermons" className={`section ${styles.sermonsSection}`}>
-        <Reveal>
-          <div className="container">
-            <h2 className="section-title">Latest Sermons</h2>
-            <YouTubeFeed />
-            <div className={styles.buttonContainer}>
-              <Link href="/sermons" className={`btn-primary ${styles.sermonButton}`}>
-                View All Sermons
-              </Link>
-            </div>
-          </div>
-        </Reveal>
+        <div className="container">
+          <LatestVideos />
+        </div>
       </section>
 
       {/* Blogs & Updates */}

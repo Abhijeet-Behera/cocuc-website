@@ -1,6 +1,8 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import styles from './VideoRow.module.css'
 
 /**
@@ -25,19 +27,35 @@ export default function VideoRow({
 }) {
   const playlistUrl = `https://www.youtube.com/playlist?list=${playlistId}`
   const isTextLeft = layout === 'text-left'
+  const rowRef = useRef(null)
 
-  const rowVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-  }
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    
+    const ctx = gsap.context(() => {
+      gsap.fromTo(rowRef.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: rowRef.current,
+            start: "top 80%",
+            once: true
+          }
+        }
+      )
+    }, rowRef)
+
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <motion.div
+    <div
+      ref={rowRef}
       className={`${styles.row} ${isTextLeft ? styles.textLeft : styles.textRight}`}
-      variants={rowVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: '-60px' }}
     >
       {/* Text block */}
       <div className={styles.textBlock}>
@@ -91,6 +109,6 @@ export default function VideoRow({
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   )
 }

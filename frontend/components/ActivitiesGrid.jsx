@@ -1,10 +1,14 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import Link from 'next/link'
 import styles from './ActivitiesGrid.module.css'
 
 export default function ActivitiesGrid() {
+  const containerRef = useRef(null)
+
   const activities = [
     {
       title: 'SERVICE TIMING',
@@ -44,33 +48,37 @@ export default function ActivitiesGrid() {
     }
   ]
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 }
-    }
-  }
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    
+    const ctx = gsap.context(() => {
+      // Stagger animate cards on scroll
+      gsap.fromTo(`.${styles.gridItem}`, 
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: `.${styles.grid}`,
+            start: "top 80%",
+            once: true
+          }
+        }
+      )
+    }, containerRef)
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 15 } }
-  }
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <div className={styles.gridContainer}>
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-50px" }}
-        className={styles.grid}
-      >
+    <div className={styles.gridContainer} ref={containerRef}>
+      <div className={styles.grid}>
         {activities.map((item, index) => (
-          <motion.div 
+          <div 
             key={index} 
-            variants={itemVariants}
-            whileHover={{ y: -8 }}
             className={styles.gridItem}
           >
             {/* Card Graphic */}
@@ -89,17 +97,19 @@ export default function ActivitiesGrid() {
               </div>
             </div>
 
-            {/* Title & Button */}
-            <h3 className={styles.itemTitle}>
-              {item.title}
-            </h3>
-            
-            <Link href={item.link} className={styles.itemLink}>
-              READ MORE
-            </Link>
-          </motion.div>
+            {/* Content Container (For Flex Mobile Layout) */}
+            <div className={styles.itemContent}>
+              <h3 className={styles.itemTitle}>
+                {item.title}
+              </h3>
+              
+              <Link href={item.link} className={styles.itemLink}>
+                READ MORE
+              </Link>
+            </div>
+          </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   )
 }

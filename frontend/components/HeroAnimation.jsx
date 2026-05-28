@@ -1,63 +1,78 @@
 'use client'
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
 
 export default function HeroAnimation({ title, subtitle }) {
-  const container = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.2
-      }
-    }
-  }
+  const containerRef = useRef(null)
+  const titleRef = useRef(null)
+  const subtitleRef = useRef(null)
 
-  const child = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 20,
-        stiffness: 100
-      }
-    }
-  }
-
-  // Split title into words for staggered animation
+  // Split title into words
   const words = title.split(" ")
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Create a timeline
+      const tl = gsap.timeline()
+      
+      // Animate words staggered
+      tl.from(".word", {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.08,
+        ease: "back.out(1.7)"
+      })
+      
+      // Animate subtitle
+      tl.from(subtitleRef.current, {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+        ease: "power2.out"
+      }, "-=0.4")
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="visible"
-      style={{ position: 'relative', zIndex: 2, textAlign: 'center', color: 'var(--color-white)' }}
+    <div
+      ref={containerRef}
+      style={{ position: 'relative', zIndex: 2, textAlign: 'center', color: 'var(--color-white)', padding: '0 1rem' }}
     >
-      <h1 style={{ 
-        fontSize: '4.5rem', 
-        marginBottom: '1.5rem', 
-        textShadow: '0 4px 12px rgba(0,0,0,0.3)', 
-        letterSpacing: '-1px',
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: '1rem'
-      }}>
+      <h1 
+        ref={titleRef}
+        style={{ 
+          fontSize: 'clamp(2.5rem, 5vw + 1rem, 4.5rem)', 
+          marginBottom: '1.5rem', 
+          textShadow: '0 4px 12px rgba(0,0,0,0.3)', 
+          letterSpacing: '-1px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '1rem'
+        }}
+      >
         {words.map((word, i) => (
-          <motion.span key={i} variants={child} style={{ display: 'inline-block' }}>
+          <span key={i} className="word" style={{ display: 'inline-block' }}>
             {word}
-          </motion.span>
+          </span>
         ))}
       </h1>
-      <motion.p 
-        variants={child}
-        style={{ fontSize: '1.25rem', marginBottom: '2.5rem', maxWidth: '600px', margin: '0 auto 2.5rem', opacity: 0.9 }}
+      <p 
+        ref={subtitleRef}
+        style={{ 
+          fontSize: 'clamp(1rem, 2vw + 0.5rem, 1.25rem)', 
+          marginBottom: '1.5rem', 
+          maxWidth: '600px', 
+          margin: '0 auto', 
+          opacity: 0.9,
+          lineHeight: '1.6'
+        }}
       >
         {subtitle}
-      </motion.p>
-    </motion.div>
+      </p>
+    </div>
   )
 }

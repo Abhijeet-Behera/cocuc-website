@@ -140,6 +140,10 @@
 }
 
 /* Dropdown */
+.dropdownContainer {
+  position: relative;
+}
+
 .dropdownToggle {
   font-weight: 500;
   font-size: 0.95rem;
@@ -165,6 +169,17 @@
   flex-direction: column;
   z-index: 200;
   border: 1px solid rgba(0,0,0,0.05);
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s ease-in-out;
+}
+
+.dropdownContainer:hover .dropdownMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .dropdownItem {
@@ -181,13 +196,96 @@
   color: var(--color-primary);
 }
 
-@media (max-width: 768px) {
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 101;
+}
+
+.hamburgerScrolled {
+  color: var(--color-primary);
+}
+
+.hamburgerTransparent {
+  color: var(--color-white);
+}
+
+@media (max-width: 1024px) {
   .logoImage {
     height: 34px;
   }
   .logo {
     font-size: 1.2rem;
   }
+  
+  .hamburger {
+    display: block;
+  }
+  
+  .menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-white);
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+    box-shadow: var(--shadow-md);
+    
+    /* Hide on mobile by default */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 99;
+  }
+
+  .menuOpen {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .socials {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    justify-content: center;
+  }
+
+  /* On mobile, the menu background is always white, so force dark text */
+  .navLinkTransparent,
+  .socialIconTransparent {
+    color: var(--color-text) !important;
+  }
+  
+  .adminBtn {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .dropdownMenu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    padding-left: 1rem;
+    min-width: 100%;
+    transform: none;
+    visibility: visible;
+    opacity: 1;
+    display: none;
+  }
+  
+  .dropdownContainer:hover .dropdownMenu {
+    display: flex;
+    transform: none;
+  }
 }
-
-

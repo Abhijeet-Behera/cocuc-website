@@ -1,32 +1,40 @@
 'use client'
-import { motion, useInView, useAnimation } from 'framer-motion'
 import { useRef, useEffect } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 export default function Reveal({ children, width = '100%', delay = 0.15 }) {
   const ref = useRef(null)
-  // Trigger animation when element is in view (with a 50px offset)
-  const isInView = useInView(ref, { once: true, margin: "-50px" })
-  const mainControls = useAnimation()
 
   useEffect(() => {
-    if (isInView) {
-      mainControls.start("visible")
-    }
-  }, [isInView, mainControls])
+    gsap.registerPlugin(ScrollTrigger)
+    
+    const ctx = gsap.context(() => {
+      gsap.fromTo(ref.current, 
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: delay,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top 85%", // Trigger when top of element hits 85% from top of viewport
+            once: true
+          }
+        }
+      )
+    }, ref)
+
+    return () => ctx.revert()
+  }, [delay])
 
   return (
-    <div ref={ref} style={{ position: 'relative', width }}>
-      <motion.div
-        variants={{
-          hidden: { opacity: 0, y: 50 },
-          visible: { opacity: 1, y: 0 }
-        }}
-        initial="hidden"
-        animate={mainControls}
-        transition={{ duration: 0.6, delay: delay, ease: [0.22, 1, 0.36, 1] }}
-      >
+    <div style={{ position: 'relative', width }}>
+      <div ref={ref} style={{ opacity: 0 }}>
         {children}
-      </motion.div>
+      </div>
     </div>
   )
 }

@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+import gsap from 'gsap'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +20,13 @@ export default function Navbar() {
       }
     }
     window.addEventListener('scroll', handleScroll)
+    
+    // Initial nav animation
+    gsap.fromTo(navRef.current,
+      { y: -100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }
+    )
+
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -69,7 +78,7 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className={`${styles.nav} ${scrolled ? styles.navScrolled : styles.navTransparent}`}>
+    <nav ref={navRef} className={`${styles.nav} ${scrolled ? styles.navScrolled : styles.navTransparent}`}>
       <div className={`container ${styles.container}`}>
         <Link href="/" className={`${styles.logo} ${scrolled ? styles.logoScrolled : styles.logoTransparent}`}>
           <div className={styles.logoWrapper}>
@@ -84,7 +93,16 @@ export default function Navbar() {
             <span>UNION CHURCH</span>
           </div>
         </Link>
-        <div className={styles.menu}>
+        
+        <button 
+          className={`${styles.hamburger} ${scrolled ? styles.hamburgerScrolled : styles.hamburgerTransparent}`}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle mobile menu"
+        >
+          {mobileMenuOpen ? '✕' : '☰'}
+        </button>
+
+        <div className={`${styles.menu} ${mobileMenuOpen ? styles.menuOpen : ''}`}>
           <NavLink href="/" scrolled={scrolled}>Home</NavLink>
           <NavDropdown title="About" items={aboutMenu} scrolled={scrolled} />
           <NavDropdown title="Activities" items={activitiesMenu} scrolled={scrolled} />
@@ -164,36 +182,20 @@ function NavLink({ href, children, scrolled }) {
 }
 
 function NavDropdown({ title, items, scrolled }) {
-  const [open, setOpen] = useState(false)
-
   return (
-    <div 
-      style={{ position: 'relative' }} 
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
+    <div className={styles.dropdownContainer}>
       <div className={`${styles.dropdownToggle} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`}>
         {title}
         <span style={{ fontSize: '0.7rem' }}>▼</span>
       </div>
       
-      <AnimatePresence>
-        {open && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className={styles.dropdownMenu}
-          >
-            {items.map((item, i) => (
-              <Link key={i} href={item.href} className={styles.dropdownItem}>
-                {item.name}
-              </Link>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className={styles.dropdownMenu}>
+        {items.map((item, i) => (
+          <Link key={i} href={item.href} className={styles.dropdownItem}>
+            {item.name}
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }

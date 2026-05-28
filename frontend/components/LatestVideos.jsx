@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useState, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { VIDEO_SECTIONS } from '@/lib/youtubeConfig'
 import VideoRow from './VideoRow'
 import styles from './LatestVideos.module.css'
@@ -11,6 +12,7 @@ const LAYOUTS = ['text-left', 'text-right', 'text-left']
 export default function LatestVideos() {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
+  const headerRef = useRef(null)
 
   useEffect(() => {
     async function fetchVideos() {
@@ -33,6 +35,29 @@ export default function LatestVideos() {
     fetchVideos()
   }, [])
 
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    
+    const ctx = gsap.context(() => {
+      gsap.fromTo(headerRef.current,
+        { opacity: 0, y: -20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 85%",
+            once: true
+          }
+        }
+      )
+    }, headerRef)
+
+    return () => ctx.revert()
+  }, [])
+
   // Merge static config with fetched video data
   const rows = VIDEO_SECTIONS.map((section, i) => {
     const fetched = results.find((r) => r.key === section.key)
@@ -45,11 +70,8 @@ export default function LatestVideos() {
 
   return (
     <div className={styles.wrapper}>
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+      <div
+        ref={headerRef}
         className={styles.sectionHeader}
       >
         <h2 className={styles.sectionTitle}>
@@ -59,7 +81,7 @@ export default function LatestVideos() {
         <p className={styles.sectionSubtitle}>
           Watch our recent messages, devotionals, and community broadcasts.
         </p>
-      </motion.div>
+      </div>
 
       <div className={styles.rows}>
         {rows.map((row) => (

@@ -1,6 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import HeroAnimation from './HeroAnimation'
 import styles from './HeroSection.module.css'
+
 
 export default function HeroSection() {
   return (

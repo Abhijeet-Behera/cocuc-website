@@ -1,37 +1,46 @@
 .gridContainer {
   padding: 4rem 0;
+  overflow: hidden;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 3rem;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 2rem;
 }
 
 .gridItem {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  border-radius: 12px;
+  background: var(--color-white);
+  padding-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  overflow: hidden;
+}
+
+.gridItem:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
 }
 
 .cardGraphic {
   width: 100%;
   height: 220px;
-  background-color: #e6ebef;
   position: relative;
-  border-radius: 8px;
-  border: 2px solid rgba(0,0,0,0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   background-image: url("https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2070&auto=format&fit=crop");
   background-size: cover;
   background-position: center;
-  box-shadow: var(--shadow-sm);
 }
 
 .cardOverlay {
@@ -40,15 +49,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255,255,255,0.6);
-  border-radius: 6px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.8));
 }
 
 .badge {
   position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 15px;
+  right: 15px;
   width: 45px;
   height: 45px;
   background-color: white;
@@ -56,30 +63,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   color: var(--color-primary);
   font-size: 1.2rem;
-  border: 1px solid rgba(0,0,0,0.05);
   z-index: 2;
 }
 
 .centerBox {
   background-color: white;
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 50%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   z-index: 2;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
+  transition: transform 0.4s ease;
+}
+
+.gridItem:hover .centerBox {
+  transform: scale(1.1);
 }
 
 .centerBoxImg {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   object-fit: contain;
 }
 
@@ -89,24 +99,108 @@
   color: var(--color-text);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
   text-align: center;
+  padding: 0 1rem;
 }
 
 .itemLink {
-  background-color: var(--color-primary);
-  color: white;
-  padding: 0.7rem 2rem;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: 0.6rem 2rem;
   border-radius: 30px;
   text-decoration: none;
   font-weight: 700;
   font-size: 0.85rem;
   letter-spacing: 0.5px;
-  transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 4px 10px rgba(128, 0, 0, 0.3);
+  transition: all 0.3s;
 }
 
 .itemLink:hover {
-  background-color: var(--color-primary-dark);
-  transform: scale(1.05);
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 6px 15px rgba(128, 0, 0, 0.2);
+}
+
+/* Tablet Layout */
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Mobile Layout */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .gridItem {
+    flex-direction: row;
+    padding-bottom: 0;
+    align-items: stretch;
+    height: 120px;
+    border-radius: 8px;
+  }
+
+  .gridItem:hover {
+    transform: translateX(5px); /* Different hover effect for mobile horizontal card */
+  }
+
+  .cardGraphic {
+    width: 120px;
+    height: 100%;
+    margin-bottom: 0;
+    border-radius: 8px 0 0 8px;
+  }
+
+  .centerBox {
+    width: 60px;
+    height: 60px;
+    padding: 0.8rem;
+  }
+
+  .centerBoxImg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .badge {
+    display: none; /* Hide badge on mobile to save space */
+  }
+
+  .itemContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 1rem;
+  }
+
+  .itemTitle {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    padding: 0;
+  }
+
+  .itemLink {
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 0.8rem;
+    text-decoration: underline;
+  }
+
+  .itemLink:hover {
+    background: none;
+    color: var(--color-primary-dark);
+    box-shadow: none;
+    transform: none;
+  }
 }

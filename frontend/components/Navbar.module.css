@@ -362,6 +362,8 @@
     transform: translateY(-10px);
     transition: all 0.3s ease;
     z-index: 99;
+    /* Add constraints for scrolling */
+    max-height: calc(100vh - 70px);
   }
 
   .menuOpen {
@@ -378,6 +380,18 @@
     gap: 0.25rem;
     width: 100%;
     margin-bottom: 1rem;
+    /* Make scrollable */
+    overflow-y: auto;
+    flex: 1 1 auto;
+    /* Custom scrollbar for neatness */
+    scrollbar-width: thin;
+  }
+  .navLinks::-webkit-scrollbar {
+    width: 4px;
+  }
+  .navLinks::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
   }
 
   /* Stack actions below links */

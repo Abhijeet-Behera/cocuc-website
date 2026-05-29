@@ -90,16 +90,22 @@ export default function HeroSection() {
   /* GSAP entrance animation */
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
+      const tl = gsap.timeline({ delay: 0.2 })
+      
+      tl.fromTo(
         titleRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: 0.3 }
+        { y: 40, opacity: 0, scale: 0.97 },
+        { y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' }
       )
-      gsap.fromTo(
-        colsRef.current,
-        { y: 35, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.75 }
-      )
+      
+      if (colsRef.current) {
+        tl.fromTo(
+          colsRef.current.children,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: 'power3.out' },
+          "-=0.7"
+        )
+      }
     })
     return () => ctx.revert()
   }, [])
@@ -130,8 +136,7 @@ export default function HeroSection() {
                 alt={`${cfg.label} view of the church`}
                 fill
                 sizes="100vw"
-                quality={85}
-                priority={period === 'morning'}
+                priority={true}
                 style={{ objectFit: 'cover', objectPosition: 'center' }}
               />
               <div
@@ -223,7 +228,7 @@ export default function HeroSection() {
               Join us this Sunday and experience the presence of God.
             </p>
             <Link href="/about" className={`btn-primary ${styles.heroButton}`}>
-              Plan a Visit
+              Explore
             </Link>
           </div>
 

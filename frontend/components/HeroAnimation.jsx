@@ -39,7 +39,7 @@ export default function HeroAnimation({ title, subtitle }) {
   return (
     <div
       ref={containerRef}
-      style={{ position: 'relative', zIndex: 2, textAlign: 'center', color: 'var(--color-white)', padding: '0 1rem' }}
+      style={{ position: 'relative', zIndex: 10, textAlign: 'center', color: 'var(--color-white)', padding: '0 1rem' }}
     >
       <h1 
         ref={titleRef}

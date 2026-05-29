@@ -31,9 +31,6 @@
 
 .logo {
   font-family: var(--font-heading);
-  font-size: 1.65rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
@@ -51,10 +48,33 @@
   width: auto;
   object-fit: contain;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .logo:hover .logoImage {
   transform: scale(1.05);
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  gap: 1px;
+}
+
+.logoLine1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.logoLine2 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0.95;
+  line-height: 1.2;
 }
 
 
@@ -293,10 +313,13 @@
 
 @media (max-width: 1024px) {
   .logoImage {
-    height: 34px;
+    height: 36px;
   }
-  .logo {
-    font-size: 1.2rem;
+  .logoLine1 {
+    font-size: 1.0rem;
+  }
+  .logoLine2 {
+    font-size: 0.7rem;
   }
   
   .hamburger {
@@ -389,5 +412,17 @@
   /* Do NOT use CSS hover on mobile — controlled by JS click */
   .dropdownContainer:hover .dropdownMenu {
     display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .logoImage {
+    height: 32px;
+  }
+  .logoLine1 {
+    font-size: 0.88rem;
+  }
+  .logoLine2 {
+    font-size: 0.62rem;
   }
 }

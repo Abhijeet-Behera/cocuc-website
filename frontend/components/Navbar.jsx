@@ -81,17 +81,24 @@ export default function Navbar() {
   return (
     <nav ref={navRef} className={`${styles.nav} ${scrolled ? styles.navScrolled : styles.navTransparent}`}>
       <div className={`container ${styles.container}`}>
-        <Link href="/" className={`${styles.logo} ${scrolled ? styles.logoScrolled : styles.logoTransparent}`}>
+        <Link
+          href="/"
+          className={`${styles.logo} ${scrolled ? styles.logoScrolled : styles.logoTransparent}`}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
           <div className={styles.logoWrapper}>
             <Image 
               src="/church-logo.png" 
-              alt="Union Church Bhubaneswar Logo" 
+              alt="Church of Christ Union Church Bhubaneswar Logo" 
               width={48} 
               height={48} 
               className={styles.logoImage}
               priority
             />
-            <span>UNION CHURCH</span>
+            <div className={styles.logoText}>
+              <span className={styles.logoLine1}>Church of Christ</span>
+              <span className={styles.logoLine2}>Union Church, Bhubaneswar</span>
+            </div>
           </div>
         </Link>
         

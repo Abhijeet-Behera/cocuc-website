@@ -1,0 +1,102 @@
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #111111 0%, #3a0000 100%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centers everything */
+  gap: 4rem;
+  width: 100%;
+  max-width: 600px;
+  padding: 0 2rem;
+  height: 100vh;
+}
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 4rem; /* Buffer space for the downward text animation */
+}
+
+.lineWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* overflow: hidden removed so blur and scale can break out */
+}
+
+.line {
+  font-family: 'Cinzel', var(--font-heading);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+}
+
+.progressContainer {
+  width: 80%;
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.progressBar {
+  flex-grow: 1;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  position: relative;
+  overflow: visible;
+}
+
+.progressFill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.4), #ffffff);
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.progressFill::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffffff;
+}
+
+.progressText {
+  font-family: 'Outfit', var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #ffffff;
+  min-width: 45px;
+  text-align: right;
+}

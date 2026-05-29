@@ -19,7 +19,7 @@ export default function LatestBlogs() {
         if (Array.isArray(data)) {
           setBlogs(data)
         } else {
-          console.error('API did not return an array:', data)
+          console.warn('API did not return an array, falling back to empty list.')
           setBlogs([])
         }
       } catch (err) {
@@ -58,7 +58,13 @@ export default function LatestBlogs() {
     }
   }, [loading, blogs])
 
-  if (loading) return <div className={styles.loading}>Loading articles...</div>
+  if (loading) return (
+    <div className={styles.loading}>
+      <div className="jumping-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  )
   
   if (!Array.isArray(blogs) || blogs.length === 0) return <div className={styles.empty}>No articles published yet.</div>
 

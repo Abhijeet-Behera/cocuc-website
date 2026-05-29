@@ -4,7 +4,7 @@ import Providers from '@/components/Providers'
 import styles from './layout.module.css'
 
 export const metadata = {
-  title: 'Union Church Bhubaneswar',
+  title: 'Church of Christ - Union Church, Bhubaneswar',
   description: 'Welcome to Church of Christ (Union Church), Bhubaneswar. Join us for worship, sermons, and community.',
   icons: {
     icon: '/favicon.png',

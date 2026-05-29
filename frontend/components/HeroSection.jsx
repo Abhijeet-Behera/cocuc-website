@@ -1,24 +1,233 @@
 'use client'
 
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import HeroAnimation from './HeroAnimation'
+import Image from 'next/image'
+import gsap from 'gsap'
 import styles from './HeroSection.module.css'
 
+/* ─── IST time helpers ─────────────────────────────────────── */
+function getISTHour() {
+  const now = new Date()
+  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000
+  return new Date(utcMs + 330 * 60000).getHours()
+}
+
+function getPeriod(hour) {
+  if (hour >= 6 && hour < 12) return 'morning'
+  if (hour >= 12 && hour < 18) return 'afternoon'
+  return 'night'
+}
+
+/* ─── Background image config (per IST period) ─────────────── */
+const PERIOD_CONFIG = {
+  morning: {
+    image: '/cocuc-heroimage-morning.jpeg',
+    overlayFrom: 'rgba(140, 30, 0, 0.62)',
+    overlayTo: 'rgba(40, 8, 0, 0.78)',
+    label: 'Morning',
+  },
+  afternoon: {
+    image: '/cocuc-heroimage-afternoon.jpeg',
+    overlayFrom: 'rgba(128, 0, 0, 0.60)',
+    overlayTo: 'rgba(30, 0, 0, 0.80)',
+    label: 'Afternoon',
+  },
+  night: {
+    image: '/cocuc-heroimage-night.jpeg',
+    overlayFrom: 'rgba(90, 0, 20, 0.68)',
+    overlayTo: 'rgba(10, 5, 20, 0.88)',
+    label: 'Night',
+  },
+}
+const PERIODS = ['morning', 'afternoon', 'night']
+
+/* ─── Quote carousel slides ─────────────────────────────────── */
+const QUOTE_SLIDES = [
+  {
+    id: 'odia',
+    topLine: 'ଯୀଶୁ କହିଲେ',
+    bottomLine: '"ମୁଁ ପଥ, ସତ୍ୟ ଓ ଜୀବନ"',
+  },
+  {
+    id: 'english',
+    topLine: 'Jesus Said:',
+    bottomLine: 'I am the WAY, the TRUTH, and the LIFE',
+  },
+  {
+    id: 'hindi',
+    topLine: 'यीशु ने कहा',
+    bottomLine: 'मार्ग और सत्य और जीवन मैं ही हूँ',
+  },
+]
 
 export default function HeroSection() {
+  const [activePeriod, setActivePeriod] = useState(() => getPeriod(getISTHour()))
+  const [activeSlide, setActiveSlide] = useState(0)
+  const timerRef = useRef(null)
+  const titleRef = useRef(null)
+  const colsRef = useRef(null)
+
+  /* IST period — re-check every minute */
+  useEffect(() => {
+    const id = setInterval(() => setActivePeriod(getPeriod(getISTHour())), 60000)
+    return () => clearInterval(id)
+  }, [])
+
+  /* Carousel auto-advance — reset on manual navigation */
+  const startAutoAdvance = useCallback(() => {
+    clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % QUOTE_SLIDES.length)
+    }, 3000)
+  }, [])
+
+  useEffect(() => {
+    startAutoAdvance()
+    return () => clearInterval(timerRef.current)
+  }, [startAutoAdvance])
+
+  /* GSAP entrance animation */
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        titleRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: 0.3 }
+      )
+      gsap.fromTo(
+        colsRef.current,
+        { y: 35, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.75 }
+      )
+    })
+    return () => ctx.revert()
+  }, [])
+
+  /* Navigation handlers */
+  const goTo = useCallback((idx) => {
+    setActiveSlide(idx)
+    startAutoAdvance()
+  }, [startAutoAdvance])
+
+  const goPrev = () => goTo((activeSlide - 1 + QUOTE_SLIDES.length) % QUOTE_SLIDES.length)
+  const goNext = () => goTo((activeSlide + 1) % QUOTE_SLIDES.length)
+
   return (
     <section className={styles.heroSection}>
-      {/* Background Graphic */}
-      <div className={styles.heroBackground}></div>
 
-      <HeroAnimation 
-        title="Welcome to Union Church Bhubaneswar" 
-        subtitle='"He who dwells in the secret place of the Most High shall abide under the shadow of the Almighty." Join us this Sunday and experience the presence of God.'
-      />
-      <div className={styles.heroContent}>
-        <Link href="/about" className={`btn-primary ${styles.heroButton}`}>
-          Plan a Visit
-        </Link>
+      {/* ── Background image layers (IST time-based) ── */}
+      <div className={styles.bgStack} aria-hidden="true">
+        {PERIODS.map((period) => {
+          const cfg = PERIOD_CONFIG[period]
+          return (
+            <div
+              key={period}
+              className={`${styles.bgLayer} ${period === activePeriod ? styles.bgLayerActive : ''}`}
+            >
+              <Image
+                src={cfg.image}
+                alt={`${cfg.label} view of the church`}
+                fill
+                sizes="100vw"
+                quality={85}
+                priority={period === 'morning'}
+                style={{ objectFit: 'cover', objectPosition: 'center' }}
+              />
+              <div
+                className={styles.bgOverlay}
+                style={{
+                  background: `linear-gradient(160deg, ${cfg.overlayFrom} 0%, ${cfg.overlayTo} 100%)`,
+                }}
+              />
+            </div>
+          )
+        })}
+        <div className={styles.vignette} />
+        <div className={styles.bottomFade} />
+      </div>
+
+      {/* ── Foreground content ── */}
+      <div className={styles.heroFg}>
+
+        {/* Title — full-width, centered */}
+        <div ref={titleRef} className={styles.titleBlock}>
+          <p className={styles.welcomeLabel}>Welcome to</p>
+          <h1 className={styles.churchName}>Church of Christ</h1>
+          <p className={styles.unionName}>Union Church, Bhubaneswar</p>
+        </div>
+
+        {/* Two-column row */}
+        <div ref={colsRef} className={styles.heroColumns}>
+
+          {/* ── LEFT: Quote carousel ── */}
+          <div className={styles.carouselCol}>
+            <div className={styles.carouselWrap}>
+
+              <button
+                className={`${styles.arrow} ${styles.arrowLeft}`}
+                onClick={goPrev}
+                aria-label="Previous quote"
+              >
+                &#8249;
+              </button>
+
+              {/* Sliding track */}
+              <div className={styles.carouselViewport}>
+                <div
+                  className={styles.carouselTrack}
+                  style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+                >
+                  {QUOTE_SLIDES.map((slide) => (
+                    <div key={slide.id} className={styles.carouselSlide}>
+                      <p className={styles.quoteTop}>{slide.topLine}</p>
+                      <p className={styles.quoteBottom}>{slide.bottomLine}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                className={`${styles.arrow} ${styles.arrowRight}`}
+                onClick={goNext}
+                aria-label="Next quote"
+              >
+                &#8250;
+              </button>
+            </div>
+
+            {/* Indicator dots */}
+            <div className={styles.dots} role="tablist" aria-label="Quote slides">
+              {QUOTE_SLIDES.map((_, i) => (
+                <button
+                  key={i}
+                  role="tab"
+                  aria-selected={i === activeSlide}
+                  className={`${styles.dot} ${i === activeSlide ? styles.dotActive : ''}`}
+                  onClick={() => goTo(i)}
+                  aria-label={`Slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Vertical divider ── */}
+          <div className={styles.divider} aria-hidden="true" />
+
+          {/* ── RIGHT: Scripture quote + CTA ── */}
+          <div className={styles.quoteCol}>
+            <blockquote className={styles.heroSubtitle}>
+              "He who dwells in the secret place of the Most High shall abide under the shadow of the Almighty."
+            </blockquote>
+            <p className={styles.heroCaption}>
+              Join us this Sunday and experience the presence of God.
+            </p>
+            <Link href="/about" className={`btn-primary ${styles.heroButton}`}>
+              Plan a Visit
+            </Link>
+          </div>
+
+        </div>
       </div>
     </section>
   )

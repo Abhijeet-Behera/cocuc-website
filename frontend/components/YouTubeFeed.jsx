@@ -11,7 +11,8 @@ export default function YouTubeFeed() {
   useEffect(() => {
     async function fetchVideos() {
       try {
-        const res = await fetch('/api/youtube-feed')
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
+        const res = await fetch(`${API_URL}/youtube.php`)
         const data = await res.json()
         if (Array.isArray(data)) {
           setVideos(data)

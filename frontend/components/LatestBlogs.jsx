@@ -14,7 +14,8 @@ export default function LatestBlogs() {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const res = await fetch('/api/blogs')
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
+        const res = await fetch(`${API_URL}/blogs.php`)
         const data = await res.json()
         if (Array.isArray(data)) {
           setBlogs(data)
@@ -73,9 +74,9 @@ export default function LatestBlogs() {
       {blogs.slice(0, 3).map((blog) => (
         <article key={blog.id} className={styles.article}>
           <Link href={`/blog/${blog.id}`} style={{ display: 'contents' }}>
-            {blog.thumbnail ? (
+            {blog.thumbnail_path ? (
               <div className={styles.imageContainer}>
-                <img src={blog.thumbnail} alt={blog.title} className={styles.image} />
+                <img src={blog.thumbnail_path} alt={blog.title} className={styles.image} />
               </div>
             ) : (
               <div className={styles.fallbackImage}>
@@ -86,10 +87,10 @@ export default function LatestBlogs() {
             <div className={styles.content}>
               <div className={styles.meta}>
                 <span className={styles.author}>
-                  {blog.authorTitle}
+                  {blog.author_role}
                 </span>
                 <span className={styles.date}>
-                  {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </span>
               </div>
               <h3 className={styles.title}>{blog.title}</h3>

@@ -17,7 +17,8 @@ export default function LatestVideos() {
   useEffect(() => {
     async function fetchVideos() {
       try {
-        const res = await fetch('/api/latest-videos')
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
+        const res = await fetch(`${API_URL}/youtube.php`)
         const data = await res.json()
         if (Array.isArray(data)) {
           setResults(data)
@@ -58,13 +59,21 @@ export default function LatestVideos() {
     return () => ctx.revert()
   }, [])
 
-  // Merge static config with fetched video data
+  // Map the top 3 fetched videos to our 3 layout sections
   const rows = VIDEO_SECTIONS.map((section, i) => {
-    const fetched = results.find((r) => r.key === section.key)
+    let videoObj = null;
+    if (results[i]) {
+      videoObj = {
+        title: results[i].title,
+        thumbnail: results[i].thumbnail_url,
+        watchUrl: results[i].watch_url,
+        videoId: results[i].video_id,
+      };
+    }
     return {
       ...section,
       layout: LAYOUTS[i],
-      video: fetched?.video ?? null,
+      video: videoObj,
     }
   })
 

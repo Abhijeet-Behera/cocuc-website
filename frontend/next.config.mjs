@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   images: {
-    qualities: [70, 75, 80, 85, 90],
+    // Allow unoptimized images since next/image optimization requires a server
+    unoptimized: true,
   },
 };
 

@@ -52,3 +52,5 @@ coverage/
 *.sqlite
 *.sqlite3
 *.db
+update.zip
+build.zip

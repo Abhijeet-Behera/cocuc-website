@@ -3,6 +3,7 @@ import Reveal from '@/components/Reveal'
 import HeroSection from '@/components/HeroSection'
 import ActivitiesGrid from '@/components/ActivitiesGrid'
 import LatestVideos from '@/components/LatestVideos'
+import ChurchesMapSection from '@/components/ChurchesMapSection'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -16,6 +17,9 @@ export default function Home() {
           <ActivitiesGrid />
         </div>
       </section>
+
+      {/* Our Satellite Churches Map */}
+      <ChurchesMapSection />
 
       {/* Latest Videos — zig-zag three-playlist section */}
       <section id="sermons" className={`section ${styles.sermonsSection}`}>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Shadow/Base -->
+  <ellipse cx="50" cy="90" rx="20" ry="8" fill="#dce0e3" stroke="#333333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Map Pin Body -->
+  <path d="M50 88 C50 88, 20 55, 20 35 A30 30 0 1 1 80 35 C80 55, 50 88, 50 88 Z" fill="#f44336" stroke="#333333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Center Hole -->
+  <circle cx="50" cy="35" r="12" fill="#dce0e3" stroke="#333333" stroke-width="4"/>
+</svg>

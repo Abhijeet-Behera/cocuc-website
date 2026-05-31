@@ -1,12 +1,23 @@
 # Union Church Website
 
-This project is separated into a clean monorepo architecture with two main components:
-1. **Frontend**: Next.js React Application
-2. **Backend**: Prisma Database Architecture & Data Scripts
+This project utilizes a modern, separated architecture with three main components:
+1. **Frontend**: Next.js React Application (Static Export)
+2. **Backend**: Lightweight PHP API (Authentication, Blogs, Announcements)
+3. **Database**: MySQL hosted on Hostinger
+
+![System Architecture](C:\Users\Apurb\.gemini\antigravity-ide\brain\2dcf5f15-82aa-4f81-9eaf-ae293f9dab2a\architecture_diagram_1780224012934.png)
 
 ---
 
-## 🚀 How to Run the Project
+## 🏗️ System Architecture & Workflow
+
+- **Next.js Frontend (`/frontend`)**: A highly optimized static React application. It handles routing, UI animations (via GSAP and Framer Motion), and consumes API endpoints. It is compiled into static HTML/JS files (`/out`) for rapid deployment.
+- **PHP API (`/php-api`)**: A robust, lightweight RESTful backend using PHP. It securely handles JWT-based authentication, manages admin sessions, and provides CRUD operations for blogs and church announcements.
+- **MySQL Database**: A relational database running on Hostinger. It acts as the source of truth for user credentials, dynamic content, and activity logs.
+
+---
+
+## 🚀 How to Run the Project Locally
 
 You will need to open **two separate terminals**.
 
@@ -28,3 +39,30 @@ npm install
 npm run dev
 ```
 *(The website will open at http://localhost:3000)*
+
+---
+
+## 📦 Deployment Workflow (Hostinger SSH)
+
+To deploy updates to the live server at `unionchurch.in` without uploading the massive `node_modules` folder, follow this streamlined terminal workflow from your Windows Command Prompt (`cmd`):
+
+### 1. Build & Zip Locally
+Navigate to the frontend folder, compile the production build, and create a lightweight zip file of the output:
+```cmd
+cd /d e:\church-website\frontend
+npm run build
+cd out
+tar.exe -a -c -f build.zip *
+```
+
+### 2. Upload via SCP
+Securely copy the generated `.zip` file directly to the server's `public_html` directory:
+```cmd
+scp -P 65002 build.zip u841666234@217.21.91.190:~/domains/unionchurch.in/public_html/
+```
+
+### 3. Extract on the Server via SSH
+Log into Hostinger, extract the contents, and instantly apply the updates:
+```cmd
+ssh -p 65002 u841666234@217.21.91.190 "cd domains/unionchurch.in/public_html/ && unzip -o build.zip && rm build.zip"
+```

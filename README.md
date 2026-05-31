@@ -5,7 +5,7 @@ This project utilizes a modern, separated architecture with three main component
 2. **Backend**: Lightweight PHP API (Authentication, Blogs, Announcements)
 3. **Database**: MySQL hosted on Hostinger
 
-![System Architecture](C:\Users\Apurb\.gemini\antigravity-ide\brain\2dcf5f15-82aa-4f81-9eaf-ae293f9dab2a\architecture_diagram_1780224012934.png)
+![System Architecture](assets/architecture_diagram.png)
 
 ---
 

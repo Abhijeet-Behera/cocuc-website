@@ -171,7 +171,6 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
                 </div>
                 <div className={styles.popupBody}>
                   <p>{church.desc}</p>
-                  <button className={styles.viewDetailsBtn}>View Details</button>
                 </div>
               </Popup>
             </Marker>

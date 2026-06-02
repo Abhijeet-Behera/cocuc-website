@@ -100,7 +100,6 @@ export default function ChurchesMapSection() {
             fontFamily: 'var(--font-heading, sans-serif)'
           }}>
             Church of Christ, Union Church
-            <span style={{ display: 'block', fontSize: '0.85rem', color: '#777', marginTop: '6px', fontWeight: '400', textTransform: 'none', letterSpacing: 'normal' }}>(click the location to explore on map)</span>
           </h3>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {CHURCHES.map((church) => {
@@ -114,9 +113,11 @@ export default function ChurchesMapSection() {
                 borderRadius: '12px', 
                 border: `1px solid ${isActive ? 'transparent' : (isHovered ? '#e8e8e8' : '#f0f0f0')}`,
                 boxShadow: isActive ? '0 8px 24px rgba(128,0,0,0.25)' : (isHovered ? '0 8px 20px rgba(0,0,0,0.06)' : '0 2px 8px rgba(0,0,0,0.03)'),
-                transform: isActive ? 'scale(1.02) translateY(-2px)' : (isHovered ? 'scale(1.01) translateY(-2px)' : 'none'),
+                transform: isActive ? 'scale(1.02) translateY(-2px)' : (isHovered ? 'scale(1.02) translateY(-2px)' : 'scale(1) translateY(0)'),
                 transition: 'all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden'
               }}
               onClick={() => handleChurchClick(church.id)}
               onMouseEnter={() => setHoveredChurchId(church.id)}

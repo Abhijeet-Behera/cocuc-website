@@ -84,8 +84,45 @@
 
 :global(.customPopup .leaflet-popup-close-button) {
   color: white !important;
-  padding: 4px 8px !important;
+  width: 26px !important;
+  height: 26px !important;
+  line-height: 26px !important;
+  padding: 0 !important;
+  top: 10px !important;
+  right: 10px !important;
+  border-radius: 50% !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   z-index: 10;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+}
+
+:global(.customPopup .leaflet-popup-close-button:hover) {
+  background-color: rgba(255, 255, 255, 0.35) !important;
+  color: #ffffff !important;
+  transform: scale(1.05);
+}
+
+:global(.customPopup .leaflet-popup-close-button:active) {
+  background-color: rgba(220, 53, 69, 0.9) !important;
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  :global(.customPopup .leaflet-popup-close-button) {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    top: 8px !important;
+    right: 8px !important;
+    font-size: 22px !important;
+  }
 }
 
 .popupHeader {

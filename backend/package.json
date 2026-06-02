@@ -1,7 +1,0 @@
-{
-  "name": "church-backend",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "cd database && npm install && npm run db:push && npm run db:generate && npx prisma studio"
-  }
-}

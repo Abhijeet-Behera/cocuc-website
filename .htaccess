@@ -1,9 +1,8 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Ensure API requests are not rewritten to HTML
-  RewriteCond %{REQUEST_URI} ^/api/ [NC]
-  RewriteRule ^ - [L]
+  # Route /api/ requests to the backend directory
+  RewriteRule ^api/(.*)$ /backend/$1 [L,QSA]
 
   # Serve existing files and directories directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]

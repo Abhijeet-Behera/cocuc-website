@@ -1,7 +1,7 @@
 <?php
 // Database configuration
 // Replace these with your actual Hostinger MySQL database details
-define('DB_HOST', '82.25.121.146'); // Hostinger Remote MySQL IP
+define('DB_HOST', 'localhost'); // Production (Hostinger)
 define('DB_NAME', 'u841666234_churchdb');
 define('DB_USER', 'u841666234_dbadmin');
 define('DB_PASS', 'Cocuc@unionchurch#2026');

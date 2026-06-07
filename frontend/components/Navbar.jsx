@@ -5,13 +5,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState(null) // tracks which dropdown is open on mobile
+  const [openDropdown, setOpenDropdown] = useState(null)
   const navRef = useRef(null)
+  const menuRef = useRef(null)
   const pathname = usePathname()
 
   const isHome = pathname === '/'
@@ -35,6 +37,30 @@ export default function Navbar() {
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useGSAP(() => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 1024 && menuRef.current) {
+      if (mobileMenuOpen) {
+        gsap.to(menuRef.current, { 
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          autoAlpha: 1,
+          duration: 0.6, 
+          ease: 'power3.out',
+          overwrite: true
+        });
+      } else {
+        gsap.to(menuRef.current, { 
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+          autoAlpha: 0,
+          duration: 0.4, 
+          ease: 'power3.inOut',
+          overwrite: true
+        });
+      }
+    } else if (menuRef.current) {
+       gsap.set(menuRef.current, { clearProps: 'all' });
+    }
+  }, { dependencies: [mobileMenuOpen], scope: navRef, revertOnUpdate: false })
 
   const aboutMenu = [
     { name: 'History', href: '/about/history' },
@@ -115,7 +141,7 @@ export default function Navbar() {
           {mobileMenuOpen ? '✕' : '☰'}
         </button>
 
-        <div className={`${styles.menu} ${mobileMenuOpen ? styles.menuOpen : ''}`}>
+        <div ref={menuRef} className={`${styles.menu} ${mobileMenuOpen ? styles.menuOpen : ''}`}>
           {/* ── Nav links — equally spaced ── */}
           <div className={styles.navLinks}>
             <NavDropdown title="About" items={aboutMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />

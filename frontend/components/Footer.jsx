@@ -138,7 +138,7 @@ export default function Footer() {
             <li className={styles.contactItem} style={{ marginTop: '0.5rem' }}>
               <Clock size={18} className={styles.contactIcon} />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                <span className={styles.nowrapText}>Sunday Worship: 9:30 AM (English), 3:30 PM (Odia)</span>
+                <span className={styles.nowrapText}>Sunday Worship: 9:30 AM (E), 3:30 PM (O)</span>
                 <span>Sunday School: 8:00 AM</span>
                 <span>Women's Fellowship: 4:30 PM</span>
                 <span>Baptism Class: 4:00 PM</span>

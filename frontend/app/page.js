@@ -4,6 +4,7 @@ import HeroSection from '@/components/HeroSection'
 import ActivitiesGrid from '@/components/ActivitiesGrid'
 import LatestVideos from '@/components/LatestVideos'
 import ChurchesMapSection from '@/components/ChurchesMapSection'
+import PrayerZonesMapSection from '@/components/PrayerZonesMapSection'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -17,6 +18,9 @@ export default function Home() {
           <ActivitiesGrid />
         </div>
       </section>
+
+      {/* Prayer Zones Map */}
+      <PrayerZonesMapSection />
 
       {/* Our Satellite Churches Map */}
       <ChurchesMapSection />

@@ -1,0 +1,97 @@
+.memoryVersesWrapper {
+  width: 100%;
+  max-width: 1000px; /* Reduced from 1200px */
+  margin: 24px auto 0;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
+}
+
+.versesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px; /* Reduced gap */
+}
+
+.verseCard {
+  background: rgba(15, 5, 20, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 18px; /* Reduced padding */
+  transition: transform 0.3s ease, background 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.verseCard:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.verseHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.verseType {
+  font-size: 0.75rem; /* Smaller text */
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 600;
+  color: #ffb703;
+}
+
+.verseReference {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.verseScripture {
+  font-size: 0.95rem; /* Smaller scripture text */
+  line-height: 1.5;
+  color: #f8f9fa;
+  font-family: var(--font-primary, inherit);
+  flex-grow: 1;
+}
+
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffb703;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .versesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .versesGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

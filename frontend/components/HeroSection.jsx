@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
+import MemoryVerses from './MemoryVerses'
 import styles from './HeroSection.module.css'
 
 /* ─── IST time helpers ─────────────────────────────────────── */
@@ -243,6 +244,10 @@ export default function HeroSection() {
           </div>
 
         </div>
+
+        {/* Memory Verses Section */}
+        <MemoryVerses />
+
       </div>
     </section>
   )

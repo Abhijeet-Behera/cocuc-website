@@ -17,7 +17,7 @@ export default function LatestVideos() {
   useEffect(() => {
     async function fetchVideos() {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
+        const API_URL = process.env.NEXT_PUBLIC_API_URL // 'https://unionchurch.in/api'
         const res = await fetch(`${API_URL}/youtube.php`)
         const data = await res.json()
         if (Array.isArray(data)) {
@@ -38,7 +38,7 @@ export default function LatestVideos() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
-    
+
     const ctx = gsap.context(() => {
       gsap.fromTo(headerRef.current,
         { opacity: 0, y: -20 },

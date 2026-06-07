@@ -3,6 +3,7 @@ import Reveal from '@/components/Reveal'
 import HeroSection from '@/components/HeroSection'
 import ActivitiesGrid from '@/components/ActivitiesGrid'
 import LatestVideos from '@/components/LatestVideos'
+import UpcomingEvents from '@/components/UpcomingEvents'
 import ChurchesMapSection from '@/components/ChurchesMapSection'
 import PrayerZonesMapSection from '@/components/PrayerZonesMapSection'
 import styles from './page.module.css'
@@ -29,6 +30,13 @@ export default function Home() {
       <section id="sermons" className={`section ${styles.sermonsSection}`}>
         <div className="container">
           <LatestVideos />
+        </div>
+      </section>
+
+      {/* Upcoming Events — YouTube premieres / scheduled broadcasts */}
+      <section className="section">
+        <div className="container">
+          <UpcomingEvents />
         </div>
       </section>
 

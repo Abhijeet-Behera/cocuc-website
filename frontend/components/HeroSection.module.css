@@ -4,15 +4,14 @@
 
 .heroSection {
   position: relative;
-  height: 100vh;
-  min-height: 640px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background-color: #5c0000; /* fallback while images load */
-  padding: 0;
+  padding: 110px 0 40px 0; /* Add top padding for navbar, bottom for breathing room */
 }
 
 /* ── Background stack ───────────────────────────────────── */
@@ -76,7 +75,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem;
+  gap: 2rem; /* Reduced from 3rem */
 }
 
 /* ── Title — three-tier premium layout ─────────────────── */
@@ -93,7 +92,7 @@
 .welcomeLabel {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
-  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-size: clamp(0.85rem, 1.5vw, 1.15rem); /* Reduced proportionally */
   font-weight: 400;
   /* Very light rose-white — reads as warm white, on-brand */
   color: rgba(255, 230, 230, 0.78);
@@ -105,7 +104,7 @@
 /* "CHURCH OF CHRIST" — Cinzel, pure white hero centrepiece */
 .churchName {
   font-family: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(2.4rem, 6vw + 0.5rem, 5.5rem);
+  font-size: clamp(2.0rem, 5vw + 0.4rem, 4.4rem); /* Reduced proportionally */
   font-weight: 700;
   letter-spacing: 0.06em;
   line-height: 1.05;
@@ -124,7 +123,7 @@
 /* "Union Church, Bhubaneswar" — Cormorant Garamond, soft pinkish-white */
 .unionName {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(1.1rem, 2.2vw, 1.9rem);
+  font-size: clamp(0.95rem, 1.8vw, 1.55rem); /* Reduced proportionally */
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -187,7 +186,7 @@
 
 /* Top label line (lang / speaker attribution) */
 .quoteTop {
-  font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+  font-size: clamp(0.85rem, 1.5vw, 1.05rem); /* Reduced */
   font-weight: 500;
   color: rgba(255, 225, 210, 0.82);
   margin-bottom: 0.55rem;
@@ -198,7 +197,7 @@
 
 /* Bottom quote line */
 .quoteBottom {
-  font-size: clamp(1.1rem, 2.2vw, 1.65rem);
+  font-size: clamp(0.95rem, 1.9vw, 1.45rem); /* Reduced */
   font-weight: 700;
   color: var(--color-white);
   line-height: 1.35;
@@ -277,7 +276,7 @@
 
 .heroSubtitle {
   font-family: var(--font-body);
-  font-size: clamp(0.88rem, 1.4vw, 1.05rem);
+  font-size: clamp(0.8rem, 1.25vw, 0.95rem); /* Reduced */
   font-style: italic;
   color: rgba(255, 255, 255, 0.92);
   line-height: 1.75;
@@ -286,7 +285,7 @@
 }
 
 .heroCaption {
-  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  font-size: clamp(0.75rem, 1vw, 0.85rem); /* Reduced */
   color: rgba(255, 255, 255, 0.68);
   line-height: 1.55;
   font-family: var(--font-body);
@@ -302,8 +301,8 @@
 
 .heroButton, .heroButtonSecondary {
   margin-top: 0.4rem;
-  padding: 0.9rem 2.2rem;
-  font-size: 0.92rem;
+  padding: 0.75rem 1.8rem; /* Reduced padding */
+  font-size: 0.82rem; /* Reduced */
   border-radius: 50px;
   font-weight: 700;
   text-transform: uppercase;

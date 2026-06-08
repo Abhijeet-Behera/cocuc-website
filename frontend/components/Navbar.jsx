@@ -26,7 +26,7 @@ export default function Navbar() {
       }
     }
     window.addEventListener('scroll', handleScroll)
-    
+
     // Initial nav animation
     gsap.fromTo(navRef.current,
       { y: -100, opacity: 0 },
@@ -48,21 +48,21 @@ export default function Navbar() {
   ]
 
   const activitiesMenu = [
-    { name: 'Satellite Churches', href: '#' },
-    { name: 'Sunday Worship', href: '#' },
-    { name: 'Sunday School', href: '#' },
-    { name: 'C.E Union', href: '#' },
-    { name: 'Baptism Classes', href: '#' },
-    { name: 'Counselling', href: '#' },
-    { name: 'Women’s Fellowship', href: '#' },
-    { name: 'Youth Fellowship', href: '#' },
+    { name: 'Satellite Churches', href: '/activities/satellite-churches' },
+    { name: 'Sunday Worship', href: '/activities/sunday-worship' },
+    { name: 'Sunday School', href: '/activities/sunday-school' },
+    { name: 'C.E Union', href: '/activities/ce-union' },
+    { name: 'Baptism Classes', href: '/activities/baptism-classes' },
+    { name: 'Counselling', href: '/activities/counselling' },
+    { name: 'Women’s Fellowship', href: '/activities/womens-fellowship' },
+    { name: 'Youth Fellowship', href: '/activities/youth-fellowship' },
   ]
 
   const prayerMenu = [
-    { name: 'Morning Prayer', href: '#' },
-    { name: 'Monday Prayer', href: '#' },
-    { name: 'Thursday Cottage Prayer', href: '#' },
-    { name: 'Second Saturday Prayer', href: '#' },
+    { name: 'Morning Prayer', href: '/prayer/morning-prayer' },
+    { name: 'Monday Prayer', href: '/prayer/monday-prayer' },
+    { name: 'Thursday Cottage Prayer', href: '/prayer/thursday-cottage-prayer' },
+    { name: 'Second Saturday Prayer', href: '/prayer/second-saturday-prayer' },
     { name: 'United Chain Prayer', href: '#' },
   ]
 
@@ -92,11 +92,11 @@ export default function Navbar() {
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <div className={styles.logoWrapper}>
-            <Image 
-              src="/church-logo.png" 
-              alt="Church of Christ Union Church Bhubaneswar Logo" 
-              width={48} 
-              height={48} 
+            <Image
+              src="/church-logo.png"
+              alt="Church of Christ Union Church Bhubaneswar Logo"
+              width={48}
+              height={48}
               className={styles.logoImage}
               priority
             />
@@ -106,8 +106,8 @@ export default function Navbar() {
             </div>
           </div>
         </Link>
-        
-        <button 
+
+        <button
           className={`${styles.hamburger} ${isNavSolid ? styles.hamburgerScrolled : styles.hamburgerTransparent}`}
           onClick={() => { setMobileMenuOpen(!mobileMenuOpen); setOpenDropdown(null) }}
           aria-label="Toggle mobile menu"
@@ -155,22 +155,22 @@ export default function Navbar() {
 
 function SocialIcon({ href, children, scrolled, title }) {
   return (
-    <a 
-      href={href} 
-      target="_blank" 
-      rel="noopener noreferrer" 
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       title={title}
       className={`${styles.socialIcon} ${scrolled ? styles.socialIconScrolled : styles.socialIconTransparent}`}
     >
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="20" 
-        height="20" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
         strokeLinejoin="round"
       >
         {children}
@@ -197,21 +197,21 @@ function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown, se
 
   return (
     <div className={styles.dropdownContainer}>
-      <div 
+      <div
         className={`${styles.dropdownToggle} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`}
         onClick={handleToggle} /* Mobile: JS accordion toggle */
       >
         {title}
-        <span 
+        <span
           className={styles.dropdownChevron}
           style={{ transform: isMobileOpen ? 'rotate(180deg)' : undefined }}
         >▼</span>
       </div>
-      
+
       <div className={`${styles.dropdownMenu} ${isMobileOpen ? styles.dropdownMenuOpen : ''}`}>
         {items.map((item, i) => (
           <Link key={i} href={item.href} className={styles.dropdownItem}
-            onClick={() => { setOpenDropdown(null); if(setMobileMenuOpen) setMobileMenuOpen(false); }} /* Close on link click */
+            onClick={() => { setOpenDropdown(null); if (setMobileMenuOpen) setMobileMenuOpen(false); }} /* Close on link click */
           >
             {item.name}
           </Link>

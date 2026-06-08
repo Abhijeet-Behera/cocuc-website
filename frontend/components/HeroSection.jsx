@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
+import MemoryVerses from './MemoryVerses'
 import styles from './HeroSection.module.css'
 
 /* ─── IST time helpers ─────────────────────────────────────── */
@@ -227,12 +228,26 @@ export default function HeroSection() {
             <p className={styles.heroCaption}>
               Join us this Sunday and experience the presence of God.
             </p>
-            <Link href="/about" className={`btn-primary ${styles.heroButton}`}>
-              Explore
-            </Link>
+            <div className={styles.buttonGroup}>
+              <Link href="/about" className={`btn-primary ${styles.heroButton}`}>
+                Explore
+              </Link>
+              <a 
+                href="https://www.google.com/maps/place/Union+Church,+Unit+4+Main+St,+Unit+4,+Bhouma+Nagar,+Bhubaneswar,+Odisha+751001/@20.2761087,85.8342424,18z/data=!4m6!3m5!1s0x3a19a7594579150b:0x23298f0ac9cae304!8m2!3d20.2764338!4d85.833986!16s%2Fg%2F11b8tb49mb?entry=ttu&g_ep=EgoyMDI2MDUzMS4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`btn-secondary ${styles.heroButtonSecondary}`}
+              >
+                Locate on Map
+              </a>
+            </div>
           </div>
 
         </div>
+
+        {/* Memory Verses Section */}
+        <MemoryVerses />
+
       </div>
     </section>
   )

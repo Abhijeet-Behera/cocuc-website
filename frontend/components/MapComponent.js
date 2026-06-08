@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { MapContainer, GeoJSON, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, GeoJSON, Marker, Popup, useMap, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import styles from './MapComponent.module.css';
@@ -15,21 +15,25 @@ function MapController({ activeChurchId, churches }) {
     if (activeChurchId) {
       const church = churches.find(c => c.id === activeChurchId);
       if (church) {
-        // Calculate offset dynamically to prevent popups from cropping at the top
         const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-        let latOffset = 0.04;
         
+        let latOffset = 0.04;
         if (church.id === 3) {
-          // Baripada (northern edge): large offset needed on mobile to push the pin down
           latOffset = isMobile ? 0.09 : 0.06;
         } else if (church.id === 1 || church.id === 2) {
-          // Jagatsinghpur / Nayagarh: slight adjustment for mobile
           latOffset = isMobile ? 0.06 : 0.04;
         } else {
-          latOffset = isMobile ? 0.05 : 0.04;
+          latOffset = isMobile ? 0.05 : 0.035;
         }
         
-        map.flyTo([church.coords[0] + latOffset, church.coords[1]], 11, { animate: true, duration: 1.5 });
+        const targetLat = church.coords[0] + latOffset;
+        const targetLng = church.coords[1];
+
+        // Premium cinematic zoom-in effect
+        map.flyTo([targetLat, targetLng], 12, {
+          animate: true,
+          duration: 1.0
+        });
       }
     }
   }, [activeChurchId, map, churches]);
@@ -43,12 +47,13 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
 
   useEffect(() => {
     if (activeChurchId && markerRefs.current[activeChurchId]) {
-      // Small delay to allow flyTo to start before opening popup
+      // Wait for the flyTo animation to finish (1000ms) before opening the popup
+      // This guarantees no "cropped while sliding" visual glitches!
       setTimeout(() => {
         if (markerRefs.current[activeChurchId]) {
           markerRefs.current[activeChurchId].openPopup();
         }
-      }, 300);
+      }, 1000);
     }
   }, [activeChurchId]);
 
@@ -62,10 +67,11 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
   // Create a custom icon using a div to allow CSS animations
   const createCustomIcon = (name, id) => {
     const isBaripada = id === 3;
+    const isActive = id === activeChurchId;
     return L.divIcon({
       className: styles.markerIcon,
       html: `
-        <div class="${styles.markerLabel}" title="click to get details">${name}</div>
+        <div class="${styles.markerLabel} ${isActive ? styles.hiddenLabel : ''}" title="click to get details">${name}</div>
         <img src="/map-pin.svg" class="${styles.pulsatingPin}" title="click to get details" alt="GPS Pin" />
       `,
       iconSize: [40, 40],
@@ -94,17 +100,17 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
   const getGeoJsonStyle = (feature) => ({
     fillColor: getFeatureColor(feature?.properties?.NAME_2),
     weight: 1.5,
-    opacity: 1,
-    color: '#ffffff', // White borders for districts
-    fillOpacity: 0.85
+    opacity: 0.8,
+    color: '#ffffff', // Clean white borders for internal separation
+    fillOpacity: 0.55 // Transparent enough so base map district names are properly visible
   });
 
   const highlightFeature = (e) => {
     const layer = e.target;
     layer.setStyle({
       weight: 2.5,
-      color: '#666',
-      fillOpacity: 1
+      color: '#800000', // Strong theme color on hover
+      fillOpacity: 0.8
     });
   };
 
@@ -121,7 +127,7 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
     // Optional: Add tooltip with district name
     if (feature.properties && feature.properties.NAME_2) {
       layer.bindTooltip(feature.properties.NAME_2, {
-        permanent: true,
+        permanent: false,
         direction: 'center',
         className: 'district-tooltip'
       });
@@ -140,6 +146,10 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
           zoomControl={true}
           attributionControl={false}
         >
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          />
           <GeoJSON 
             data={geoData} 
             style={getGeoJsonStyle}
@@ -165,7 +175,7 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
                 }
               }}
             >
-              <Popup className={`customPopup ${church.id === 3 ? styles.popupDown : ''}`}>
+              <Popup className={`customPopup ${church.id === 3 ? styles.popupDown : ''}`} autoPan={false}>
                 <div className={styles.popupHeader}>
                   {church.name}
                 </div>

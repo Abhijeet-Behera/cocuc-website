@@ -6,7 +6,6 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 const CHURCHES = [
-  { id: 7, name: "COCUC, Bhubaneswar", coords: [20.2961, 85.8245], desc: "Union Church Bhubaneswar, the mother church serving the heart of the city." },
   { id: 1, name: "Jagatsinghpur", coords: [20.2644, 86.1666], desc: "Our satellite church in Jagatsinghpur district." },
   { id: 2, name: "Nayagarh", coords: [20.1255, 85.1066], desc: "Our satellite church in Nayagarh district." },
   { id: 3, name: "Baripada", coords: [21.9320, 86.7265], desc: "Our satellite church in Baripada (Mayurbhanj)." },
@@ -17,7 +16,7 @@ const CHURCHES = [
 
 // Dynamically import the map to disable SSR (Server Side Rendering)
 // because Leaflet relies on the window object
-const MapComponent = dynamic(() => import('./MapComponent'), { 
+const MapComponent = dynamic(() => import('./MapComponent'), {
   ssr: false,
   loading: () => (
     <div style={{ height: '550px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8f9fa', borderRadius: '16px' }}>
@@ -33,21 +32,25 @@ const MapComponent = dynamic(() => import('./MapComponent'), {
 export default function ChurchesMapSection() {
   const [activeChurchId, setActiveChurchId] = useState(null);
   const [hoveredChurchId, setHoveredChurchId] = useState(null);
+
   const mapContainerRef = useRef(null);
   const listContainerRef = useRef(null);
+  const cardsRef = useRef([]);
 
   useGSAP(() => {
-    gsap.fromTo('.church-list-item', 
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'power3.out',
-        delay: 0.1
-      }
-    );
+    if (cardsRef.current.length > 0) {
+      gsap.fromTo(cardsRef.current,
+        { opacity: 0, y: 20 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.4,
+          stagger: 0.05,
+          ease: 'power2.out',
+          clearProps: 'all'
+        }
+      );
+    }
   }, { scope: listContainerRef });
 
   const handleClosePopup = (churchId) => {
@@ -56,112 +59,209 @@ export default function ChurchesMapSection() {
 
   const handleChurchClick = (churchId) => {
     setActiveChurchId(churchId);
-    // On smaller screens, scroll down to the map so the user can see the zoomed-in effect
-    if (window.innerWidth <= 768 && mapContainerRef.current) {
+    if (window.innerWidth <= 992 && mapContainerRef.current) {
       setTimeout(() => {
-        // We use an offset of 120px to account for the fixed Navbar at the top
-        // so the map and its popup don't get hidden underneath it.
-        const offset = 120; 
+        const offset = 80;
         const bodyRect = document.body.getBoundingClientRect().top;
         const elementRect = mapContainerRef.current.getBoundingClientRect().top;
         const elementPosition = elementRect - bodyRect;
         const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
       }, 150);
     }
   };
 
   return (
-    <section className="section container">
-      <h2 className="section-title" style={{ marginBottom: '3rem' }}>Our Satellite Churches</h2>
-      
-      <div ref={listContainerRef} style={{ display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'stretch' }}>
-        {/* Sidebar List */}
-        <div style={{ 
-          flex: '1 1 300px', 
-          backgroundColor: '#ffffff', 
-          borderRadius: '16px', 
-          boxShadow: '0 10px 30px rgba(0,0,0,0.08)', 
-          padding: '24px',
-          maxHeight: '550px',
-          overflowY: 'auto',
-          border: '1px solid #eaeaea'
-        }}>
-          <h3 style={{ 
-            fontSize: '1.25rem', 
-            color: 'var(--color-primary, #800000)', 
-            marginBottom: '1.5rem', 
-            borderBottom: '2px solid #f4f4f4', 
-            paddingBottom: '12px',
-            fontFamily: 'var(--font-heading, sans-serif)'
-          }}>
-            Church of Christ, Union Church
+    <section className="section container" style={{ padding: '60px 20px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <h2 className="section-title">Our Satellite Churches</h2>
+        <p style={{ color: '#666', marginTop: '10px' }}>Find our extended church family locations across the region.</p>
+      </div>
+
+      <div className="sc-content-grid">
+
+        {/* Map Container */}
+        <div
+          ref={mapContainerRef}
+          className="sc-map-item"
+          style={{
+            width: '100%',
+            minHeight: '600px',
+            borderRadius: '20px',
+            overflow: 'hidden',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+            border: '4px solid #fff',
+            zIndex: 10
+          }}
+        >
+          <MapComponent
+            churches={CHURCHES}
+            activeChurchId={activeChurchId}
+            onMarkerClick={setActiveChurchId}
+            onClosePopup={handleClosePopup}
+          />
+        </div>
+
+        {/* Location List Cards */}
+        <div ref={listContainerRef} style={{ display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ marginBottom: '1.5rem', color: '#333', fontSize: '1.4rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: '38px', height: '38px', borderRadius: '10px',
+              background: 'linear-gradient(135deg, #800000, #a30000)',
+              boxShadow: '0 4px 12px rgba(128,0,0,0.3)', flexShrink: 0
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+                <line x1="9" x2="9" y1="3" y2="18"/>
+                <line x1="15" x2="15" y1="6" y2="21"/>
+              </svg>
+            </span>
+            Find on map
           </h3>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {CHURCHES.map((church) => {
+
+          <div className="sc-list custom-scrollbar">
+            {CHURCHES.map((church, index) => {
               const isActive = activeChurchId === church.id;
               const isHovered = hoveredChurchId === church.id && !isActive;
 
               return (
-              <li className="church-list-item" key={church.id} title="click here to get details" style={{ 
-                padding: '16px 20px', 
-                backgroundColor: isActive ? 'var(--color-primary, #800000)' : (isHovered ? '#fff4f4' : '#ffffff'), 
-                borderRadius: '12px', 
-                border: `1px solid ${isActive ? 'transparent' : (isHovered ? '#e8e8e8' : '#f0f0f0')}`,
-                boxShadow: isActive ? '0 8px 24px rgba(128,0,0,0.25)' : (isHovered ? '0 8px 20px rgba(0,0,0,0.06)' : '0 2px 8px rgba(0,0,0,0.03)'),
-                transform: isActive ? 'scale(1.02) translateY(-2px)' : (isHovered ? 'scale(1.02) translateY(-2px)' : 'scale(1) translateY(0)'),
-                transition: 'all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                cursor: 'pointer',
-                willChange: 'transform',
-                backfaceVisibility: 'hidden'
-              }}
-              onClick={() => handleChurchClick(church.id)}
-              onMouseEnter={() => setHoveredChurchId(church.id)}
-              onMouseLeave={() => setHoveredChurchId(null)}
-              >
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    width: '42px', 
-                    height: '42px', 
-                    backgroundColor: isActive ? 'rgba(255,255,255,0.15)' : '#fff4f4', 
-                    borderRadius: '50%', 
-                    flexShrink: 0,
-                    boxShadow: isActive ? 'inset 0 0 10px rgba(255,255,255,0.1)' : '0 2px 8px rgba(128,0,0,0.05)',
-                    transition: 'all 0.3s ease'
+                <div
+                  ref={el => cardsRef.current[index] = el}
+                  key={church.id}
+                  className="church-card"
+                  style={{
+                    background: isActive ? '#fffbfa' : '#fff',
+                    borderRadius: '24px',
+                    padding: '18px 20px',
+                    cursor: 'pointer',
+                    border: `1px solid ${isActive ? 'rgba(128,0,0,0.25)' : (isHovered ? 'rgba(128,0,0,0.1)' : 'rgba(0,0,0,0.05)')}`,
+                    boxShadow: isActive
+                      ? '0 12px 30px rgba(128,0,0,0.12)'
+                      : (isHovered ? '0 10px 24px rgba(0,0,0,0.06)' : '0 2px 8px rgba(0,0,0,0.03)'),
+                    transform: isActive ? 'translateY(-4px)' : (isHovered ? 'translateY(-4px)' : 'translateY(0)'),
+                    transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+                    position: 'relative',
+                    overflow: 'visible' // Allow tooltip to show outside
+                  }}
+                  onClick={() => handleChurchClick(church.id)}
+                  onMouseEnter={() => setHoveredChurchId(church.id)}
+                  onMouseLeave={() => setHoveredChurchId(null)}
+                >
+                  {/* Background Overlay */}
+                  <div style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'linear-gradient(to right, #fff4f4, #ffffff)',
+                    transformOrigin: 'left', transform: isHovered ? 'scaleX(1)' : 'scaleX(0)',
+                    transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+                    zIndex: 0, borderRadius: 'inherit'
+                  }}></div>
+
+                  {/* Tooltip */}
+                  <div style={{
+                    position: 'absolute', top: '50%', right: '15px', marginTop: '-15px',
+                    background: 'rgba(128,0,0,0.9)', color: '#fff', padding: '6px 14px',
+                    borderRadius: '20px', fontSize: '0.75rem', fontWeight: '600',
+                    boxShadow: '0 4px 12px rgba(128,0,0,0.2)', backdropFilter: 'blur(4px)',
+                    opacity: isHovered ? 1 : 0, transform: isHovered ? 'translateX(0)' : 'translateX(10px)',
+                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    zIndex: 10, pointerEvents: 'none', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px'
                   }}>
-                    <img src="/map-pin.svg" alt="Pin" style={{ width: '22px', height: '22px', filter: isActive ? 'brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0,0,0,0.2))' : 'drop-shadow(0 2px 4px rgba(128,0,0,0.2))', transition: 'all 0.3s ease' }} />
+                    View Map
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                   </div>
-                  <div>
-                    <strong style={{ display: 'block', fontSize: '1.1rem', color: isActive ? '#ffffff' : '#1a1a1a', marginBottom: '6px', fontFamily: 'var(--font-heading, sans-serif)', transition: 'color 0.3s ease' }}>
-                      {church.name}
-                    </strong>
-                    <span style={{ fontSize: '0.9rem', color: isActive ? 'rgba(255,255,255,0.85)' : '#666', lineHeight: '1.5', display: 'block', fontFamily: 'var(--font-body, sans-serif)', transition: 'color 0.3s ease' }}>
-                      {church.desc}
-                    </span>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px', position: 'relative', zIndex: 1, transition: 'padding 0.3s ease' }}>
+                    {/* Elegant circular icon */}
+                    <div style={{
+                      width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
+                      background: isActive ? '#800000' : (isHovered ? 'rgba(128,0,0,0.08)' : '#f5f5f5'),
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      boxShadow: isActive ? '0 4px 12px rgba(128,0,0,0.3)' : 'none',
+                      transition: 'all 0.3s ease'
+                    }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={isActive ? '#fff' : (isHovered ? '#800000' : '#777')} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                      </svg>
+                    </div>
+
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <h4 style={{
+                        margin: 0,
+                        color: isActive ? '#800000' : (isHovered ? '#600000' : '#222'),
+                        fontSize: '1rem',
+                        fontWeight: '700',
+                        letterSpacing: '0.01em',
+                        lineHeight: 1.2,
+                        marginBottom: '4px',
+                        transition: 'color 0.2s ease'
+                      }}>{church.name}</h4>
+                      <p style={{
+                        margin: 0, fontSize: '0.8rem', color: '#777',
+                        lineHeight: 1.4,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}>{church.desc}</p>
+                    </div>
+
+                    {/* Arrow indicator */}
+                    <div style={{
+                      flexShrink: 0,
+                      width: '24px', height: '24px',
+                      borderRadius: '50%',
+                      background: isActive ? 'rgba(128,0,0,0.08)' : 'transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      transition: 'all 0.3s ease',
+                      transform: isActive ? 'translateX(2px)' : 'translateX(0)'
+                    }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isActive ? '#800000' : '#bbb'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 18l6-6-6-6"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </li>
-            )})}
-          </ul>
-        </div>
-
-        {/* Map Container */}
-        <div ref={mapContainerRef} style={{ flex: '2 1 600px', minHeight: '550px' }}>
-          <MapComponent 
-            churches={CHURCHES} 
-            activeChurchId={activeChurchId} 
-            onMarkerClick={setActiveChurchId} 
-            onClosePopup={handleClosePopup}
-          />
+              )
+            })}
+          </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f5f5f5; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ccc; }
+
+        .sc-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          max-height: 600px;
+          overflow-y: auto;
+          padding-right: 4px;
+          padding-bottom: 10px;
+        }
+
+        .sc-content-grid {
+          display: flex;
+          flex-direction: column-reverse;
+          gap: 30px;
+        }
+
+        @media (min-width: 992px) {
+          .sc-content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            align-items: start;
+          }
+          .sc-map-item {
+            position: sticky;
+            top: 100px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

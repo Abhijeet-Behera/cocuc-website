@@ -352,32 +352,27 @@
     width: 100%;
     background-color: var(--color-white);
     flex-direction: column;
-    align-items: stretch;
-    padding: 1.5rem 2rem;
-    gap: 0;
+    align-items: center;
+    padding: 2rem 1.5rem;
+    gap: 1rem;
     box-shadow: var(--shadow-md);
-    /* Hide on mobile by default */
+    /* GSAP Starting State for mobile */
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
     z-index: 99;
     /* Add constraints for scrolling */
     max-height: calc(100vh - 70px);
   }
 
-  .menuOpen {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
+  /* .menuOpen is handled by GSAP */
 
   /* Stack nav links vertically on mobile */
   .navLinks {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
     justify-content: flex-start;
-    gap: 0.25rem;
+    gap: 0.5rem;
     width: 100%;
     margin-bottom: 1rem;
     /* Make scrollable */
@@ -445,18 +440,27 @@
   }
 
   .dropdownItem {
-    padding: 0.55rem 0.75rem;
-    font-size: 0.88rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
     color: #444;
+    text-align: center;
   }
 
   .dropdownToggle {
     width: 100%;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
+    justify-content: center;
+    padding: 0.75rem 1rem;
     border-radius: 8px;
     border: none;
     background: transparent;
+    font-size: 1.1rem;
+  }
+  
+  .navLink {
+    text-align: center;
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
   }
 
   /* Do NOT use CSS hover on mobile — controlled by JS click */

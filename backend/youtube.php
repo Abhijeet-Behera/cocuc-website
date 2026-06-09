@@ -30,32 +30,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Keep API key server-side only.
-// API key is now loaded from backend/.env instead of hardcoding it here.
-$envPath = __DIR__ . '/.env';
+require_once __DIR__ . '/env.php';
 
-if (!file_exists($envPath)) {
+define('YOUTUBE_API_KEY', getenv('YOUTUBE_API_KEY') ?: '');
+define('YOUTUBE_CHANNEL_ID', getenv('YOUTUBE_CHANNEL_ID') ?: '');
+
+if (empty(YOUTUBE_API_KEY) || YOUTUBE_API_KEY === 'your_youtube_api_key_here') {
     http_response_code(500);
     echo json_encode([
         'error' => true,
-        'message' => 'Environment file not found.'
+        'message' => 'YouTube API key is missing.'
     ]);
     exit;
 }
-
-$env = parse_ini_file($envPath);
-
-if (!$env || empty($env['YOUTUBE_API_KEY'])) {
-    http_response_code(500);
-    echo json_encode([
-        'error' => true,
-        'message' => 'YouTube API key is missing in .env file.'
-    ]);
-    exit;
-}
-
-define('YOUTUBE_API_KEY', $env['YOUTUBE_API_KEY']);
-define('YOUTUBE_CHANNEL_ID', $env['YOUTUBE_CHANNEL_ID'] ?? '');
 
 // Paste exact playlist IDs here
 $playlists = [
@@ -76,13 +63,6 @@ $playlists = [
     ]
 ];
 
-if (empty(YOUTUBE_API_KEY) || YOUTUBE_API_KEY === 'PASTE_YOUR_YOUTUBE_API_KEY_HERE') {
-    echo json_encode([
-        'error' => true,
-        'message' => 'YouTube API key is missing.'
-    ]);
-    exit;
-}
 function fetchLatestVideoFromPlaylist($playlist)
 {
     $apiUrl = "https://www.googleapis.com/youtube/v3/playlistItems?" . http_build_query([

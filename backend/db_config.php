@@ -1,13 +1,14 @@
 <?php
-// Database configuration
-// Replace these with your actual Hostinger MySQL database details
-define('DB_HOST', 'localhost'); // Production (Hostinger)
-define('DB_NAME', 'u841666234_churchdb');
-define('DB_USER', 'u841666234_dbadmin');
-define('DB_PASS', 'Cocuc@unionchurch#2026');
+require_once __DIR__ . '/env.php';
 
-// Secret key for JWT Authentication (Change this to a random long string)
-define('JWT_SECRET', 'k9$mP2vL8x#nY5qW!zR4cT7jB1hF6dG9');
+// Database configuration loaded from .env
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost'); 
+define('DB_NAME', getenv('DB_NAME') ?: '');
+define('DB_USER', getenv('DB_USER') ?: '');
+define('DB_PASS', getenv('DB_PASS') ?: '');
+
+// Secret key for JWT Authentication
+define('JWT_SECRET', getenv('JWT_SECRET') ?: '');
 
 try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);

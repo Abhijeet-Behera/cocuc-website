@@ -80,17 +80,17 @@ function postRequest($url, $params)
     return $data;
 }
 
-if (!file_exists($envPath)) {
-    die('Environment file not found.');
-}
+require_once __DIR__ . '/env.php';
 
-$env = parse_ini_file($envPath);
+$googleClientId = getenv('GOOGLE_CLIENT_ID');
+$googleClientSecret = getenv('GOOGLE_CLIENT_SECRET');
+$googleRedirectUri = getenv('GOOGLE_REDIRECT_URI');
 
 if (
-    !$env ||
-    empty($env['GOOGLE_CLIENT_ID']) ||
-    empty($env['GOOGLE_CLIENT_SECRET']) ||
-    empty($env['GOOGLE_REDIRECT_URI'])
+    empty($googleClientId) ||
+    empty($googleClientSecret) ||
+    empty($googleRedirectUri) ||
+    $googleClientId === 'your_google_client_id_here'
 ) {
     die('Google OAuth credentials missing in .env file.');
 }
@@ -115,9 +115,9 @@ unset($_SESSION['youtube_oauth_state']);
 
 $tokenResponse = postRequest('https://oauth2.googleapis.com/token', [
     'code' => $_GET['code'],
-    'client_id' => trim($env['GOOGLE_CLIENT_ID']),
-    'client_secret' => trim($env['GOOGLE_CLIENT_SECRET']),
-    'redirect_uri' => trim($env['GOOGLE_REDIRECT_URI']),
+    'client_id' => trim($googleClientId),
+    'client_secret' => trim($googleClientSecret),
+    'redirect_uri' => trim($googleRedirectUri),
     'grant_type' => 'authorization_code'
 ]);
 

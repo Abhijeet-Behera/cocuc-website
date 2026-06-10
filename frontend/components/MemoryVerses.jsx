@@ -3,6 +3,49 @@
 import { useState, useEffect } from 'react'
 import styles from './MemoryVerses.module.css'
 
+function TiltCard({ children, className }) {
+  const [transform, setTransform] = useState('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)')
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    
+    // Increased degrees for a significant tilt
+    const rotateX = ((y - centerY) / centerY) * -15 
+    const rotateY = ((x - centerX) / centerX) * 15
+    
+    setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`)
+    setIsHovered(true)
+  }
+
+  const handleMouseLeave = () => {
+    setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)')
+    setIsHovered(false)
+  }
+
+  return (
+    <div 
+      className={className}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ 
+        transform, 
+        transition: isHovered ? 'transform 0.1s ease-out, background 0.3s ease, border-color 0.3s ease' : 'transform 0.5s ease-out, background 0.3s ease, border-color 0.3s ease',
+        transformStyle: 'preserve-3d',
+        willChange: 'transform'
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
 export default function MemoryVerses() {
   const [verses, setVerses] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -93,35 +136,35 @@ export default function MemoryVerses() {
         
         {/* Daily Verse */}
         {verses.daily && (
-          <div className={styles.verseCard}>
+          <TiltCard className={styles.verseCard}>
             <div className={styles.verseHeader}>
               <span className={styles.verseType}>Verse of the Day</span>
               <span className={styles.verseReference}>{verses.daily.reference}</span>
             </div>
             <p className={styles.verseScripture}>"{verses.daily.scripture}"</p>
-          </div>
+          </TiltCard>
         )}
 
         {/* Weekly Verse */}
         {verses.weekly && (
-          <div className={styles.verseCard}>
+          <TiltCard className={styles.verseCard}>
             <div className={styles.verseHeader}>
               <span className={styles.verseType}>Verse of the Week</span>
               <span className={styles.verseReference}>{verses.weekly.reference}</span>
             </div>
             <p className={styles.verseScripture}>"{verses.weekly.scripture}"</p>
-          </div>
+          </TiltCard>
         )}
 
         {/* Monthly Verse */}
         {verses.monthly && (
-          <div className={styles.verseCard}>
+          <TiltCard className={styles.verseCard}>
             <div className={styles.verseHeader}>
               <span className={styles.verseType}>Verse of the Month</span>
               <span className={styles.verseReference}>{verses.monthly.reference}</span>
             </div>
             <p className={styles.verseScripture}>"{verses.monthly.scripture}"</p>
-          </div>
+          </TiltCard>
         )}
 
       </div>

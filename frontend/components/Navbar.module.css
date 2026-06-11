@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 9998;
   padding: 1.5rem 0;
   transition: all 0.3s ease;
 }
@@ -279,8 +279,8 @@
   font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: left center;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+  transform-origin: center center;
   font-family: var(--font-body);
   border-radius: 4px; /* Slight rounding inside the sharp menu looks premium */
   display: block;
@@ -288,9 +288,12 @@
 }
 
 .dropdownItem:hover {
-  background: #f7f7f7; /* Clean, subtle gray/off-white background */
+  background: rgba(139, 0, 0, 0.06); /* Clean, subtle red background */
   color: var(--color-primary); /* Red color on hover */
-  transform: scale(1.04); /* Slight zoom in */
+  transform: scale(1.04); /* Slight zoom in from all sides */
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.08); /* Pop up shadow effect */
+  position: relative;
+  z-index: 2;
 }
 
 .hamburger {

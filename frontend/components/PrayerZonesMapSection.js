@@ -74,22 +74,16 @@ export default function PrayerZonesMapSection() {
   return (
     <section className="section container" style={{ padding: '60px 20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 className="section-title">COCUC, Prayer Zones</h2>
+        <h2 className="section-title-elegant">
+          <span className="title-normal">COCUC, </span>
+          <em className="title-italic">Prayer Zones</em>
+        </h2>
         <p style={{ color: '#666', marginTop: '10px' }}>Find your local prayer zone by searching your area or selecting on the map.</p>
       </div>
 
       {/* Search Bar */}
       <div style={{ maxWidth: '600px', margin: '0 auto 2rem auto', position: 'relative', zIndex: 50 }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: '#fff',
-          borderRadius: '30px',
-          padding: '10px 20px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-          border: '1px solid #eee',
-          transition: 'box-shadow 0.3s ease'
-        }}>
+        <div className="search-bar-wrapper">
           <Search size={20} color="#800000" style={{ marginRight: '10px', flexShrink: 0 }} />
           <input
             type="text"

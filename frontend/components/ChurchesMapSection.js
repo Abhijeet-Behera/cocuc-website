@@ -53,8 +53,11 @@ export default function ChurchesMapSection() {
   return (
     <section className="section container" style={{ padding: '60px 20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 className="section-title">Our Satellite Churches</h2>
-        <p style={{ color: '#666', marginTop: '10px' }}>Find our extended church family locations across the region.</p>
+        <h2 className="section-title-elegant">
+          <span className="title-normal">Our </span>
+          <em className="title-italic">Satellite Churches</em>
+        </h2>
+        <p style={{ color: '#666', marginTop: '10px' }}>Find our extended church family locations across the state.</p>
       </div>
 
       <div className="sc-content-grid">

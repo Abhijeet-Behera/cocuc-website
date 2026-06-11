@@ -39,31 +39,50 @@ export default function Navbar() {
       { y: -100, opacity: 0 },
       { y: 0, opacity: 1, duration: 1, ease: 'power3.out', clearProps: 'transform,opacity' }
     )
-  }, { scope: navRef })
+  }, { scope: navRef, dependencies: [] })
 
   useGSAP(() => {
-    if (typeof window !== 'undefined' && window.innerWidth <= 1024 && menuRef.current) {
-      if (mobileMenuOpen) {
-        gsap.to(menuRef.current, { 
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-          autoAlpha: 1,
-          duration: 0.6, 
-          ease: 'power3.out',
-          overwrite: true
-        });
-      } else {
-        gsap.to(menuRef.current, { 
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-          autoAlpha: 0,
-          duration: 0.4, 
-          ease: 'power3.inOut',
-          overwrite: true
-        });
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth <= 1024 && menuRef.current) {
+        if (mobileMenuOpen) {
+          gsap.to(menuRef.current, { 
+            clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            autoAlpha: 1,
+            duration: 0.6, 
+            ease: 'power3.out',
+            overwrite: true
+          });
+        } else {
+          gsap.to(menuRef.current, { 
+            clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+            autoAlpha: 0,
+            duration: 0.4, 
+            ease: 'power3.inOut',
+            overwrite: true
+          });
+        }
+      } else if (menuRef.current) {
+         gsap.set(menuRef.current, { clearProps: 'all' });
       }
-    } else if (menuRef.current) {
-       gsap.set(menuRef.current, { clearProps: 'all' });
     }
-  }, { dependencies: [mobileMenuOpen], scope: navRef, revertOnUpdate: false })
+  }, { dependencies: [mobileMenuOpen], scope: navRef })
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        if (mobileMenuOpen) setMobileMenuOpen(false);
+        if (menuRef.current) gsap.set(menuRef.current, { clearProps: 'all' });
+      } else {
+        if (!mobileMenuOpen && menuRef.current) {
+            gsap.set(menuRef.current, { autoAlpha: 0, clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' });
+        }
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    // Call once on mount to ensure correct initial state
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mobileMenuOpen]);
 
   const aboutMenu = [
     { name: 'History', href: '/about/history' },

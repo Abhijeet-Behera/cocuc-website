@@ -43,7 +43,10 @@ export default function Home() {
       {/* Blogs & Updates */}
       <section className="section container">
         <Reveal delay={0.25}>
-          <h2 className="section-title">News & Updates</h2>
+          <h2 className="section-title-elegant">
+            <span className="title-normal">News & </span>
+            <em className="title-italic">Updates</em>
+          </h2>
           <LatestBlogs />
         </Reveal>
       </section>

@@ -23,7 +23,8 @@ if (!file_exists($envPath)) {
     exit;
 }
 
-$env = parse_ini_file($envPath);
+require_once __DIR__ . '/env_loader.php';
+$env = loadEnv($envPath);
 
 if (
     !$env ||

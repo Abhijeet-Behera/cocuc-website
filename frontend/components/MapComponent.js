@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { MapContainer, GeoJSON, Marker, Popup, useMap, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -64,21 +64,23 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
       .catch(console.error);
   }, []);
 
-  // Create a custom icon using a div to allow CSS animations
-  const createCustomIcon = (name, id) => {
-    const isBaripada = id === 3;
-    const isActive = id === activeChurchId;
-    return L.divIcon({
-      className: styles.markerIcon,
-      html: `
-        <div class="${styles.markerLabel} ${isActive ? styles.hiddenLabel : ''}" title="click to get details">${name}</div>
-        <img src="/map-pin.svg" class="${styles.pulsatingPin}" title="click to get details" alt="GPS Pin" />
-      `,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40], // Anchor to the bottom tip of the pin
-      popupAnchor: isBaripada ? [0, 45] : [0, -45], // Baripada opens below, others above
+  const icons = useMemo(() => {
+    const iconMap = {};
+    churches.forEach(church => {
+      const isActive = church.id === activeChurchId;
+      iconMap[church.id] = L.divIcon({
+        className: styles.markerIcon,
+        html: `
+          <div class="${styles.markerLabel} ${isActive ? styles.hiddenLabel : ''}" title="click to get details">${church.name}</div>
+          <img src="/map-pin.svg" class="${styles.pulsatingPin}" title="click to get details" alt="GPS Pin" />
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -45],
+      });
     });
-  };
+    return iconMap;
+  }, [churches, activeChurchId]);
 
   // Predefined pleasant pastel colors for districts
   const districtColors = [
@@ -162,7 +164,7 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
             <Marker 
               key={church.id} 
               position={church.coords} 
-              icon={createCustomIcon(church.name, church.id)}
+              icon={icons[church.id]}
               ref={(ref) => {
                 if (ref) markerRefs.current[church.id] = ref;
               }}
@@ -175,7 +177,7 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
                 }
               }}
             >
-              <Popup className={`customPopup ${church.id === 3 ? styles.popupDown : ''}`} autoPan={false}>
+              <Popup className={`customPopup`} autoPan={false}>
                 <div className={styles.popupHeader}>
                   {church.name}
                 </div>

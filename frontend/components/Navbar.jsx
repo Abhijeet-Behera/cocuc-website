@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
@@ -29,14 +30,16 @@ export default function Navbar() {
     }
     window.addEventListener('scroll', handleScroll)
 
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useGSAP(() => {
     // Initial nav animation
     gsap.fromTo(navRef.current,
       { y: -100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }
+      { y: 0, opacity: 1, duration: 1, ease: 'power3.out', clearProps: 'transform,opacity' }
     )
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, { scope: navRef })
 
   useGSAP(() => {
     if (typeof window !== 'undefined' && window.innerWidth <= 1024 && menuRef.current) {
@@ -207,42 +210,72 @@ function SocialIcon({ href, children, scrolled, title }) {
 
 function NavLink({ href, children, scrolled, onClick }) {
   return (
-    <Link href={href} className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`} onClick={onClick}>
-      {children}
-    </Link>
+    <motion.div
+      whileHover={{ scale: 1.05, y: -2 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+    >
+      <Link href={href} className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`} onClick={onClick}>
+        {children}
+      </Link>
+    </motion.div>
   )
 }
 
 function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown, setMobileMenuOpen }) {
+  const [isHovered, setIsHovered] = useState(false)
   const isMobileOpen = openDropdown === title
 
   const handleToggle = () => {
-    // Toggle: if already open close it, else open this one (closes others)
     setOpenDropdown(isMobileOpen ? null : title)
   }
 
   return (
-    <div className={styles.dropdownContainer}>
-      <div
+    <div 
+      className={styles.dropdownContainer}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <motion.div
         className={`${styles.dropdownToggle} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`}
-        onClick={handleToggle} /* Mobile: JS accordion toggle */
+        onClick={handleToggle}
+        whileHover={{ scale: 1.05, y: -2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         {title}
         <span
           className={styles.dropdownChevron}
-          style={{ transform: isMobileOpen ? 'rotate(180deg)' : undefined }}
+          style={{ transform: (isMobileOpen || isHovered) ? 'rotate(180deg)' : undefined }}
         >▼</span>
-      </div>
+      </motion.div>
 
-      <div className={`${styles.dropdownMenu} ${isMobileOpen ? styles.dropdownMenuOpen : ''}`}>
-        {items.map((item, i) => (
-          <Link key={i} href={item.href} className={styles.dropdownItem}
-            onClick={() => { setOpenDropdown(null); if (setMobileMenuOpen) setMobileMenuOpen(false); }} /* Close on link click */
+      <AnimatePresence>
+        {(isHovered || isMobileOpen) && (
+          <motion.div 
+            className={`${styles.dropdownMenu} ${isMobileOpen ? styles.dropdownMenuOpen : ''}`}
+            initial={{ opacity: 0, y: 15, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: 10, x: "-50%" }}
+            transition={{ type: 'spring', bounce: 0.15, duration: 0.4 }}
           >
-            {item.name}
-          </Link>
-        ))}
-      </div>
+            {/* Invisible bridge to prevent hover loss when moving mouse across the gap */}
+            <div className={styles.dropdownHoverBridge} />
+            {items.map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.04 + 0.05, type: 'spring', stiffness: 300, damping: 24 }}
+              >
+                <Link href={item.href} className={styles.dropdownItem}
+                  onClick={() => { setOpenDropdown(null); if (setMobileMenuOpen) setMobileMenuOpen(false); }}
+                >
+                  {item.name}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

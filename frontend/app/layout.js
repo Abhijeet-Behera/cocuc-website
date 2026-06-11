@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Providers from '@/components/Providers'
 import Preloader from '@/components/Preloader'
+import ErrorLogger from '@/components/ErrorLogger'
 import styles from './layout.module.css'
 
 export const metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
+        <ErrorLogger />
         <Preloader />
         <Providers>
           <Navbar />

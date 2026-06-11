@@ -63,16 +63,26 @@ const QUOTE_SLIDES = [
 ]
 
 export default function HeroSection() {
-  const [activePeriod, setActivePeriod] = useState(() => getPeriod(getISTHour()))
+  const [activePeriod, setActivePeriod] = useState('morning')
+  const [isMounted, setIsMounted] = useState(false)
   const [activeSlide, setActiveSlide] = useState(0)
   const timerRef = useRef(null)
   const titleRef = useRef(null)
   const colsRef = useRef(null)
 
-  /* IST period — re-check every minute */
+  /* Initialize client period and enable transitions */
   useEffect(() => {
-    const id = setInterval(() => setActivePeriod(getPeriod(getISTHour())), 60000)
-    return () => clearInterval(id)
+    setActivePeriod(getPeriod(getISTHour()))
+    const mountTimeout = setTimeout(() => {
+      setIsMounted(true)
+    }, 100)
+
+    const intervalId = setInterval(() => setActivePeriod(getPeriod(getISTHour())), 60000)
+
+    return () => {
+      clearTimeout(mountTimeout)
+      clearInterval(intervalId)
+    }
   }, [])
 
   /* Carousel auto-advance — reset on manual navigation */
@@ -130,7 +140,7 @@ export default function HeroSection() {
           return (
             <div
               key={period}
-              className={`${styles.bgLayer} ${period === activePeriod ? styles.bgLayerActive : ''}`}
+              className={`${styles.bgLayer} ${period === activePeriod ? styles.bgLayerActive : ''} ${!isMounted ? styles.noTransition : ''}`}
             >
               <Image
                 src={cfg.image}

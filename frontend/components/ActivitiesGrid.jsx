@@ -1,8 +1,6 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import Link from 'next/link'
 import styles from './ActivitiesGrid.module.css'
 
@@ -49,28 +47,28 @@ export default function ActivitiesGrid() {
   ]
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-    
-    const ctx = gsap.context(() => {
-      // Stagger animate cards on scroll
-      gsap.fromTo(`.${styles.gridItem}`, 
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: `.${styles.grid}`,
-            start: "top 80%",
-            once: true
-          }
-        }
-      )
-    }, containerRef)
+    // Use IntersectionObserver for scroll animation — no GSAP dependency,
+    // so this never causes invisible cards even if GSAP crashes elsewhere.
+    const items = containerRef.current?.querySelectorAll(`.${styles.gridItem}`)
+    if (!items || items.length === 0) return
 
-    return () => ctx.revert()
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            const delay = Array.from(items).indexOf(entry.target) * 120
+            setTimeout(() => {
+              entry.target.classList.add(styles.gridItemVisible)
+            }, delay)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    )
+
+    items.forEach(item => observer.observe(item))
+    return () => observer.disconnect()
   }, [])
 
   return (

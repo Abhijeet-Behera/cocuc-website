@@ -12,7 +12,7 @@ export default function TermsOfService() {
         <h1 className="section-title" style={{ marginBottom: '2rem', textAlign: 'left' }}>Terms of Service</h1>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', opacity: 0.9 }}>
-          <p><strong>Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong></p>
+          <p><strong>Last Updated: June 2026</strong></p>
           
           <p>
             Welcome to the Church of Christ (Union Church) website. By accessing or using our website, you agree to comply with and be bound by the following terms and conditions of use.

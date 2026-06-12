@@ -19,7 +19,7 @@ header("Content-Type: application/json");
 if (isset($_GET['debug'])) {
     header("Content-Type: application/json; charset=UTF-8");
     echo json_encode([
-        "version" => "playlist-api-v2",
+        "version" => "playlist-api-v3",
         "file" => __FILE__,
         "time" => date("c")
     ]);
@@ -91,7 +91,7 @@ function fetchLatestVideoFromPlaylist($playlist)
         'playlistId' => $playlist['playlist_id'],
         'maxResults' => 50,
         'key' => YOUTUBE_API_KEY
-    ]);
+    ], '', '&');
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $apiUrl);

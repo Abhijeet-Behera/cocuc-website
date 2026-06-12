@@ -10,6 +10,7 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
 
 # Next.js
 .next/
@@ -54,3 +55,4 @@ coverage/
 *.db
 update.zip
 build.zip
+backend.zip

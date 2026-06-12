@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Volume2 } from 'lucide-react'
 import styles from './MemoryVerses.module.css'
 
-function TiltCard({ children, className }) {
+function TiltCard({ children, className, isActive }) {
   const [transform, setTransform] = useState('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)')
   const [isHovered, setIsHovered] = useState(false)
 
@@ -30,14 +30,21 @@ function TiltCard({ children, className }) {
     setIsHovered(false)
   }
 
+  // Calculate the final transform to apply
+  let appliedTransform = transform;
+  if (!isHovered && isActive) {
+    // Keep it zoomed in when active but not hovered
+    appliedTransform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1.02, 1.02, 1.02)';
+  }
+
   return (
     <div 
       className={className}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ 
-        transform, 
-        transition: isHovered ? 'transform 0.1s ease-out, background 0.3s ease, border-color 0.3s ease' : 'transform 0.5s ease-out, background 0.3s ease, border-color 0.3s ease',
+        transform: appliedTransform, 
+        transition: (isHovered || isActive) ? 'transform 0.1s ease-out, background 0.3s ease, border-color 0.3s ease' : 'transform 0.5s ease-out, background 0.3s ease, border-color 0.3s ease',
         transformStyle: 'preserve-3d',
         willChange: 'transform'
       }}
@@ -70,11 +77,45 @@ export default function MemoryVerses() {
 
     setPlayingId(id);
     
-    // Replace colon and prepend 'Book of' (e.g., Matthew 5:9 -> Book of Matthew chapter 5 verse 9)
-    const readableReference = reference.trim().replace(/^(.+?)\s+(\d+):(\d+.*)$/, 'Book of $1 chapter $2 verse $3');
-    const text = `${type}. ${readableReference}. ${scripture}`;
+    // Format reference for clear and professional reading
+    let processedReference = reference.trim();
+    // Replace dashes with ' to ' for verse ranges
+    processedReference = processedReference.replace(/-|–/g, ' to ');
+    
+    let finalReference = processedReference;
+    const refMatch = processedReference.match(/^(.+?)\s+(\d+):(\d+.*)$/);
+    
+    if (refMatch) {
+      let book = refMatch[1];
+      const chapter = refMatch[2];
+      const verses = refMatch[3];
+      
+      const verseWord = verses.includes(' to ') ? 'verses' : 'verse';
+      
+      // Fix numbered books
+      if (book.startsWith('1 ')) book = book.replace('1 ', 'First ');
+      else if (book.startsWith('2 ')) book = book.replace('2 ', 'Second ');
+      else if (book.startsWith('3 ')) book = book.replace('3 ', 'Third ');
+      
+      if (book.toLowerCase() === 'psalm' || book.toLowerCase() === 'psalms') {
+        finalReference = `Psalm ${chapter}, ${verseWord} ${verses}`;
+      } else {
+        finalReference = `the Book of ${book}, chapter ${chapter}, ${verseWord} ${verses}`;
+      }
+    } else {
+      if (finalReference.startsWith('1 ')) finalReference = finalReference.replace('1 ', 'First ');
+      else if (finalReference.startsWith('2 ')) finalReference = finalReference.replace('2 ', 'Second ');
+      else if (finalReference.startsWith('3 ')) finalReference = finalReference.replace('3 ', 'Third ');
+    }
+
+    // Create a complete, professional, and smooth sentence
+    const text = `Here is the ${type}. It is taken from ${finalReference}. ${scripture}`;
     
     const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Configure voice properties for professional reading
+    utterance.rate = 0.85; // Slightly slower for better comprehension and professional tone
+    utterance.pitch = 1.0;
     
     // Try to find a male English voice
     const voices = window.speechSynthesis.getVoices();
@@ -185,7 +226,10 @@ export default function MemoryVerses() {
         
         {/* Daily Verse */}
         {verses.daily && (
-          <TiltCard className={styles.verseCard}>
+          <TiltCard 
+            className={`${styles.verseCard} ${playingId === 'daily' ? styles.verseCardActive : ''}`}
+            isActive={playingId === 'daily'}
+          >
             <div className={styles.verseHeader}>
               <div className={styles.verseTypeContainer}>
                 <span className={styles.verseType}>Verse of the Day</span>
@@ -204,7 +248,10 @@ export default function MemoryVerses() {
 
         {/* Weekly Verse */}
         {verses.weekly && (
-          <TiltCard className={styles.verseCard}>
+          <TiltCard 
+            className={`${styles.verseCard} ${playingId === 'weekly' ? styles.verseCardActive : ''}`}
+            isActive={playingId === 'weekly'}
+          >
             <div className={styles.verseHeader}>
               <div className={styles.verseTypeContainer}>
                 <span className={styles.verseType}>Verse of the Week</span>
@@ -223,7 +270,10 @@ export default function MemoryVerses() {
 
         {/* Monthly Verse */}
         {verses.monthly && (
-          <TiltCard className={styles.verseCard}>
+          <TiltCard 
+            className={`${styles.verseCard} ${playingId === 'monthly' ? styles.verseCardActive : ''}`}
+            isActive={playingId === 'monthly'}
+          >
             <div className={styles.verseHeader}>
               <div className={styles.verseTypeContainer}>
                 <span className={styles.verseType}>Verse of the Month</span>

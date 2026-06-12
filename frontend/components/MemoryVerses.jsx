@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Volume2 } from 'lucide-react'
 import styles from './MemoryVerses.module.css'
 
 function TiltCard({ children, className }) {
@@ -49,6 +50,54 @@ function TiltCard({ children, className }) {
 export default function MemoryVerses() {
   const [verses, setVerses] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [playingId, setPlayingId] = useState(null)
+  const audioRef = useRef(null)
+
+  const handlePlayTTS = (id, type, reference, scripture) => {
+    // Check if the browser supports Speech Synthesis
+    if (!('speechSynthesis' in window)) {
+      alert("Sorry, your browser doesn't support text to speech!");
+      return;
+    }
+
+    if (playingId === id) {
+      window.speechSynthesis.cancel();
+      setPlayingId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel(); // Stop any currently playing audio
+
+    setPlayingId(id);
+    
+    // Replace colon and prepend 'Book of' (e.g., Matthew 5:9 -> Book of Matthew chapter 5 verse 9)
+    const readableReference = reference.trim().replace(/^(.+?)\s+(\d+):(\d+.*)$/, 'Book of $1 chapter $2 verse $3');
+    const text = `${type}. ${readableReference}. ${scripture}`;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Try to find a male English voice
+    const voices = window.speechSynthesis.getVoices();
+    const maleVoice = voices.find(voice => 
+      voice.lang.startsWith('en') && 
+      (voice.name.toLowerCase().includes('male') || voice.name.toLowerCase().includes('david') || voice.name.toLowerCase().includes('mark') || voice.name.toLowerCase().includes('guy'))
+    );
+    
+    if (maleVoice) {
+      utterance.voice = maleVoice;
+    }
+
+    utterance.onend = () => {
+      setPlayingId(null);
+    };
+
+    utterance.onerror = (e) => {
+      console.error("Speech synthesis error", e);
+      setPlayingId(null);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
     async function fetchVerses() {
@@ -138,7 +187,15 @@ export default function MemoryVerses() {
         {verses.daily && (
           <TiltCard className={styles.verseCard}>
             <div className={styles.verseHeader}>
-              <span className={styles.verseType}>Verse of the Day</span>
+              <div className={styles.verseTypeContainer}>
+                <span className={styles.verseType}>Verse of the Day</span>
+                <span title="Click it to read aloud the verse" style={{ display: 'inline-flex' }}>
+                  <Volume2 
+                    className={playingId === 'daily' ? styles.ttsIconActive : styles.ttsIcon} 
+                    onClick={() => handlePlayTTS('daily', 'Verse of the Day', verses.daily.reference, verses.daily.scripture)}
+                  />
+                </span>
+              </div>
               <span className={styles.verseReference}>{verses.daily.reference}</span>
             </div>
             <p className={styles.verseScripture}>"{verses.daily.scripture}"</p>
@@ -149,7 +206,15 @@ export default function MemoryVerses() {
         {verses.weekly && (
           <TiltCard className={styles.verseCard}>
             <div className={styles.verseHeader}>
-              <span className={styles.verseType}>Verse of the Week</span>
+              <div className={styles.verseTypeContainer}>
+                <span className={styles.verseType}>Verse of the Week</span>
+                <span title="Click it to read aloud the verse" style={{ display: 'inline-flex' }}>
+                  <Volume2 
+                    className={playingId === 'weekly' ? styles.ttsIconActive : styles.ttsIcon} 
+                    onClick={() => handlePlayTTS('weekly', 'Verse of the Week', verses.weekly.reference, verses.weekly.scripture)}
+                  />
+                </span>
+              </div>
               <span className={styles.verseReference}>{verses.weekly.reference}</span>
             </div>
             <p className={styles.verseScripture}>"{verses.weekly.scripture}"</p>
@@ -160,7 +225,15 @@ export default function MemoryVerses() {
         {verses.monthly && (
           <TiltCard className={styles.verseCard}>
             <div className={styles.verseHeader}>
-              <span className={styles.verseType}>Verse of the Month</span>
+              <div className={styles.verseTypeContainer}>
+                <span className={styles.verseType}>Verse of the Month</span>
+                <span title="Click it to read aloud the verse" style={{ display: 'inline-flex' }}>
+                  <Volume2 
+                    className={playingId === 'monthly' ? styles.ttsIconActive : styles.ttsIcon} 
+                    onClick={() => handlePlayTTS('monthly', 'Verse of the Month', verses.monthly.reference, verses.monthly.scripture)}
+                  />
+                </span>
+              </div>
               <span className={styles.verseReference}>{verses.monthly.reference}</span>
             </div>
             <p className={styles.verseScripture}>"{verses.monthly.scripture}"</p>

@@ -109,7 +109,7 @@ export default function MemoryVerses() {
     }
 
     // Create a complete, professional, and smooth sentence
-    const text = `Here is the ${type}. It is taken from ${finalReference}. ${scripture}`;
+    const text = `${type}. It is taken from ${finalReference}. ${scripture} Amen.`;
     
     const utterance = new SpeechSynthesisUtterance(text);
     
@@ -129,12 +129,15 @@ export default function MemoryVerses() {
     }
 
     utterance.onend = () => {
-      setPlayingId(null);
+      setPlayingId(currentId => currentId === id ? null : currentId);
     };
 
     utterance.onerror = (e) => {
-      console.error("Speech synthesis error", e);
-      setPlayingId(null);
+      // 'canceled' or 'interrupted' is expected when another verse is clicked
+      if (e.error !== 'canceled' && e.error !== 'interrupted') {
+        console.error("Speech synthesis error:", e.error, e);
+      }
+      setPlayingId(currentId => currentId === id ? null : currentId);
     };
 
     window.speechSynthesis.speak(utterance);

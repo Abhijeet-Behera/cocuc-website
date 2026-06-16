@@ -6,6 +6,7 @@ import LatestVideos from '@/components/LatestVideos'
 import UpcomingEvents from '@/components/UpcomingEvents'
 import ChurchesMapSection from '@/components/ChurchesMapSection'
 import PrayerZonesMapSection from '@/components/PrayerZonesMapSection'
+import ChatBotWidget from '@/components/ChatBotWidget'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -50,6 +51,8 @@ export default function Home() {
           <LatestBlogs />
         </Reveal>
       </section>
+      
+      <ChatBotWidget />
     </div>
   )
 }

@@ -100,7 +100,12 @@ export default function ChatBotWidget() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      let backendUrl = '/backend';
+      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        backendUrl = 'http://localhost:8000';
+      }
+      
+      const response = await fetch(`${backendUrl}/chat.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage.content, history: messages.filter(m => !m.isSpam) }),

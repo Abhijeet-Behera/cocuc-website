@@ -55,3 +55,9 @@ coverage/
 update.zip
 build.zip
 backend.zip
+
+# Ignore all environment files
+.env*
+
+# Allow safe template files
+!.env.example

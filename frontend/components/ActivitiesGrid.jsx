@@ -9,105 +9,244 @@ export default function ActivitiesGrid() {
 
   const activities = [
     {
-      title: 'SERVICE TIMING',
+      title: 'Service Timing',
       link: '/about/service-times',
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/2836/2836790.png',
-      badgeIcon: '🍂'
+      description: (
+        <div className={`${styles.scheduleInfo} ${styles.compactSchedule}`}>
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              English Worship
+            </span>
+            <span className={styles.scheduleTime}>
+              10:00 am
+            </span>
+          </div>
+
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              Odia Worship
+            </span>
+            <span className={styles.scheduleTime}>
+              4:30 pm
+            </span>
+          </div>
+
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              C.S. Pur Worship Center
+            </span>
+            <span className={styles.scheduleTime}>
+              10:00 am
+            </span>
+          </div>
+
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              Kalinga Vihar Worship Center
+            </span>
+            <span className={styles.scheduleTime}>
+              10:00 am
+            </span>
+          </div>
+
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              Sundarpada Worship Center
+            </span>
+            <span className={styles.scheduleTime}>
+              10:00 am
+            </span>
+          </div>
+        </div>
+      ),
+
+      imageUrl:
+        'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=1200&auto=format&fit=crop',
+      alt: 'Church interior with warm ambient lighting during a service',
     },
     {
-      title: 'SUNDAY SCHOOL',
+      title: 'Sunday School',
       link: '#',
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/4243/4243161.png',
-      badgeIcon: '📚'
+      description: (
+        <div className={`${styles.scheduleInfo} ${styles.sundaySchedule}`}>
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              Every Sunday Morning
+            </span>
+
+            <span className={styles.scheduleTime}>
+              8:00 am – 9:45 am
+            </span>
+          </div>
+
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              Extended English Sunday School
+            </span>
+
+            <span className={styles.scheduleTime}>
+              10:00 am onwards
+            </span>
+          </div>
+        </div>
+      ),
+
+      imageUrl:
+        'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1200&auto=format&fit=crop',
+      alt: 'Children studying together in a bright classroom',
     },
     {
-      title: 'SUNDAY WORSHIP',
+      title: 'Counselling and Baptism',
       link: '#',
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/10002/10002951.png',
-      badgeIcon: '✝️'
+      description: (
+        <div className={`${styles.scheduleInfo} ${styles.sundaySchedule}`}>
+          <div className={styles.scheduleRow}>
+            <span className={styles.scheduleLabel}>
+              Baptism Class
+            </span>
+
+            <span className={styles.scheduleTime}>
+              Saturday · 4:30 pm
+            </span>
+          </div>
+        </div>
+      ),
+
+      imageUrl:
+        'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=1200&auto=format&fit=crop',
+      alt: 'Counselling and baptism ministry',
     },
     {
-      title: 'CE UNION',
+      title: 'CE Union',
       link: '#',
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/2916/2916298.png',
-      badgeIcon: '🎧'
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Growing together through faith and service.',
+
+      imageUrl:
+        'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1200&auto=format&fit=crop',
+      alt: 'Group of young people gathered for Christian Endeavour fellowship',
     },
     {
       title: "Women's Fellowship",
       link: '#',
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/4392/4392500.png',
-      badgeIcon: '⭐'
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Building faith, connection and encouragement.',
+
+      imageUrl:
+        'https://images.unsplash.com/photo-1609234656388-0ff363383899?q=80&w=1200&auto=format&fit=crop',
+      alt: 'Women gathered together in a warm fellowship setting',
     },
     {
-      title: 'YOUTH FELLOWSHIP',
+      title: 'Youth Fellowship',
       link: '#',
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/3233/3233483.png',
-      badgeIcon: '📊'
-    }
-  ]
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inspiring young people through faith and community.',
 
+      imageUrl:
+        'https://images.unsplash.com/photo-1523803326055-9729b9e02e5a?q=80&w=1200&auto=format&fit=crop',
+      alt: 'Young people worshipping together at a youth gathering',
+    },
+  ];
   useEffect(() => {
-    // Use IntersectionObserver for scroll animation — no GSAP dependency,
-    // so this never causes invisible cards even if GSAP crashes elsewhere.
-    const items = containerRef.current?.querySelectorAll(`.${styles.gridItem}`)
-    if (!items || items.length === 0) return
+    gsap.registerPlugin(ScrollTrigger)
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry, i) => {
-          if (entry.isIntersecting) {
-            const delay = Array.from(items).indexOf(entry.target) * 120
-            setTimeout(() => {
-              entry.target.classList.add(styles.gridItemVisible)
-            }, delay)
-            observer.unobserve(entry.target)
+    const ctx = gsap.context(() => {
+      // Stagger animate cards on scroll
+      gsap.fromTo(`.${styles.gridItem}`,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: `.${styles.grid}`,
+            start: "top 80%",
+            once: true
           }
-        })
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    )
+        }
+      )
+    }, containerRef)
 
-    items.forEach(item => observer.observe(item))
-    return () => observer.disconnect()
+    return () => ctx.revert()
   }, [])
 
   return (
     <div className={styles.gridContainer} ref={containerRef}>
       <div className={styles.grid}>
         {activities.map((item, index) => (
-          <div 
-            key={index} 
-            className={styles.gridItem}
-          >
-            {/* Card Graphic */}
-            <div className={styles.cardGraphic}>
-              {/* Overlay to fade background slightly */}
-              <div className={styles.cardOverlay}></div>
-              
-              {/* Top Circular Badge */}
-              <div className={styles.badge}>
-                {item.badgeIcon}
-              </div>
+          <div key={index} className={styles.gridItem}>
+            {/* Full-bleed background image */}
+            <img
+              src={item.imageUrl}
+              alt={item.alt}
+              className={styles.cardImage}
+              loading="lazy"
+            />
 
-              {/* Center Logo Box */}
-              <div className={styles.centerBox}>
-                <img src={item.iconUrl} alt={item.title} className={styles.centerBoxImg} />
-              </div>
+            {/* Dark gradient overlay */}
+            <div className={styles.cardOverlay} />
+
+            {/* Icon badge */}
+            <div className={styles.badge}>
+              <img src={item.iconUrl} alt="" aria-hidden="true" />
             </div>
 
-            {/* Content Container (For Flex Mobile Layout) */}
-            <div className={styles.itemContent}>
-              <h3 className={styles.itemTitle}>
-                {item.title}
+            {/* Content: title + description + CTA */}
+            <div
+              className={`${styles.cardContent} ${item.title === 'Service Timing'
+                ? styles.serviceTimingContent
+                : ''
+                }`}
+            >
+              <h3
+                className={`${styles.itemTitle} ${[
+                  'Counselling and Baptism',
+                  "Women's Fellowship",
+                  'Youth Fellowship',
+                ].includes(item.title)
+                  ? styles.longTitle
+                  : ''
+                  }`}
+                aria-label={item.title}
+              >
+                {item.title.split(' ').map((word, wordIndex) => (
+                  <span
+                    key={`${word}-${wordIndex}`}
+                    className={
+                      wordIndex === 0
+                        ? styles.titleSolid
+                        : styles.titleOutline
+                    }
+                  >
+                    {word}
+                  </span>
+                ))}
               </h3>
-              
+
+              <div className={styles.cardDescription}>
+                {item.description}
+              </div>
+
               <Link href={item.link} className={styles.itemLink}>
-                READ MORE
+                Read More
               </Link>
             </div>
+
+            {/* Full-card accessible link overlay */}
+            <Link
+              href={item.link}
+              className={styles.cardLinkOverlay}
+              tabIndex={0}
+              aria-label={`Learn more about ${item.title}`}
+            >
+              {item.title}
+            </Link>
           </div>
         ))}
       </div>
     </div>
+
   )
 }

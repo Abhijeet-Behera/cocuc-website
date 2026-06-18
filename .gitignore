@@ -4,13 +4,12 @@ node_modules/
 .pnp.js
 
 # Environment variables
+# Environment files containing real credentials
 .env
-.env.*.local
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env.production
 
 # Next.js
 .next/
@@ -56,3 +55,9 @@ coverage/
 update.zip
 build.zip
 backend.zip
+
+# Ignore all environment files
+.env*
+
+# Allow safe template files
+!.env.example

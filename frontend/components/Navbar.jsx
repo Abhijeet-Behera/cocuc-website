@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
@@ -28,67 +29,88 @@ export default function Navbar() {
       }
     }
     window.addEventListener('scroll', handleScroll)
-    
-    // Initial nav animation
-    gsap.fromTo(navRef.current,
-      { y: -100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }
-    )
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   useGSAP(() => {
-    if (typeof window !== 'undefined' && window.innerWidth <= 1024 && menuRef.current) {
-      if (mobileMenuOpen) {
-        gsap.to(menuRef.current, { 
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-          autoAlpha: 1,
-          duration: 0.6, 
-          ease: 'power3.out',
-          overwrite: true
-        });
-      } else {
-        gsap.to(menuRef.current, { 
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-          autoAlpha: 0,
-          duration: 0.4, 
-          ease: 'power3.inOut',
-          overwrite: true
-        });
+    // Initial nav animation
+    gsap.fromTo(navRef.current,
+      { y: -100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: 'power3.out', clearProps: 'transform,opacity' }
+    )
+  }, { scope: navRef, dependencies: [] })
+
+  useGSAP(() => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth <= 1024 && menuRef.current) {
+        if (mobileMenuOpen) {
+          gsap.to(menuRef.current, { 
+            clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            autoAlpha: 1,
+            duration: 0.6, 
+            ease: 'power3.out',
+            overwrite: true
+          });
+        } else {
+          gsap.to(menuRef.current, { 
+            clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+            autoAlpha: 0,
+            duration: 0.4, 
+            ease: 'power3.inOut',
+            overwrite: true
+          });
+        }
+      } else if (menuRef.current) {
+         gsap.set(menuRef.current, { clearProps: 'all' });
       }
-    } else if (menuRef.current) {
-       gsap.set(menuRef.current, { clearProps: 'all' });
     }
-  }, { dependencies: [mobileMenuOpen], scope: navRef, revertOnUpdate: false })
+  }, { dependencies: [mobileMenuOpen], scope: navRef })
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        if (mobileMenuOpen) setMobileMenuOpen(false);
+        if (menuRef.current) gsap.set(menuRef.current, { clearProps: 'all' });
+      } else {
+        if (!mobileMenuOpen && menuRef.current) {
+            gsap.set(menuRef.current, { autoAlpha: 0, clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' });
+        }
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    // Call once on mount to ensure correct initial state
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mobileMenuOpen]);
 
   const aboutMenu = [
     { name: 'History', href: '/about/history' },
     { name: 'What We Believe', href: '/about/what-we-believe' },
     { name: 'Leadership Team', href: '/about/leadership' },
     { name: 'Secretary’s Corner', href: '#' },
-    { name: 'Pastor’s Note', href: '#' },
+    { name: 'Pastor’s Note', href: '/pastors-note' },
     { name: 'Celebrations', href: '#' },
     { name: 'Service Timing', href: '/about/service-times' },
     { name: 'Contact Us', href: '#' },
   ]
 
   const activitiesMenu = [
-    { name: 'Satellite Churches', href: '#' },
-    { name: 'Sunday Worship', href: '#' },
-    { name: 'Sunday School', href: '#' },
-    { name: 'C.E Union', href: '#' },
-    { name: 'Baptism Classes', href: '#' },
-    { name: 'Counselling', href: '#' },
-    { name: 'Women’s Fellowship', href: '#' },
-    { name: 'Youth Fellowship', href: '#' },
+    { name: 'Satellite Churches', href: '/activities/satellite-churches' },
+    { name: 'Sunday Worship', href: '/activities/sunday-worship' },
+    { name: 'Sunday School', href: '/activities/sunday-school' },
+    { name: 'C.E Union', href: '/activities/ce-union' },
+    { name: 'Baptism Classes', href: '/activities/baptism-classes' },
+    { name: 'Counselling', href: '/activities/counselling' },
+    { name: 'Women’s Fellowship', href: '/activities/womens-fellowship' },
+    { name: 'Youth Fellowship', href: '/activities/youth-fellowship' },
   ]
 
   const prayerMenu = [
-    { name: 'Morning Prayer', href: '#' },
-    { name: 'Monday Prayer', href: '#' },
-    { name: 'Thursday Cottage Prayer', href: '#' },
-    { name: 'Second Saturday Prayer', href: '#' },
+    { name: 'Morning Prayer', href: '/prayer/morning-prayer' },
+    { name: 'Monday Prayer', href: '/prayer/monday-prayer' },
+    { name: 'Thursday Cottage Prayer', href: '/prayer/thursday-cottage-prayer' },
+    { name: 'Second Saturday Prayer', href: '/prayer/second-saturday-prayer' },
     { name: 'United Chain Prayer', href: '#' },
   ]
 
@@ -118,11 +140,11 @@ export default function Navbar() {
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <div className={styles.logoWrapper}>
-            <Image 
-              src="/church-logo.png" 
-              alt="Church of Christ Union Church Bhubaneswar Logo" 
-              width={48} 
-              height={48} 
+            <Image
+              src="/church-logo.png"
+              alt="Church of Christ Union Church Bhubaneswar Logo"
+              width={48}
+              height={48}
               className={styles.logoImage}
               priority
             />
@@ -132,8 +154,8 @@ export default function Navbar() {
             </div>
           </div>
         </Link>
-        
-        <button 
+
+        <button
           className={`${styles.hamburger} ${isNavSolid ? styles.hamburgerScrolled : styles.hamburgerTransparent}`}
           onClick={() => { setMobileMenuOpen(!mobileMenuOpen); setOpenDropdown(null) }}
           aria-label="Toggle mobile menu"
@@ -181,22 +203,22 @@ export default function Navbar() {
 
 function SocialIcon({ href, children, scrolled, title }) {
   return (
-    <a 
-      href={href} 
-      target="_blank" 
-      rel="noopener noreferrer" 
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       title={title}
       className={`${styles.socialIcon} ${scrolled ? styles.socialIconScrolled : styles.socialIconTransparent}`}
     >
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="20" 
-        height="20" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
         strokeLinejoin="round"
       >
         {children}
@@ -207,42 +229,72 @@ function SocialIcon({ href, children, scrolled, title }) {
 
 function NavLink({ href, children, scrolled, onClick }) {
   return (
-    <Link href={href} className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`} onClick={onClick}>
-      {children}
-    </Link>
+    <motion.div
+      whileHover={{ scale: 1.05, y: -2 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+    >
+      <Link href={href} className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`} onClick={onClick}>
+        {children}
+      </Link>
+    </motion.div>
   )
 }
 
 function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown, setMobileMenuOpen }) {
+  const [isHovered, setIsHovered] = useState(false)
   const isMobileOpen = openDropdown === title
 
   const handleToggle = () => {
-    // Toggle: if already open close it, else open this one (closes others)
     setOpenDropdown(isMobileOpen ? null : title)
   }
 
   return (
-    <div className={styles.dropdownContainer}>
-      <div 
+    <div 
+      className={styles.dropdownContainer}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <motion.div
         className={`${styles.dropdownToggle} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`}
-        onClick={handleToggle} /* Mobile: JS accordion toggle */
+        onClick={handleToggle}
+        whileHover={{ scale: 1.05, y: -2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         {title}
-        <span 
+        <span
           className={styles.dropdownChevron}
-          style={{ transform: isMobileOpen ? 'rotate(180deg)' : undefined }}
+          style={{ transform: (isMobileOpen || isHovered) ? 'rotate(180deg)' : undefined }}
         >▼</span>
-      </div>
-      
-      <div className={`${styles.dropdownMenu} ${isMobileOpen ? styles.dropdownMenuOpen : ''}`}>
-        {items.map((item, i) => (
-          <Link key={i} href={item.href} className={styles.dropdownItem}
-            onClick={() => { setOpenDropdown(null); if(setMobileMenuOpen) setMobileMenuOpen(false); }} /* Close on link click */
+      </motion.div>
+
+      <AnimatePresence>
+        {(isHovered || isMobileOpen) && (
+          <motion.div 
+            className={`${styles.dropdownMenu} ${isMobileOpen ? styles.dropdownMenuOpen : ''}`}
+            initial={{ opacity: 0, y: 15, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: 10, x: "-50%" }}
+            transition={{ type: 'spring', bounce: 0.15, duration: 0.4 }}
           >
-            {item.name}
-          </Link>
-        ))}
-      </div>
+            {/* Invisible bridge to prevent hover loss when moving mouse across the gap */}
+            <div className={styles.dropdownHoverBridge} />
+            {items.map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.04 + 0.05, type: 'spring', stiffness: 300, damping: 24 }}
+              >
+                <Link href={item.href} className={styles.dropdownItem}
+                  onClick={() => { setOpenDropdown(null); if (setMobileMenuOpen) setMobileMenuOpen(false); }}
+                >
+                  {item.name}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

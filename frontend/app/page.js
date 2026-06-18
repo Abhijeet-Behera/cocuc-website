@@ -6,6 +6,7 @@ import LatestVideos from '@/components/LatestVideos'
 import UpcomingEvents from '@/components/UpcomingEvents'
 import ChurchesMapSection from '@/components/ChurchesMapSection'
 import PrayerZonesMapSection from '@/components/PrayerZonesMapSection'
+import ChatBotWidget from '@/components/ChatBotWidget'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -43,10 +44,15 @@ export default function Home() {
       {/* Blogs & Updates */}
       <section className="section container">
         <Reveal delay={0.25}>
-          <h2 className="section-title">News & Updates</h2>
+          <h2 className="section-title-elegant">
+            <span className="title-normal">News & </span>
+            <em className="title-italic">Updates</em>
+          </h2>
           <LatestBlogs />
         </Reveal>
       </section>
+      
+      <ChatBotWidget />
     </div>
   )
 }

@@ -25,7 +25,8 @@
   flex-direction: column;
 }
 
-.verseCard:hover {
+.verseCard:hover,
+.verseCardActive {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
@@ -80,6 +81,41 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.verseTypeContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ttsIcon {
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 16px;
+  height: 16px;
+}
+
+.ttsIcon:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.05);
+}
+
+.ttsIconActive {
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform: scale(1.1);
+  width: 16px;
+  height: 16px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1.1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1.1); opacity: 0.8; }
 }
 
 /* Responsive Design */

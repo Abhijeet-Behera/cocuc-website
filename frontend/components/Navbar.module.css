@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 9998;
   padding: 1.5rem 0;
   transition: all 0.3s ease;
 }
@@ -248,69 +248,52 @@
 /* Dropdown Panel */
 .dropdownMenu {
   position: absolute;
-  top: 100%; /* NO gap — must be flush or mouse leaves the hover zone */
+  top: calc(100% + 14px); /* The subtle gap requested */
   left: 50%;
-  transform: translateX(-50%) translateY(-8px);
-  background: #fff;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
-  border-radius: 14px;
-  min-width: 220px;
-  padding: 0.6rem;
-  padding-top: 1rem; /* Visual gap created with padding, not position gap */
+  background: #ffffff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08), 0 2px 10px rgba(0,0,0,0.04);
+  border-radius: 0px; /* Sharp edges */
+  min-width: 240px;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 2px;
   z-index: 200;
-  border: 1px solid rgba(0,0,0,0.05);
-
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              visibility 0.25s;
-  pointer-events: none;
+  border: none; /* Removed border as requested */
 }
 
-/* Small arrow pointer above items */
-.dropdownMenu::before {
-  content: '';
+/* Invisible bridge to keep hover active across the 14px gap */
+.dropdownHoverBridge {
   position: absolute;
-  top: 6px;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  background: #fff;
-  border-left: 1px solid rgba(0,0,0,0.05);
-  border-top: 1px solid rgba(0,0,0,0.05);
-  transform: translateX(-50%) rotate(45deg);
-  border-radius: 2px 0 0 0;
+  top: -24px;
+  left: 0;
+  width: 100%;
+  height: 24px;
+  background: transparent;
 }
 
-.dropdownContainer:hover .dropdownMenu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-  pointer-events: all;
-}
-
-/* Dropdown Items — clean full-width pill hover */
+/* Dropdown Items — premium crisp hover */
 .dropdownItem {
   padding: 0.6rem 1rem;
-  color: var(--color-text);
-  font-size: 0.88rem;
+  color: #333333;
+  font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.18s ease, color 0.18s ease, padding-left 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+  transform-origin: center center;
   font-family: var(--font-body);
-  border-radius: 8px;
+  border-radius: 4px; /* Slight rounding inside the sharp menu looks premium */
   display: block;
   line-height: 1.4;
 }
 
 .dropdownItem:hover {
-  background: #f5f0ff; /* Very soft warm lavender — not harsh, feels premium */
-  color: var(--color-primary);
-  padding-left: 1.3rem; /* Subtle indent to feel tactile */
+  background: rgba(139, 0, 0, 0.06); /* Clean, subtle red background */
+  color: var(--color-primary); /* Red color on hover */
+  transform: scale(1.04); /* Slight zoom in from all sides */
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.08); /* Pop up shadow effect */
+  position: relative;
+  z-index: 2;
 }
 
 .hamburger {

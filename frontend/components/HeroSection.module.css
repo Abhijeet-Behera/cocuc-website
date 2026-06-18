@@ -422,3 +422,7 @@
     font-size: 2.2rem;
   }
 }
+
+.noTransition {
+  transition: none !important;
+}

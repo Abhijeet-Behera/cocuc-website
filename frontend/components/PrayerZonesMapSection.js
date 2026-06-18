@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import { Search, MapPin, Map } from 'lucide-react';
 
 const PRAYER_ZONES = [
@@ -40,13 +38,10 @@ const BhubaneswarMapComponent = dynamic(() => import('./BhubaneswarMapComponent'
 
 export default function PrayerZonesMapSection() {
   const [activeZoneId, setActiveZoneId] = useState(null);
-  const [hoveredZoneId, setHoveredZoneId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const mapContainerRef = useRef(null);
-  const listContainerRef = useRef(null);
-  const cardsRef = useRef([]);
 
   const filteredZones = useMemo(() => {
     if (!searchQuery) return PRAYER_ZONES;
@@ -56,22 +51,6 @@ export default function PrayerZonesMapSection() {
       zone.areas.toLowerCase().includes(lowerQuery)
     );
   }, [searchQuery]);
-
-  useGSAP(() => {
-    if (cardsRef.current.length > 0) {
-      gsap.fromTo(cardsRef.current,
-        { opacity: 0, y: 20 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.4,
-          stagger: 0.05,
-          ease: 'power2.out',
-          clearProps: 'all'
-        }
-      );
-    }
-  }, { scope: listContainerRef, dependencies: [filteredZones] });
 
   const handleClosePopup = (zoneId) => {
     setActiveZoneId((prev) => (prev === zoneId ? null : prev));
@@ -95,22 +74,16 @@ export default function PrayerZonesMapSection() {
   return (
     <section className="section container" style={{ padding: '60px 20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 className="section-title">COCUC, Prayer Zones</h2>
+        <h2 className="section-title-elegant">
+          <span className="title-normal">COCUC, </span>
+          <em className="title-italic">Prayer Zones</em>
+        </h2>
         <p style={{ color: '#666', marginTop: '10px' }}>Find your local prayer zone by searching your area or selecting on the map.</p>
       </div>
 
       {/* Search Bar */}
       <div style={{ maxWidth: '600px', margin: '0 auto 2rem auto', position: 'relative', zIndex: 50 }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: '#fff',
-          borderRadius: '30px',
-          padding: '10px 20px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-          border: '1px solid #eee',
-          transition: 'box-shadow 0.3s ease'
-        }}>
+        <div className="search-bar-wrapper">
           <Search size={20} color="#800000" style={{ marginRight: '10px', flexShrink: 0 }} />
           <input
             type="text"
@@ -220,7 +193,7 @@ export default function PrayerZonesMapSection() {
         </div>
 
         {/* Location List Cards */}
-        <div ref={listContainerRef} style={{
+        <div style={{
           display: 'flex',
           flexDirection: 'column',
         }}>
@@ -237,107 +210,14 @@ export default function PrayerZonesMapSection() {
           </h3>
 
           <div className="pz-list-scroll custom-scrollbar">
-            {PRAYER_ZONES.map((zone, index) => {
-              const isActive = activeZoneId === zone.id;
-              const isHovered = hoveredZoneId === zone.id && !isActive;
-
-              return (
-                <div
-                  ref={el => cardsRef.current[index] = el}
-                  key={zone.id}
-                  className="zone-card"
-                  style={{
-                    background: isActive ? '#fffbfa' : '#fff',
-                    borderRadius: '24px',
-                    padding: '18px 20px',
-                    cursor: 'pointer',
-                    border: `1px solid ${isActive ? 'rgba(128,0,0,0.25)' : (isHovered ? 'rgba(128,0,0,0.1)' : 'rgba(0,0,0,0.05)')}`,
-                    boxShadow: isActive
-                      ? '0 12px 30px rgba(128,0,0,0.12)'
-                      : (isHovered ? '0 10px 24px rgba(0,0,0,0.06)' : '0 2px 8px rgba(0,0,0,0.03)'),
-                    transform: isActive ? 'translateY(-4px)' : (isHovered ? 'translateY(-4px)' : 'translateY(0)'),
-                    transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
-                    position: 'relative',
-                    overflow: 'visible' // Allow tooltip to show outside
-                  }}
-                  onClick={() => handleZoneClick(zone.id)}
-                  onMouseEnter={() => setHoveredZoneId(zone.id)}
-                  onMouseLeave={() => setHoveredZoneId(null)}
-                >
-                  {/* Background Overlay */}
-                  <div style={{
-                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                    background: 'linear-gradient(to right, #fff4f4, #ffffff)',
-                    transformOrigin: 'left', transform: isHovered ? 'scaleX(1)' : 'scaleX(0)',
-                    transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
-                    zIndex: 0, borderRadius: 'inherit'
-                  }}></div>
-
-                  {/* Tooltip */}
-                  <div style={{
-                    position: 'absolute', top: '50%', right: '15px', marginTop: '-15px',
-                    background: 'rgba(128,0,0,0.9)', color: '#fff', padding: '6px 14px',
-                    borderRadius: '20px', fontSize: '0.75rem', fontWeight: '600',
-                    boxShadow: '0 4px 12px rgba(128,0,0,0.2)', backdropFilter: 'blur(4px)',
-                    opacity: isHovered ? 1 : 0, transform: isHovered ? 'translateX(0)' : 'translateX(10px)',
-                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    zIndex: 10, pointerEvents: 'none', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px'
-                  }}>
-                    View Map
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px', position: 'relative', zIndex: 1, transition: 'padding 0.3s ease' }}>
-                    {/* Elegant circular icon */}
-                    <div style={{
-                      width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
-                      background: isActive ? '#800000' : (isHovered ? 'rgba(128,0,0,0.08)' : '#f5f5f5'),
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      boxShadow: isActive ? '0 4px 12px rgba(128,0,0,0.3)' : 'none',
-                      transition: 'all 0.3s ease'
-                    }}>
-                      <MapPin size={22} color={isActive ? '#fff' : (isHovered ? '#800000' : '#777')} strokeWidth={2} />
-                    </div>
-
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <h4 style={{
-                        margin: 0,
-                        color: isActive ? '#800000' : (isHovered ? '#600000' : '#222'),
-                        fontSize: '1rem',
-                        fontWeight: '700',
-                        letterSpacing: '0.01em',
-                        lineHeight: 1.2,
-                        marginBottom: '4px',
-                        transition: 'color 0.2s ease'
-                      }}>{zone.name}</h4>
-                      <p style={{
-                        margin: 0, fontSize: '0.8rem', color: '#777',
-                        lineHeight: 1.4,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                      }}>{zone.areas}</p>
-                    </div>
-
-                    {/* Arrow indicator */}
-                    <div style={{
-                      flexShrink: 0,
-                      width: '24px', height: '24px',
-                      borderRadius: '50%',
-                      background: isActive ? 'rgba(128,0,0,0.08)' : 'transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      transition: 'all 0.3s ease',
-                      transform: isActive ? 'translateX(2px)' : 'translateX(0)'
-                    }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isActive ? '#800000' : '#bbb'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M9 18l6-6-6-6"/>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+            {PRAYER_ZONES.map((zone) => (
+              <ZoneCard
+                key={zone.id}
+                zone={zone}
+                isActive={activeZoneId === zone.id}
+                onClick={() => handleZoneClick(zone.id)}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -378,5 +258,91 @@ export default function PrayerZonesMapSection() {
         }
       `}</style>
     </section>
+  );
+}
+
+function ZoneCard({ zone, isActive, onClick }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverState = isHovered && !isActive;
+
+  return (
+    <div
+      className="zone-card"
+      style={{
+        background: isActive ? '#fffbfa' : '#fff',
+        borderRadius: '14px',
+        padding: '16px 18px 16px 16px',
+        cursor: 'pointer',
+        border: `1px solid ${isActive ? 'rgba(128,0,0,0.25)' : (hoverState ? 'rgba(128,0,0,0.1)' : 'rgba(0,0,0,0.06)')}`,
+        boxShadow: isActive
+          ? '0 12px 30px rgba(128,0,0,0.12)'
+          : (hoverState ? '0 8px 24px rgba(128,0,0,0.08)' : '0 2px 8px rgba(0,0,0,0.03)'),
+        transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+        position: 'relative',
+        overflow: 'visible'
+      }}
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Background Overlay */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+        background: 'linear-gradient(to right, #fff4f4, #ffffff)',
+        opacity: hoverState ? 1 : 0,
+        transition: 'opacity 0.3s ease',
+        zIndex: 0, borderRadius: '14px'
+      }}></div>
+
+      {/* Clean inner content wrapper */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '15px', position: 'relative', zIndex: 1, transition: 'padding 0.3s ease' }}>
+        {/* Elegant circular icon */}
+        <div style={{
+          width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
+          background: isActive ? '#800000' : (hoverState ? 'rgba(128,0,0,0.08)' : '#f5f5f5'),
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: isActive ? '0 4px 12px rgba(128,0,0,0.3)' : 'none',
+          transition: 'all 0.3s ease'
+        }}>
+          <MapPin size={22} color={isActive ? '#fff' : (hoverState ? '#800000' : '#777')} strokeWidth={2} />
+        </div>
+
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <h4 style={{
+            margin: 0,
+            color: isActive ? '#800000' : (hoverState ? '#600000' : '#222'),
+            fontSize: '1rem',
+            fontWeight: '700',
+            letterSpacing: '0.01em',
+            lineHeight: 1.2,
+            marginBottom: '4px',
+            transition: 'color 0.2s ease'
+          }}>{zone.name}</h4>
+          <p style={{
+            margin: 0, fontSize: '0.8rem', color: '#777',
+            lineHeight: 1.4,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>{zone.areas}</p>
+        </div>
+
+        {/* Arrow indicator */}
+        <div style={{
+          flexShrink: 0,
+          width: '24px', height: '24px',
+          borderRadius: '50%',
+          background: isActive ? 'rgba(128,0,0,0.08)' : 'transparent',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          transform: isActive ? 'translateX(2px)' : 'translateX(0)'
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isActive ? '#800000' : '#bbb'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
   );
 }

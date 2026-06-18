@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -51,19 +51,23 @@ export default function BhubaneswarMapComponent({ zones = [], activeZoneId, onMa
     }
   }, [activeZoneId]);
 
-  const createCustomIcon = (name, id) => {
-    const isActive = id === activeZoneId;
-    return L.divIcon({
-      className: styles.markerIcon,
-      html: `
-        <div class="${styles.markerLabel} ${isActive ? styles.hiddenLabel : ''}" title="click to get details">${name}</div>
-        <img src="/map-pin.svg" class="${styles.pulsatingPin}" title="click to get details" alt="GPS Pin" />
-      `,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-      popupAnchor: [0, -50],
+  const icons = useMemo(() => {
+    const iconMap = {};
+    zones.forEach(zone => {
+      const isActive = zone.id === activeZoneId;
+      iconMap[zone.id] = L.divIcon({
+        className: styles.markerIcon,
+        html: `
+          <div class="${styles.markerLabel} ${isActive ? styles.hiddenLabel : ''}" title="click to get details">${zone.name}</div>
+          <img src="/map-pin.svg" class="${styles.pulsatingPin}" title="click to get details" alt="GPS Pin" />
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -50],
+      });
     });
-  };
+    return iconMap;
+  }, [zones, activeZoneId]);
 
   const renderCoordinators = (coordinatorsStr, mobileStr) => {
     if (!coordinatorsStr) return null;
@@ -115,7 +119,7 @@ export default function BhubaneswarMapComponent({ zones = [], activeZoneId, onMa
           <Marker
             key={zone.id}
             position={zone.coords}
-            icon={createCustomIcon(zone.name, zone.id)}
+            icon={icons[zone.id]}
             ref={(ref) => {
               if (ref) markerRefs.current[zone.id] = ref;
             }}

@@ -1,3 +1,5 @@
+/* ===== Activities Grid — Immersive Image Cards ===== */
+
 .gridContainer {
   padding: 4rem 0;
   overflow: hidden;
@@ -6,201 +8,596 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
+  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
+/* ---- Card Shell ---- */
 .gridItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   position: relative;
-  border-radius: 12px;
-  background: var(--color-white);
-  padding-bottom: 2rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border-radius: 14px;
   overflow: hidden;
 }
 
-.gridItem:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+.gridItem:hover,
+.gridItem:focus-within {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
 }
 
-.cardGraphic {
+/* ---- Full-bleed Image ---- */
+.cardImage {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 220px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-  background-image: url("https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2070&auto=format&fit=crop");
-  background-size: cover;
-  background-position: center;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition:
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, filter;
 }
 
+.gridItem:hover .cardImage,
+.gridItem:focus-within .cardImage {
+  transform: scale(1.06);
+  filter: brightness(0.72);
+}
+
+/* ---- Dark Gradient Overlay ---- */
 .cardOverlay {
   position: absolute;
-  top: 0;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.72) 0%,
+      rgba(0, 0, 0, 0.30) 45%,
+      rgba(0, 0, 0, 0.08) 100%);
+  z-index: 1;
+  transition: background 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.gridItem:hover .cardOverlay,
+.gridItem:focus-within .cardOverlay {
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.82) 0%,
+      rgba(0, 0, 0, 0.45) 50%,
+      rgba(0, 0, 0, 0.18) 100%);
+}
+
+/* ---- Content Layer (Title + Description + CTA) ---- */
+.cardContent {
+  position: absolute;
+  top: 50%;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.8));
-}
-
-.badge {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 45px;
-  height: 45px;
-  background-color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  color: var(--color-primary);
-  font-size: 1.2rem;
   z-index: 2;
-}
+  padding: 1.8rem;
 
-.centerBox {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 50%;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  z-index: 2;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 110px;
-  height: 110px;
-  transition: transform 0.4s ease;
-}
+  justify-content: flex-start;
 
-.gridItem:hover .centerBox {
-  transform: scale(1.1);
-}
-
-.centerBoxImg {
-  width: 55px;
-  height: 55px;
-  object-fit: contain;
-}
-
-.itemTitle {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--color-text);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 1.5rem;
   text-align: center;
-  padding: 0 1rem;
+  transform: translateY(-50%);
+
+  transition:
+    top 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.itemLink {
-  background-color: transparent;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-  padding: 0.6rem 2rem;
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.85rem;
+/* Move the content from the centre to the top */
+.gridItem:hover .cardContent,
+.gridItem:focus-within .cardContent {
+  top: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transform: translateY(0);
+}
+
+/* ---- Title ---- */
+.itemTitle {
+  width: 100%;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  font-family: var(--font-heading), "Arial Black", Arial, sans-serif;
+  font-size: clamp(2rem, 3vw, 3.4rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -1px;
+  text-align: center;
+  text-transform: uppercase;
+
+  transition:
+    font-size 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    line-height 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    letter-spacing 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Smaller initial title for cards containing long words */
+.longTitle {
+  width: calc(100% + 1.5rem);
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+
+  font-size: clamp(1.7rem, 2.3vw, 2.5rem);
+  line-height: 0.95;
+  letter-spacing: -2px;
+}
+
+.longTitle .titleSolid,
+.longTitle .titleOutline {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+
+  white-space: nowrap;
+  text-align: center;
+}
+
+.gridItem:hover .longTitle,
+.gridItem:focus-within .longTitle {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+
+  font-size: 1.05rem;
+  line-height: 1.15;
   letter-spacing: 0.5px;
-  transition: all 0.3s;
+}
+
+.titleSolid,
+.titleOutline {
+  display: block;
+  max-width: 100%;
+}
+
+.titleSolid {
+  color: #ffffff;
+  text-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.titleOutline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #ffffff;
+  text-stroke: 1.5px #ffffff;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* ---- Schedule Information ---- */
+.cardDescription {
+  width: 100%;
+  max-width: none;
+  align-self: stretch;
+  box-sizing: border-box;
+
+  margin: 0;
+  max-height: 0;
+  overflow: hidden;
+
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.55;
+  text-align: left;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+
+  transition:
+    opacity 350ms ease 120ms,
+    visibility 350ms ease 120ms,
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1) 120ms,
+    max-height 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    margin-top 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gridItem:hover .cardDescription,
+.gridItem:focus-within .cardDescription {
+  margin-top: 1rem;
+  max-height: 22rem;
+
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ---- Schedule Container ---- */
+.scheduleInfo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-sizing: border-box;
+}
+
+/* ---- Individual Schedule Box ---- */
+.scheduleRow {
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: center;
+  column-gap: 0.7rem;
+
+  padding: 0.65rem 0.9rem;
+
+  background: rgba(15, 15, 15, 0.55);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 6px;
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* ---- Worship Name ---- */
+.scheduleLabel {
+  min-width: 0;
+
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.1px;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Worship Timing ---- */
+.scheduleTime {
+  color: #ff4040;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+
+  text-align: right;
+  white-space: nowrap;
+  justify-self: end;
+}
+
+
+
+/* Sunday School: stacked label and time layout */
+.sundaySchedule {
+  gap: 0.75rem;
+}
+
+.sundaySchedule .scheduleRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.3rem;
+
+  min-height: 64px;
+  padding: 0.75rem 0.9rem;
+}
+
+.sundaySchedule .scheduleLabel {
+  font-size: 0.8rem;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.sundaySchedule .scheduleTime {
+  font-size: 1rem;
+  line-height: 1.2;
+  text-align: left;
+  justify-self: auto;
+  white-space: nowrap;
+}
+
+
+/* ---- CTA / Read More ---- */
+.itemLink {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  gap: 6px;
+
+  margin-top: 0;
+  max-height: 0;
+  overflow: hidden;
+
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  pointer-events: none;
+
+  transition:
+    opacity 450ms cubic-bezier(0.22, 1, 0.36, 1) 200ms,
+    visibility 450ms ease 200ms,
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1) 200ms,
+    margin-top 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    max-height 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 300ms ease;
+
+  position: relative;
+  padding: 0 1rem;
+  border-radius: 4px;
+  background-color: var(--color-primary);
+  width: fit-content;
+}
+
+.itemLink::after {
+  content: '→';
+  transition: transform 300ms ease;
+}
+
+.itemLink:hover::after {
+  transform: translateX(3px);
+}
+
+.gridItem:hover .itemLink,
+.gridItem:focus-within .itemLink {
+  margin-top: 0.9rem;
+  max-height: 3rem;
+  padding: 0.45rem 1rem;
+
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Compact layout for the Service Timing card */
+.compactSchedule {
+  gap: 0.45rem;
+}
+
+.compactSchedule .scheduleRow {
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+}
+
+.compactSchedule .scheduleLabel {
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.compactSchedule .scheduleTime {
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+/* Service Timing card only */
+.gridItem:hover .serviceTimingContent,
+.gridItem:focus-within .serviceTimingContent {
+  top: 0.4rem;
+}
+
+/* Increase only the timing values in Service Timing */
+.compactSchedule .scheduleTime {
+  font-size: 1.00rem;
+  line-height: 1.2;
 }
 
 .itemLink:hover {
-  background-color: var(--color-primary);
-  color: white;
-  box-shadow: 0 6px 15px rgba(128, 0, 0, 0.2);
+  background-color: var(--color-primary-dark);
 }
 
-/* Tablet Layout */
+.gridItem:hover .itemTitle,
+.gridItem:focus-within .itemTitle {
+  font-size: 1.25rem;
+  line-height: 1.15;
+  letter-spacing: 1.2px;
+  transform: translateY(0);
+}
+
+.gridItem:hover .titleOutline,
+.gridItem:focus-within .titleOutline {
+  color: #ffffff;
+  -webkit-text-stroke: 0 transparent;
+  text-stroke: 0 transparent;
+}
+
+/* Screenreader-friendly full-card link overlay */
+.cardLinkOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+
+.cardLinkOverlay:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: -3px;
+  border-radius: 14px;
+}
+
+/* ===== Responsive ===== */
+
+/* Tablet */
 @media (max-width: 992px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+
+  .gridItem {
+    aspect-ratio: 4 / 5;
   }
 }
 
-/* Mobile Layout */
+/* Mobile */
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.2rem;
     padding: 0 1rem;
   }
 
   .gridItem {
-    flex-direction: row;
-    padding-bottom: 0;
-    align-items: stretch;
-    height: 120px;
-    border-radius: 8px;
+    aspect-ratio: 16 / 10;
+    border-radius: 10px;
   }
 
-  .gridItem:hover {
-    transform: translateX(5px); /* Different hover effect for mobile horizontal card */
-  }
+  /* On mobile, always show content — no hover dependency */
+  .cardContent {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: 1.8rem;
 
-  .cardGraphic {
-    width: 120px;
-    height: 100%;
-    margin-bottom: 0;
-    border-radius: 8px 0 0 8px;
-  }
-
-  .centerBox {
-    width: 60px;
-    height: 60px;
-    padding: 0.8rem;
-  }
-
-  .centerBoxImg {
-    width: 30px;
-    height: 30px;
-  }
-
-  .badge {
-    display: none; /* Hide badge on mobile to save space */
-  }
-
-  .itemContent {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 0 1rem;
+    align-items: center;
+    justify-content: flex-start;
+
+    text-align: center;
+    transform: translateY(-50%);
+
+    transition:
+      top 500ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .itemTitle {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
+  .cardDescription {
+    width: 100%;
+    align-self: stretch;
+    margin: 0;
+    max-height: 0;
+    overflow: hidden;
+
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.55;
     text-align: left;
-    padding: 0;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px);
+
+    transition:
+      opacity 350ms ease 120ms,
+      visibility 350ms ease 120ms,
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1) 120ms,
+      max-height 500ms cubic-bezier(0.22, 1, 0.36, 1),
+      margin-top 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+
+
+
+  .cardDescription strong {
+    font-weight: 700;
+    color: #ffffff;
   }
 
   .itemLink {
-    padding: 0;
-    border: none;
-    background: none;
-    font-size: 0.8rem;
-    text-decoration: underline;
+    margin-top: 0.75rem;
+    max-height: 3rem;
+    padding: 0.35rem 0.8rem;
+
+    opacity: 1 !important;
+    visibility: visible;
+    transform: translateY(0) !important;
+    pointer-events: auto;
   }
 
-  .itemLink:hover {
-    background: none;
-    color: var(--color-primary-dark);
-    box-shadow: none;
+  /* Disable hover effects that interfere with scroll */
+  .gridItem:hover {
+    transform: none;
+  }
+
+  .gridItem:hover .cardImage {
+    transform: none;
+    filter: none;
+  }
+
+  .gridItem:hover .cardOverlay {
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.72) 0%,
+        rgba(0, 0, 0, 0.30) 45%,
+        rgba(0, 0, 0, 0.08) 100%);
+  }
+
+  .badge {
+    width: 40px;
+    height: 40px;
+    top: 12px;
+    left: 12px;
+  }
+
+  .badge img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .itemTitle {
+    font-size: 1.05rem;
+    line-height: 1.15;
+    letter-spacing: 1px;
+  }
+
+  .titleOutline {
+    color: #ffffff;
+    -webkit-text-stroke: 0 transparent;
+    text-stroke: 0 transparent;
+  }
+
+  .itemLink {
+    font-size: 0.75rem;
+  }
+
+  .cardLinkOverlay:focus-visible {
+    border-radius: 10px;
+  }
+}
+
+/* ===== Accessibility: Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+
+  .cardImage,
+  .cardOverlay,
+  .cardContent,
+  .cardDescription,
+  .gridItem,
+  .badge,
+  .itemLink,
+  .itemLink::after {
+    transition-duration: 0.01ms !important;
+  }
+
+  .gridItem:hover .cardImage,
+  .gridItem:focus-within .cardImage {
+    transform: none;
+  }
+
+  .gridItem:hover,
+  .gridItem:focus-within {
     transform: none;
   }
 }

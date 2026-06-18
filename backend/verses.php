@@ -5,21 +5,7 @@ header("Access-Control-Allow-Methods: GET");
 header("Content-Type: application/json; charset=UTF-8");
 
 // Parse .env file if it exists
-$envFile = __DIR__ . '/.env';
-if (file_exists($envFile)) {
-    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        list($name, $value) = explode('=', $line, 2);
-        $name = trim($name);
-        $value = trim($value);
-        if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
-            putenv(sprintf('%s=%s', $name, $value));
-            $_ENV[$name] = $value;
-            $_SERVER[$name] = $value;
-        }
-    }
-}
+require_once __DIR__ . '/env.php';
 
 $apiKey = getenv('GOOGLE_SHEETS_API_KEY');
 $spreadsheetId = getenv('MEMORY_VERSE_SPREADSHEET_ID');

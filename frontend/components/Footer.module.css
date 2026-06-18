@@ -33,6 +33,7 @@
     text-align: center;
     gap: 2.5rem;
   }
+
   .footerCol {
     align-items: center;
   }
@@ -83,6 +84,7 @@
     left: 50%;
     transform: translateX(-50%);
   }
+
   .footerCol:last-child .contactItem {
     flex-direction: column;
     align-items: center;
@@ -209,4 +211,5 @@
   .nowrapText {
     white-space: normal;
   }
+
 }

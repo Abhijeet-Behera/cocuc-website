@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,6 +14,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Footer() {
   const footerRef = useRef(null);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Refresh ScrollTrigger after a slight delay to allow page transitions to finish
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   useGSAP(() => {
     const ctx = gsap.context(() => {
@@ -80,7 +90,9 @@ export default function Footer() {
           <ul className={styles.footerList}>
             <li><Link href="/" className={styles.footerLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</Link></li>
             <li><Link href="/about" className={styles.footerLink}>About Us</Link></li>
-            <li><Link href="/blog" className={styles.footerLink}>Sermons & Blogs</Link></li>
+            
+            <li><Link href="/timings" className={styles.footerLink}>Timings</Link></li>
+
             <li><Link href="#contact" className={styles.footerLink}>Contact Us</Link></li>
           </ul>
         </div>
@@ -133,16 +145,6 @@ export default function Footer() {
                     <span>Locate on map</span>
                   </a>
                 </div>
-              </div>
-            </li>
-            <li className={styles.contactItem} style={{ marginTop: '0.5rem' }}>
-              <Clock size={18} className={styles.contactIcon} />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                <span className={styles.nowrapText}>Sunday Worship: 9:30 AM (E), 3:30 PM (O)</span>
-                <span>Sunday School: 8:00 AM</span>
-                <span>Women's Fellowship: 4:30 PM</span>
-                <span>Baptism Class: 4:00 PM</span>
-                <span>Youth Fellowship: 5:30 PM</span>
               </div>
             </li>
           </ul>

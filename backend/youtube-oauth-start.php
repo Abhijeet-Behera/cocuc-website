@@ -9,7 +9,8 @@ if (!file_exists($envPath)) {
     die('Environment file not found.');
 }
 
-$env = parse_ini_file($envPath);
+require_once __DIR__ . '/env_loader.php';
+$env = loadEnv($envPath);
 
 if (
     !$env ||
@@ -38,7 +39,7 @@ $params = [
     'state' => $state
 ];
 
-$authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query($params);
+$authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query($params, '', '&');
 
 header('Location: ' . $authUrl);
 exit;

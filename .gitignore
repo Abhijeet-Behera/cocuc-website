@@ -4,8 +4,8 @@ node_modules/
 .pnp.js
 
 # Environment variables
+# Environment files containing real credentials
 .env
-.env.*.local
 .env.local
 .env.development.local
 .env.test.local
@@ -54,3 +54,10 @@ coverage/
 *.db
 update.zip
 build.zip
+backend.zip
+
+# Ignore all environment files
+.env*
+
+# Allow safe template files
+!.env.example

@@ -1,0 +1,181 @@
+export const metadata = {
+  title: 'Sunday Worship | Church of Christ Union Church Bhubaneswar',
+  description:
+    'Join us every Sunday for our English and Odia worship services at Union Church, Bhubaneswar, and our satellite worship centres.',
+}
+
+export default function SundayWorshipPage() {
+  return (
+    <div>
+      {/* ── Hero Banner ── */}
+      <section
+        style={{
+          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
+          color: 'var(--color-white)',
+          padding: '160px 0 110px 0',
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Decorative cross watermark */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '28rem',
+            opacity: 0.04,
+            fontWeight: 900,
+            lineHeight: 1,
+            pointerEvents: 'none',
+            userSelect: 'none',
+            fontFamily: 'serif',
+          }}
+        >
+          ✝
+        </div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <p
+            style={{
+              fontSize: '0.85rem',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              opacity: 0.7,
+              marginBottom: '1rem',
+              fontFamily: 'var(--font-heading)',
+            }}
+          >
+            Activities
+          </p>
+          <h1
+            style={{
+              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 800,
+              marginBottom: '1.2rem',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Sunday Worship
+          </h1>
+          <p
+            style={{
+              fontSize: '1.15rem',
+              opacity: 0.85,
+              maxWidth: '580px',
+              margin: '0 auto',
+              lineHeight: 1.7,
+            }}
+          >
+            Gathering together in the name of Christ — every Sunday, across all our centres.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Content ── */}
+      <section className="section">
+        <div
+          className="container"
+          style={{ maxWidth: '860px', margin: '0 auto' }}
+        >
+          {/* Service Times Card Row */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '1.25rem',
+              marginBottom: '3.5rem',
+            }}
+          >
+            {[
+              { label: 'English Service', time: '10:00 AM', loc: 'Union Church' },
+              { label: 'Odia Service', time: '3:30 PM', loc: 'Union Church' },
+              { label: 'Satellite Centres', time: '9:30 AM', loc: 'C.S. Pur · Kalinga Vihar · Sundarpada' },
+            ].map((s) => (
+              <div
+                key={s.label}
+                style={{
+                  background: 'var(--color-white)',
+                  border: '1px solid rgba(128,0,0,0.12)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '1.5rem 1.25rem',
+                  textAlign: 'center',
+                  boxShadow: 'var(--shadow-sm)',
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-primary)',
+                    fontWeight: 700,
+                    marginBottom: '0.4rem',
+                  }}
+                >
+                  {s.label}
+                </p>
+                <p
+                  style={{
+                    fontSize: '1.6rem',
+                    fontWeight: 800,
+                    color: 'var(--color-primary-dark)',
+                    fontFamily: 'var(--font-heading)',
+                    marginBottom: '0.3rem',
+                  }}
+                >
+                  {s.time}
+                </p>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>{s.loc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Main text */}
+          <div
+            style={{
+              background: 'var(--color-white)',
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: 'var(--shadow-sm)',
+              padding: 'clamp(2rem, 5vw, 3.5rem)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              fontSize: '1.05rem',
+              color: 'var(--color-text-muted)',
+              lineHeight: 1.85,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem',
+            }}
+          >
+            <p>
+              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>3:30 PM</strong> (w.e.f. 4th November 2018). Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>9:30 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
+            </p>
+
+            <div
+              style={{
+                borderLeft: '3px solid var(--color-primary)',
+                paddingLeft: '1.25rem',
+                fontStyle: 'italic',
+                color: 'var(--color-text)',
+              }}
+            >
+              Lord&rsquo;s Supper is observed in the 1st week here in Union Church. It is observed in the 2nd week in C.S. Pur, 3rd week in Kalinga Vihar Worship centre and 4th week in the Sundarpada Worship centre. Both our Associate Pastors conduct the Holy Communion on an alternate basis every month.
+            </div>
+
+            <p>
+              Besides our Associate Pastors, <strong style={{ color: 'var(--color-text)' }}>Rev. Ayub Chhinchani</strong> and <strong style={{ color: 'var(--color-text)' }}>Rev. B.N. Satpathy</strong>, preachers from within and outside the city and state are invited to share God&rsquo;s Word on Sundays.
+            </p>
+
+            <p>
+              We are a Bible believing Church and we share the Gospel of Jesus Christ in its entirety. We believe the Church of Christ is not a pleasure boat, but a <strong style={{ color: 'var(--color-primary)' }}>life boat for souls to be saved</strong> to the Kingdom of God.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}

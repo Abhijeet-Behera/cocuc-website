@@ -69,12 +69,25 @@
 }
 
 /* ─── Premium Popup Card ─── */
+@keyframes popupFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 :global(.customPopup .leaflet-popup-content-wrapper) {
   border-radius: 18px;
   box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.28), 0 8px 20px rgba(0,0,0,0.08);
   padding: 0;
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.06);
+  animation: popupFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: bottom center;
 }
 
 :global(.customPopup .leaflet-popup-content) {
@@ -91,6 +104,8 @@
 
 :global(.customPopup .leaflet-popup-tip-container) {
   margin-top: -1px;
+  animation: popupFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: top center;
 }
 
 :global(.customPopup .leaflet-popup-tip) {

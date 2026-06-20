@@ -22,6 +22,8 @@ export default function AdminPortal() {
   useEffect(() => {
     if (!loading && !user) {
       router.push('/admin/login')
+    } else if (user?.designation === 'Pastor') {
+      router.push('/admin/pastor')
     }
     if (user?.designation === 'Developer') {
       fetchPendingUsers()

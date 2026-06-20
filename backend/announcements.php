@@ -13,7 +13,7 @@ require_once 'jwt_helper.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    $stmt = $pdo->query("SELECT announcements.*, users.full_name as author_name FROM announcements JOIN users ON announcements.author_id = users.id ORDER BY created_at DESC");
+    $stmt = $pdo->query("SELECT announcements.*, users.full_name as author_name, users.designation as author_role FROM announcements JOIN users ON announcements.author_id = users.id ORDER BY created_at DESC");
     $announcements = $stmt->fetchAll();
     echo json_encode($announcements);
 } elseif ($method === 'POST') {

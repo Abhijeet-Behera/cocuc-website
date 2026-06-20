@@ -51,17 +51,7 @@ if ($action === 'register') {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
-        // Security Check: Ensure account is approved
-        if (isset($user['status']) && $user['status'] === 'pending') {
-            http_response_code(403);
-            echo json_encode(["error" => "Your account is pending verification by a Developer."]);
-            exit;
-        }
-        if (isset($user['status']) && $user['status'] === 'rejected') {
-            http_response_code(403);
-            echo json_encode(["error" => "Your registration was rejected."]);
-            exit;
-        }
+
 
         $payload = [
             'id' => $user['id'],

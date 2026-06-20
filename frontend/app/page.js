@@ -1,4 +1,6 @@
 import LatestBlogs from '@/components/LatestBlogs'
+import BlogInspiration from '@/components/BlogInspiration'
+import Testimonies from '@/components/Testimonies'
 import Reveal from '@/components/Reveal'
 import HeroSection from '@/components/HeroSection'
 import ActivitiesGrid from '@/components/ActivitiesGrid'
@@ -41,7 +43,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Blogs & Updates */}
+      {/* News & Updates */}
       <section className="section container">
         <Reveal delay={0.25}>
           <h2 className="section-title-elegant">
@@ -51,6 +53,20 @@ export default function Home() {
           <LatestBlogs />
         </Reveal>
       </section>
+
+      {/* Blog & Inspiration */}
+      <section className="section container" style={{ backgroundColor: '#fdfbfb', borderRadius: '24px', padding: '4rem 2rem', marginTop: '2rem' }}>
+        <Reveal delay={0.25}>
+          <h2 className="section-title-elegant">
+            <span className="title-normal">Blog & </span>
+            <em className="title-italic">Inspiration</em>
+          </h2>
+          <BlogInspiration />
+        </Reveal>
+      </section>
+
+      {/* Testimonies */}
+      <Testimonies />
       
       <ChatBotWidget />
     </div>

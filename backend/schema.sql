@@ -11,11 +11,14 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS blogs (
+DROP TABLE IF EXISTS blogs;
+CREATE TABLE blogs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    thumbnail_path VARCHAR(255),
+    image1_path VARCHAR(255),
+    image2_path VARCHAR(255),
+    pdf_path VARCHAR(255),
     author_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
@@ -40,3 +43,4 @@ CREATE TABLE IF NOT EXISTS broadcasts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
+

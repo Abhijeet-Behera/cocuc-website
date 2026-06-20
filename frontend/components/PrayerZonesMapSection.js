@@ -273,11 +273,12 @@ function ZoneCard({ zone, isActive, onClick }) {
         borderRadius: '14px',
         padding: '16px 18px 16px 16px',
         cursor: 'pointer',
-        border: `1px solid ${isActive ? 'rgba(128,0,0,0.25)' : (hoverState ? 'rgba(128,0,0,0.1)' : 'rgba(0,0,0,0.06)')}`,
+        border: `1px solid ${isActive ? 'rgba(128,0,0,0.25)' : (hoverState ? 'rgba(128,0,0,0.2)' : 'rgba(0,0,0,0.06)')}`,
         boxShadow: isActive
           ? '0 12px 30px rgba(128,0,0,0.12)'
-          : (hoverState ? '0 8px 24px rgba(128,0,0,0.08)' : '0 2px 8px rgba(0,0,0,0.03)'),
-        transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+          : (hoverState ? '0 8px 24px rgba(128,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.03)'),
+        transform: hoverState ? 'translateY(-3px)' : 'translateY(0)',
+        transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
         position: 'relative',
         overflow: 'visible'
       }}

@@ -15,7 +15,7 @@ export default function LatestBlogs() {
     async function fetchBlogs() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
-        const res = await fetch(`${API_URL}/blogs.php`)
+        const res = await fetch(`${API_URL}/announcements.php`)
         const data = await res.json()
         if (Array.isArray(data)) {
           setBlogs(data)
@@ -73,10 +73,14 @@ export default function LatestBlogs() {
     <div ref={containerRef} className={styles.grid}>
       {blogs.slice(0, 3).map((blog) => (
         <article key={blog.id} className={styles.article}>
-          <Link href={`/blog/${blog.id}`} style={{ display: 'contents' }}>
-            {blog.thumbnail_path ? (
+          <Link href={`#`} style={{ display: 'contents' }}>
+            {blog.media_path ? (
               <div className={styles.imageContainer}>
-                <img src={blog.thumbnail_path} alt={blog.title} className={styles.image} />
+                {blog.media_type === 'video' ? (
+                  <video src={blog.media_path} className={styles.image} muted loop playsInline />
+                ) : (
+                  <img src={blog.media_path} alt={blog.title} className={styles.image} />
+                )}
               </div>
             ) : (
               <div className={styles.fallbackImage}>

@@ -73,7 +73,7 @@ export default function BlogInspiration() {
       {blogs.map((blog) => {
         const isExpanded = expandedId === blog.id;
         return (
-          <article key={blog.id} className={styles.article} style={{ flexDirection: 'column', height: 'auto', padding: '2rem' }}>
+          <article key={blog.id} id={`blog-${blog.id}`} className={styles.article} style={{ flexDirection: 'column', height: 'auto', padding: '2rem' }}>
             <div className={styles.meta} style={{ marginBottom: '1rem' }}>
               <span className={styles.author}>
                 {blog.author_role.toUpperCase() === blog.author_name.toUpperCase() 
@@ -106,7 +106,18 @@ export default function BlogInspiration() {
             <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid #eee', paddingTop: '1.5rem' }}>
               {blog.content.length > 300 && (
                 <button 
-                  onClick={() => setExpandedId(isExpanded ? null : blog.id)}
+                  onClick={() => {
+                    if (isExpanded) {
+                      setExpandedId(null);
+                      const el = document.getElementById(`blog-${blog.id}`);
+                      if (el) {
+                        const y = el.getBoundingClientRect().top + window.scrollY - 100;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                      }
+                    } else {
+                      setExpandedId(blog.id);
+                    }
+                  }}
                   style={{ background: 'transparent', border: 'none', color: 'var(--color-primary)', fontWeight: '600', cursor: 'pointer', fontSize: '1rem', padding: 0 }}
                 >
                   {isExpanded ? 'Show Less' : 'Read Full Article'}

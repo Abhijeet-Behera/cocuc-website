@@ -2,12 +2,14 @@
 
 import { useAuth } from '@/components/AuthContext'
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 
 export default function PastorPortal() {
   const { user, token, loading, logout } = useAuth()
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
   
   const [blogs, setBlogs] = useState([])
   const [editId, setEditId] = useState(null)
@@ -43,6 +45,7 @@ export default function PastorPortal() {
   }
 
   useEffect(() => {
+    setMounted(true)
     if (!loading) {
       if (!user) {
         router.push('/admin/login')
@@ -172,9 +175,7 @@ export default function PastorPortal() {
     setToast({ show: true, type, text })
     // Scroll the toast into view
     setTimeout(() => {
-      if (pageTopRef.current) {
-        pageTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       // Animate the toast in
       if (toastRef.current) {
         gsap.fromTo(toastRef.current,
@@ -236,8 +237,8 @@ export default function PastorPortal() {
 
   return (
     <>
-      {/* Logout Confirmation Modal - Moved to root level to guarantee perfectly centered fixed positioning */}
-      {showLogoutConfirm && (
+      {/* Logout Confirmation Modal - Moved to React Portal to guarantee perfectly centered fixed positioning */}
+      {showLogoutConfirm && mounted && createPortal(
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
           <div style={{ background: '#fff', padding: '2.5rem', borderRadius: '20px', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.2)', maxWidth: '400px', width: '90%' }}>
             <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
@@ -250,7 +251,8 @@ export default function PastorPortal() {
               <button onClick={logout} style={{ flex: 1, padding: '0.8rem', background: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', transition: 'all 0.2s', fontSize: '1rem', boxShadow: '0 4px 15px rgba(139,0,0,0.2)' }} onMouseOver={(e) => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 6px 20px rgba(139,0,0,0.3)' }} onMouseOut={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 15px rgba(139,0,0,0.2)' }}>Yes, Log Out</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Inline Toast Banner - Now absolutely fixed to the top center of viewport */}
@@ -259,7 +261,7 @@ export default function PastorPortal() {
           ref={toastRef}
           style={{
             position: 'fixed',
-            top: '20px',
+            top: '100px',
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 100000,
@@ -267,7 +269,8 @@ export default function PastorPortal() {
             alignItems: 'center',
             gap: '0.85rem',
             padding: '1rem 1.5rem',
-            minWidth: '300px',
+            width: 'max-content',
+            maxWidth: '90%',
             borderRadius: '12px',
             background: toast.type === 'success' ? '#f0fdf4' : '#fff5f5',
             border: `1px solid ${toast.type === 'success' ? '#bbf7d0' : '#fecaca'}`,

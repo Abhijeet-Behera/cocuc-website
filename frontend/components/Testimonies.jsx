@@ -262,6 +262,7 @@ export default function Testimonies() {
                 return (
                   <div
                     key={index}
+                    id={`testimony-${index}`}
                     className="testimony-card"
                     style={{
                       background: '#fff',
@@ -325,7 +326,18 @@ export default function Testimonies() {
                       {displayText}
                       {shouldTruncate && (
                         <button
-                          onClick={() => setExpanded(prev => ({ ...prev, [index]: !prev[index] }))}
+                          onClick={() => {
+                            if (isExpanded) {
+                              setExpanded(prev => ({ ...prev, [index]: false }));
+                              const el = document.getElementById(`testimony-${index}`);
+                              if (el) {
+                                const y = el.getBoundingClientRect().top + window.scrollY - 100;
+                                window.scrollTo({ top: y, behavior: 'smooth' });
+                              }
+                            } else {
+                              setExpanded(prev => ({ ...prev, [index]: true }));
+                            }
+                          }}
                           style={{
                             background: 'none',
                             border: 'none',

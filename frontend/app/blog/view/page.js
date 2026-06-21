@@ -61,9 +61,24 @@ function BlogContent() {
       {/* Main Content */}
       <section className="container" style={{ maxWidth: '800px', marginTop: '-40px', position: 'relative', zIndex: 10 }}>
         <div style={{ backgroundColor: 'var(--color-white)', padding: '4rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: '1px solid rgba(0,0,0,0.05)' }}>
-          {post.thumbnail_path && (
-            <div style={{ width: '100%', height: '350px', marginBottom: '3rem', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-              <img src={post.thumbnail_path} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          {/* Images Grid */}
+          {(post.image1_path || post.image2_path) && (
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: post.image1_path && post.image2_path ? '1fr 1fr' : '1fr', 
+              gap: '1.5rem', 
+              marginBottom: '3rem' 
+            }}>
+              {post.image1_path && (
+                <div style={{ width: '100%', aspectRatio: post.image1_path && post.image2_path ? '16/9' : 'auto', maxHeight: '500px', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                  <img src={post.image1_path} alt={post.title} style={{ width: '100%', height: '100%', objectFit: post.image1_path && post.image2_path ? 'cover' : 'contain' }} />
+                </div>
+              )}
+              {post.image2_path && (
+                <div style={{ width: '100%', aspectRatio: post.image1_path && post.image2_path ? '16/9' : 'auto', maxHeight: '500px', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                  <img src={post.image2_path} alt={post.title} style={{ width: '100%', height: '100%', objectFit: post.image1_path && post.image2_path ? 'cover' : 'contain' }} />
+                </div>
+              )}
             </div>
           )}
           

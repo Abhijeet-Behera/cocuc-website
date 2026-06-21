@@ -16,11 +16,17 @@ export default function LatestBlogs() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
         const res = await fetch(`${API_URL}/announcements.php`)
-        const data = await res.json()
-        if (Array.isArray(data)) {
-          setBlogs(data)
-        } else {
-          console.warn('API did not return an array, falling back to empty list.')
+        const text = await res.text()
+        try {
+          const data = JSON.parse(text)
+          if (Array.isArray(data)) {
+            setBlogs(data)
+          } else {
+            console.warn('API did not return an array, falling back to empty list.')
+            setBlogs([])
+          }
+        } catch (e) {
+          console.error("Failed to parse blogs JSON:", text)
           setBlogs([])
         }
       } catch (err) {
@@ -36,19 +42,19 @@ export default function LatestBlogs() {
   useEffect(() => {
     if (!loading && blogs.length > 0) {
       gsap.registerPlugin(ScrollTrigger)
-      
+
       const ctx = gsap.context(() => {
-        gsap.fromTo(`.${styles.article}`, 
-          { opacity: 0, y: 50 },
+        gsap.fromTo(`.${styles.article}`,
+          { opacity: 0, y: 44 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "power3.out",
+            duration: 0.75,
+            stagger: 0.18,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: containerRef.current,
-              start: "top 80%",
+              start: 'top 80%',
               once: true
             }
           }
@@ -58,6 +64,7 @@ export default function LatestBlogs() {
       return () => ctx.revert()
     }
   }, [loading, blogs])
+
 
   if (loading) return (
     <div className={styles.loading}>
@@ -90,19 +97,16 @@ export default function LatestBlogs() {
             
             <div className={styles.content}>
               <div className={styles.meta}>
-                <span className={styles.author}>
-                  {blog.author_role}
-                </span>
+                <span className={styles.author}>{blog.author_role}</span>
+                <span className={styles.metaDot} />
                 <span className={styles.date}>
                   {new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </span>
               </div>
               <h3 className={styles.title}>{blog.title}</h3>
-              <p className={styles.excerpt}>
-                {blog.content}
-              </p>
+              <p className={styles.excerpt}>{blog.content}</p>
               <div className={styles.readMoreContainer}>
-                <span className={styles.readMore}>Read Article &rarr;</span>
+                <span className={styles.readMore}>Read Article →</span>
               </div>
             </div>
           </Link>

@@ -27,6 +27,7 @@ export function AuthProvider({ children }) {
     setToken(authToken);
     localStorage.setItem('auth_token', authToken);
     localStorage.setItem('auth_user', JSON.stringify(userData));
+    localStorage.setItem('just_logged_in', 'true');
     router.push('/admin');
   };
 
@@ -35,7 +36,7 @@ export function AuthProvider({ children }) {
     setToken(null);
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
-    router.push('/admin/login');
+    router.push('/admin/login?logout=success');
   };
 
   return (

@@ -69,7 +69,7 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
     churches.forEach(church => {
       const isActive = church.id === activeChurchId;
       const isMission = church.type === 'mission';
-      const markerColor = isMission ? '#2e7d32' : '#800000'; // Green for mission, Maroon for satellite
+      const markerColor = isMission ? '#e65100' : '#800000'; // Vibrant orange for mission, Maroon for satellite
 
       iconMap[church.id] = L.divIcon({
         className: styles.markerIcon,
@@ -187,7 +187,7 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
               <Popup className={`customPopup`} autoPan={false}>
                 <div 
                   className={styles.popupHeader}
-                  style={church.type === 'mission' ? { background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 60%, #43a047 100%)' } : {}}
+                  style={church.type === 'mission' ? { background: 'linear-gradient(135deg, #e65100 0%, #ff6600 60%, #ff8c00 100%)' } : {}}
                 >
                   {church.name}
                 </div>

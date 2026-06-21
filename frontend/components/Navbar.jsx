@@ -245,6 +245,7 @@ function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown, se
   const isMobileOpen = openDropdown === title
 
   const handleToggle = () => {
+    if (typeof window !== 'undefined' && window.innerWidth > 1024) return;
     setOpenDropdown(isMobileOpen ? null : title)
   }
 

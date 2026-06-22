@@ -17,26 +17,36 @@ export default function SecondSaturdayPrayerPage() {
           overflow: 'hidden',
         }}
       >
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            opacity: 0.04,
-            fontWeight: 900,
-            lineHeight: 1,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            fontFamily: 'serif',
-          }}
-        >
-          ✝
-        </div>
-
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '20rem',
+              height: '30rem',
+              opacity: 0.04,
+              pointerEvents: 'none',
+              userSelect: 'none',
+              zIndex: -1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg
+              viewBox="0 0 24 36"
+              style={{
+                width: '100%',
+                height: '100%',
+                fill: 'currentColor',
+              }}
+            >
+              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
+            </svg>
+          </div>
           <p
             style={{
               fontSize: '0.85rem',

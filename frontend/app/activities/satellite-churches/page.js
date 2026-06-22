@@ -1,6 +1,10 @@
-'use client'
-
 import Link from 'next/link'
+
+export const metadata = {
+  title: 'Satellite Churches | Church of Christ Union Church Bhubaneswar',
+  description:
+    'Satellite worship centres of Church of Christ (Union Church), Bhubaneswar — extending worship, fellowship, and services across Chandrasekharpur, Kalinga Vihar, and Sundarpada.',
+}
 
 export default function SatelliteChurchesPage() {
   const churches = [
@@ -9,98 +13,109 @@ export default function SatelliteChurchesPage() {
       name: 'Chandrasekharpur Worship Center',
       timing: 'Sundays @ 9:30 AM',
       location: '96, District Center, Chandrasekharpur',
-      brief: 'Serving the community since the early 90s, offering Odia worship services and children’s Sunday school.',
-      color: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)'
+      brief:
+        "Serving the community since the early 90s, offering Odia worship services and children's Sunday school.",
     },
     {
       id: 'kalinga-vihar',
       name: 'Kalinga Vihar Worship Center',
       timing: 'Sundays @ 9:30 AM',
       location: 'Kalinga Vihar, Bhubaneswar',
-      brief: 'Established in July 2015, this growing congregation gathers weekly for Odia worship and fellowship.',
-      color: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)'
+      brief:
+        'Established in July 2015, this growing congregation gathers weekly for Odia worship and fellowship.',
     },
     {
       id: 'sundarpada',
       name: 'Sundarpada Worship Center',
       timing: 'Sundays @ 9:30 AM',
       location: 'Sundarpada, Bhubaneswar',
-      brief: 'Our third worship center established in 2017 to expand our outreach and bring the Gospel to Sundarpada.',
-      color: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)'
+      brief:
+        'Our third worship center established in 2017 to expand our outreach and bring the Gospel to Sundarpada.',
     },
-    {
-      id: 'jagatsinghpur',
-      name: 'Jagatsinghpur Worship Center',
-      timing: 'Sundays @ 9:30 AM',
-      location: 'Jagatsinghpur (90 km from capital)',
-      brief: 'A dedicated home congregation sharing the love of Christ in a miniscule Christian majority region.',
-      color: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)'
-    }
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1f0000 0%, #0c0014 50%, #000000 100%)', color: '#fff' }}>
+    <div>
       {/* ── Hero Banner ── */}
       <section
         style={{
-          padding: '180px 0 80px 0',
+          background:
+            'linear-gradient(135deg, #1a0000 0%, var(--color-primary-dark) 50%, #7a2000 100%)',
+          color: 'var(--color-white)',
+          padding: '160px 0 110px 0',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '20rem',
+              height: '30rem',
+              opacity: 0.04,
+              pointerEvents: 'none',
+              userSelect: 'none',
+              zIndex: -1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg viewBox="0 0 24 36" style={{ width: '100%', height: '100%', fill: 'currentColor' }}>
+              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
+            </svg>
+          </div>
           <p
             style={{
               fontSize: '0.85rem',
-              letterSpacing: '0.25em',
+              letterSpacing: '0.2em',
               textTransform: 'uppercase',
               opacity: 0.7,
               marginBottom: '1rem',
               fontFamily: 'var(--font-heading)',
-              color: 'var(--color-primary-light)',
-              fontWeight: 700,
             }}
           >
-            Our Extensions
+            Activities
           </p>
           <h1
             style={{
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
               fontFamily: 'var(--font-heading)',
               fontWeight: 800,
-              marginBottom: '1.5rem',
+              marginBottom: '1.2rem',
               letterSpacing: '-0.02em',
-              background: 'linear-gradient(to right, #fff, #ffc0c0)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
             }}
           >
             Satellite Churches
           </h1>
           <p
             style={{
-              fontSize: '1.2rem',
-              opacity: 0.8,
-              maxWidth: '650px',
+              fontSize: '1.15rem',
+              opacity: 0.85,
+              maxWidth: '600px',
               margin: '0 auto',
-              lineHeight: 1.8,
+              lineHeight: 1.7,
             }}
           >
-            Extending our worship, fellowship, and services across various regions in Bhubaneswar and beyond to Jagatsinghpur.
+            Extending our worship, fellowship, and services across various regions in Bhubaneswar and beyond.
           </p>
         </div>
       </section>
 
-      {/* ── Glassmorphic Cards Section ── */}
-      <section style={{ padding: '0 0 100px 0' }}>
+      {/* ── Cards Section ── */}
+      <section className="section">
         <div className="container">
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '2.5rem',
-              padding: '1rem',
+              gap: '1.75rem',
             }}
           >
             {churches.map((church) => (
@@ -110,46 +125,31 @@ export default function SatelliteChurchesPage() {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  backdropFilter: 'blur(16px) saturate(180%)',
-                  WebkitBackdropFilter: 'blur(16px) saturate(180%)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '24px',
-                  padding: '2.5rem 2rem',
+                  background: 'var(--color-white)',
+                  border: '1px solid rgba(128,0,0,0.1)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '2rem',
                   textDecoration: 'none',
                   color: 'inherit',
-                  transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)',
-                  boxShadow: '0 10px 30px 0 rgba(0, 0, 0, 0.3)',
-                  cursor: 'pointer',
-                  position: 'relative',
-                  overflow: 'hidden',
+                  boxShadow: 'var(--shadow-sm)',
+                  transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
                 }}
-                className="hover-card"
+                className="sat-card"
               >
-                {/* Glow effect on hover */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '-50%',
-                    left: '-50%',
-                    width: '200%',
-                    height: '200%',
-                    background: 'radial-gradient(circle, rgba(128,0,0,0.15) 0%, transparent 60%)',
-                    opacity: 0,
-                    transition: 'opacity 0.4s ease',
-                    pointerEvents: 'none',
-                  }}
-                  className="glow-effect"
-                />
-
+                {/* Timing badge */}
                 <span
                   style={{
+                    display: 'inline-block',
+                    padding: '0.25rem 0.85rem',
+                    borderRadius: '50px',
+                    background: 'rgba(128,0,0,0.07)',
+                    color: 'var(--color-primary)',
                     fontSize: '0.75rem',
                     fontWeight: 700,
+                    letterSpacing: '0.12em',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.15em',
-                    color: '#ff8080',
-                    marginBottom: '0.75rem',
+                    marginBottom: '1.1rem',
+                    width: 'fit-content',
                   }}
                 >
                   {church.timing}
@@ -157,11 +157,12 @@ export default function SatelliteChurchesPage() {
 
                 <h2
                   style={{
-                    fontSize: '1.6rem',
+                    fontSize: '1.3rem',
                     fontFamily: 'var(--font-heading)',
                     fontWeight: 700,
-                    marginBottom: '1rem',
-                    color: '#fff',
+                    color: 'var(--color-text)',
+                    marginBottom: '0.75rem',
+                    lineHeight: 1.3,
                   }}
                 >
                   {church.name}
@@ -169,11 +170,11 @@ export default function SatelliteChurchesPage() {
 
                 <p
                   style={{
-                    fontSize: '0.95rem',
-                    color: 'rgba(255,255,255,0.7)',
-                    lineHeight: 1.6,
-                    marginBottom: '2rem',
+                    fontSize: '0.96rem',
+                    color: 'var(--color-text-muted)',
+                    lineHeight: 1.7,
                     flexGrow: 1,
+                    marginBottom: '1.5rem',
                   }}
                 >
                   {church.brief}
@@ -184,22 +185,28 @@ export default function SatelliteChurchesPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    borderTop: '1px solid rgba(0,0,0,0.06)',
+                    paddingTop: '1.1rem',
                     marginTop: 'auto',
-                    borderTop: '1px solid rgba(255,255,255,0.1)',
-                    paddingTop: '1.25rem',
                   }}
                 >
-                  <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+                  <span
+                    style={{
+                      fontSize: '0.82rem',
+                      color: 'var(--color-text-muted)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      maxWidth: '65%',
+                    }}
+                  >
                     📍 {church.location}
                   </span>
                   <span
                     style={{
-                      fontSize: '0.9rem',
-                      fontWeight: 600,
-                      color: '#ff8080',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
+                      fontSize: '0.88rem',
+                      fontWeight: 700,
+                      color: 'var(--color-primary)',
                     }}
                   >
                     View Details →
@@ -211,16 +218,11 @@ export default function SatelliteChurchesPage() {
         </div>
       </section>
 
-      {/* Styled JSX for the interactive card zoom & glow effects */}
-      <style jsx global>{`
-        .hover-card:hover {
-          transform: translateY(-8px);
-          border-color: rgba(255, 128, 128, 0.3);
-          box-shadow: 0 20px 40px 0 rgba(128, 0, 0, 0.25);
-          background: rgba(255, 255, 255, 0.08) !important;
-        }
-        .hover-card:hover .glow-effect {
-          opacity: 1;
+      <style>{`
+        .sat-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 32px rgba(128, 0, 0, 0.12);
+          border-color: rgba(128, 0, 0, 0.2);
         }
       `}</style>
     </div>

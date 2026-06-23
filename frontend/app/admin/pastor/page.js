@@ -95,6 +95,25 @@ export default function PastorPortal() {
     }
   }
 
+  const clearFile = (type) => {
+    if (type === 'image1') {
+      setImage1(null)
+      if (image1Preview) URL.revokeObjectURL(image1Preview)
+      setImage1Preview(null)
+      if (document.getElementById('image1')) document.getElementById('image1').value = ''
+    } else if (type === 'image2') {
+      setImage2(null)
+      if (image2Preview) URL.revokeObjectURL(image2Preview)
+      setImage2Preview(null)
+      if (document.getElementById('image2')) document.getElementById('image2').value = ''
+    } else if (type === 'pdf') {
+      setPdf(null)
+      if (pdfPreview) URL.revokeObjectURL(pdfPreview)
+      setPdfPreview(null)
+      if (document.getElementById('pdf')) document.getElementById('pdf').value = ''
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitLoading(true)
@@ -144,14 +163,14 @@ export default function PastorPortal() {
         body: JSON.stringify({ id })
       });
       if (res.ok) {
-        setModalInfo({ show: true, type: 'success', text: 'Blog deleted successfully.' });
+        showToast('success', 'Blog deleted successfully.');
         fetchBlogs();
         if (editId === id) resetForm();
       } else {
-        setModalInfo({ show: true, type: 'error', text: 'Failed to delete blog.' });
+        showToast('error', 'Failed to delete blog.');
       }
     } catch (err) {
-      setModalInfo({ show: true, type: 'error', text: 'An unexpected error occurred.' });
+      showToast('error', 'An unexpected error occurred.');
     }
   }
 
@@ -467,18 +486,21 @@ export default function PastorPortal() {
           borderBottom: '1px solid #f5f5f5',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.75rem'
+          gap: '1rem'
         }}>
-          <div style={{ width: '24px', height: '2px', background: 'var(--color-primary)', opacity: 0.7 }} />
-          <h2 style={{ 
-            fontSize: '0.8rem', 
-            color: 'var(--color-primary)', 
-            fontWeight: '700',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            fontFamily: 'var(--font-heading)',
-            margin: 0
-          }}>Manage Existing Blogs</h2>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, var(--color-primary), transparent)', opacity: 0.35 }} />
+          <span style={{
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: '1.45rem',
+            fontStyle: 'italic',
+            fontWeight: '600',
+            color: 'var(--color-primary)',
+            letterSpacing: '0.02em',
+            whiteSpace: 'nowrap'
+          }}>
+            Manage Existing Blogs
+          </span>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, var(--color-primary), transparent)', opacity: 0.35 }} />
         </div>
         
         {blogs.length === 0 ? (

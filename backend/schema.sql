@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS blogs;
-CREATE TABLE blogs (
+CREATE TABLE IF NOT EXISTS blogs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
@@ -44,3 +43,41 @@ CREATE TABLE IF NOT EXISTS broadcasts (
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS weekly_notices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    release_date DATE NOT NULL,
+    documents_json JSON,
+    notices_json JSON,
+    author_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS special_programmes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    upload_date DATE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    wing VARCHAR(100) NOT NULL,
+    custom_wing VARCHAR(255),
+    event_from DATE,
+    event_to DATE,
+    duration VARCHAR(50),
+    details TEXT,
+    document_path VARCHAR(255),
+    author_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS speaking_arrangements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sub_section ENUM('Sunday Worships', 'Morning prayer', 'Monday Prayer', 'C.E Union', 'Wednesday Prayer', 'Zoom Prayer') NOT NULL,
+    details TEXT,
+    event_date DATE NOT NULL,
+    attachment1_path VARCHAR(255),
+    attachment2_path VARCHAR(255),
+    attachment3_path VARCHAR(255),
+    author_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);

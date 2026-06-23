@@ -100,6 +100,10 @@ export default function LoginRegister() {
 
       if (res.ok) {
         if (isLogin) {
+          if (data.user.designation !== role) {
+            setError(`Error: Account found, but you are not registered as a ${role}.`);
+            return;
+          }
           login(data.user, data.token);
           router.push('/admin');
         } else {

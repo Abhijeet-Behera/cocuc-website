@@ -24,6 +24,8 @@ export default function AdminPortal() {
       router.push('/admin/login')
     } else if (user?.designation === 'Pastor') {
       router.push('/admin/pastor')
+    } else if (user?.designation === 'Secretary') {
+      router.push('/admin/secretary')
     }
     if (user?.designation === 'Developer') {
       fetchPendingUsers()

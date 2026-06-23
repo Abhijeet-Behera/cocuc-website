@@ -1,31 +1,77 @@
 export const metadata = {
   title: 'C.E Union | Church of Christ Union Church Bhubaneswar',
   description:
-    'The Christian Endeavour Union meets every Tuesday at 7 PM for devotion, prayer, and fellowship. Discover their vibrant programs and annual schedule.',
+    'The Christian Endeavour (CE) Union at Church of Christ Union Church, Bhubaneswar, established since 28 May 1972 — gathering in fellowship, prayer, and service to strengthen young believers for Christ and His Church.',
 }
 
 export default function CEUnionPage() {
-  const schedule = [
-    { date: '26 November 2022', event: 'Annual Sports Day' },
-    { date: '27 November 2022', event: 'Symposium — Group B to E' },
-    { date: '04 December 2022', event: 'Bible Quiz — Group A to E' },
-    { date: '06 December 2022', event: 'Essay — Group B to E' },
-    { date: '11 December 2022', event: 'Bible Memory Verse — Group A to E' },
-    { date: '18 December 2022', event: 'Devotional Song Competition — All Groups' },
-    { date: '20 December 2022', event: 'Disguise Competition & Christmas Annual Prize-giving Ceremony' },
-    { date: '1 January 2023', event: 'Musical Night Celebrations' },
+  const founders = [
+    { name: 'Bro. Daniel Das', note: '' },
+    { name: 'Bro. Bidyut Kumar Pramanick', note: '' },
+    { name: 'Bro. Alin Kumar Rout', note: '1st President' },
+    { name: 'Bro. Pareh Kumar Das', note: '' },
+    { name: 'Bro. Binoy Muduli', note: '' },
+    { name: 'Bro. Devid Kamal Pradhan', note: '' },
+    { name: 'Bro. Jayant Das', note: '1st Secretary' },
+    { name: 'Smt. Sudhamati Pradhan', note: '' },
   ]
 
-  const competitions = [
-    'Sports', 'Symposium', 'Essay', 'Songs', 'Bible Quiz', 'Bible Memory Verse',
+  const cardinalPrinciples = [
+    'Confession of Christ',
+    'Service for Christ',
+    "Loyalty to Christ's Church",
+    "Fellowship with all Christ's people",
   ]
+
+  const essentials = [
+    'Weekly devotional meeting',
+    'Monthly consecration service',
+    'The covenant of pledge',
+    'Committee work',
+  ]
+
+  const meetings = [
+    {
+      freq: 'Weekly — Every Tuesday',
+      title: 'CE Prayer Meeting',
+      desc: 'CE prayer meeting every Tuesday at 7:00 PM at COCUC Bhubaneswar, continuing since 28 May 1972.',
+    },
+    {
+      freq: 'Weekly — Every Sunday',
+      title: 'Sangeet Upasana',
+      desc: 'Sangeet Upasana held by Boithak Committee members of CE in the home of an invited family at 7:00 PM.',
+    },
+    {
+      freq: 'Monthly — First Tuesday',
+      title: 'Consecration Service',
+      desc: 'Our Pastors lead the consecration service and the meeting concludes by announcing the Oath of CE.',
+    },
+    {
+      freq: 'Annual — 2nd February',
+      title: 'World CE Prayer Day',
+      desc: 'Observed every year on 2nd February with a morning service and Flag Hoisting with our respected elder brothers of CE at COCUC Bhubaneswar.',
+    },
+    {
+      freq: 'Annual',
+      title: 'Annual Picnic',
+      desc: 'Once a year, CE and Church members visit outside together for fellowship and fun.',
+    },
+    {
+      freq: 'Annual — 28th May',
+      title: 'Local CE Day',
+      desc: 'Celebrated on 28th May with a three-day programme: two days of revival meetings featuring invited resource persons, concluding in a love feast with a cultural programme on the 3rd day. Brothers and sisters who have served are honoured with mementos.',
+    },
+  ]
+
+
 
   return (
     <div>
       {/* ── Hero Banner ── */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #0a0018 0%, #3d0055 50%, var(--color-primary-dark) 100%)',
+          background:
+            'linear-gradient(135deg, #0a0018 0%, #3d0055 50%, var(--color-primary-dark) 100%)',
           color: 'var(--color-white)',
           padding: '160px 0 110px 0',
           textAlign: 'center',
@@ -33,26 +79,36 @@ export default function CEUnionPage() {
           overflow: 'hidden',
         }}
       >
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            opacity: 0.04,
-            fontWeight: 900,
-            lineHeight: 1,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            fontFamily: 'serif',
-          }}
-        >
-          ✝
-        </div>
-
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '20rem',
+              height: '30rem',
+              opacity: 0.04,
+              pointerEvents: 'none',
+              userSelect: 'none',
+              zIndex: -1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg
+              viewBox="0 0 24 36"
+              style={{
+                width: '100%',
+                height: '100%',
+                fill: 'currentColor',
+              }}
+            >
+              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
+            </svg>
+          </div>
           <p
             style={{
               fontSize: '0.85rem',
@@ -80,24 +136,26 @@ export default function CEUnionPage() {
             style={{
               fontSize: '1.15rem',
               opacity: 0.85,
-              maxWidth: '600px',
+              maxWidth: '620px',
               margin: '0 auto',
               lineHeight: 1.7,
             }}
           >
-            The Christian Endeavour Union — our vibrant youth fellowship serving the Lord every week.
+            Christian Endeavour Union &mdash; established 28 May 1972, gathering young believers
+            in fellowship, prayer, and service for Christ and His Church.
           </p>
         </div>
       </section>
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className="container" style={{ maxWidth: '880px', margin: '0 auto' }}>
 
           {/* Meeting info banner */}
           <div
             style={{
-              background: 'linear-gradient(90deg, #3d0055 0%, var(--color-primary-dark) 100%)',
+              background:
+                'linear-gradient(90deg, #3d0055 0%, var(--color-primary-dark) 100%)',
               color: '#fff',
               borderRadius: 'var(--radius-lg)',
               padding: '1.5rem 2rem',
@@ -110,22 +168,22 @@ export default function CEUnionPage() {
             }}
           >
             <div>
-              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Meeting Day</p>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Tuesday</p>
+              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Established</p>
+              <p style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>28 May 1972</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
-              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Time</p>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>7:00 PM</p>
+              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Weekly Meeting</p>
+              <p style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Tuesday @ 7 PM</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Venue</p>
-              <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>Union Church</p>
+              <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>COCUC, Unit-4, Bhubaneswar</p>
             </div>
           </div>
 
-          {/* Main description */}
+          {/* About */}
           <div
             style={{
               background: 'var(--color-white)',
@@ -139,21 +197,38 @@ export default function CEUnionPage() {
               display: 'flex',
               flexDirection: 'column',
               gap: '1.5rem',
-              marginBottom: '2.5rem',
+              marginBottom: '3.5rem',
             }}
           >
             <p>
-              The <strong style={{ color: 'var(--color-text)' }}>Christian Endeavour Union (C.E)</strong> meets in the church every <strong style={{ color: 'var(--color-text)' }}>Tuesday at 7 PM</strong>. They have devotional sessions and Prayer, and they invite speakers to preach every week — Pastors, Church leaders, and people from our Church and other places too.
+              Since <strong style={{ color: 'var(--color-text)' }}>28 May 1972</strong>, the
+              Christian Endeavour (CE) Union has been established at{' '}
+              <strong style={{ color: 'var(--color-text)' }}>
+                Church of Christ Union Church (COCUC), Unit-4, Sachivalaya Marg, Bhubaneswar-751001.
+              </strong>{' '}
+              For over five decades we have gathered in fellowship, prayer and service to
+              strengthen young believers for Christ and His Church.
             </p>
+            <div
+              style={{
+                borderLeft: '3px solid var(--color-primary)',
+                paddingLeft: '1.25rem',
+                fontStyle: 'italic',
+                color: 'var(--color-text)',
+              }}
+            >
+              CE is a training platform to equip and prepare all members and young people for
+              service in Christ and in the Church. There is no age bar for members in CE Union
+              Bhubaneswar.
+            </div>
             <p>
-              These youths are an asset to the Church through their help and support in various activities. During the Christmas season, the C.E. Union organises a range of programs and competitions, where children from all age groups take part very keenly. Besides their local activities, they also hold their annual Conventions and Retreats.
-            </p>
-            <p>
-              On New Year&rsquo;s evening in 2023, they had their cultural Musical Program in the Church. Please do keep C.E. Union in your Prayers as they continue to serve the Lord diligently.
+              Annual membership fee: Non-earning members &mdash; <strong style={{ color: 'var(--color-text)' }}>₹100</strong> &nbsp;|&nbsp;
+              Earning members &mdash; <strong style={{ color: 'var(--color-text)' }}>₹200</strong> &nbsp;|&nbsp;
+              Lifetime membership &mdash; <strong style={{ color: 'var(--color-text)' }}>₹1,000</strong>
             </p>
           </div>
 
-          {/* Competition categories */}
+          {/* Founder Members */}
           <h2
             style={{
               fontSize: '1.5rem',
@@ -163,46 +238,7 @@ export default function CEUnionPage() {
               marginBottom: '1.25rem',
             }}
           >
-            Christmas Program Categories
-          </h2>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.75rem',
-              marginBottom: '3rem',
-            }}
-          >
-            {competitions.map((c) => (
-              <span
-                key={c}
-                style={{
-                  display: 'inline-block',
-                  padding: '0.45rem 1.1rem',
-                  borderRadius: '50px',
-                  background: 'rgba(128,0,0,0.07)',
-                  color: 'var(--color-primary)',
-                  fontWeight: 600,
-                  fontSize: '0.88rem',
-                  border: '1px solid rgba(128,0,0,0.15)',
-                }}
-              >
-                {c}
-              </span>
-            ))}
-          </div>
-
-          {/* 2022-23 Schedule */}
-          <h2
-            style={{
-              fontSize: '1.5rem',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              color: 'var(--color-primary)',
-              marginBottom: '1.25rem',
-            }}
-          >
-            2022–23 Christmas &amp; New Year Schedule
+            Founder Members of CE Union Bhubaneswar
           </h2>
           <div
             style={{
@@ -211,40 +247,283 @@ export default function CEUnionPage() {
               boxShadow: 'var(--shadow-sm)',
               border: '1px solid rgba(0,0,0,0.05)',
               overflow: 'hidden',
+              marginBottom: '3.5rem',
             }}
           >
-            {schedule.map((item, i) => (
+            {founders.map((f, i) => (
               <div
-                key={item.date}
+                key={i}
                 style={{
                   display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '1.25rem',
-                  padding: '1rem 1.5rem',
-                  borderBottom: i < schedule.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.018)',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '1rem 2rem',
+                  borderBottom:
+                    i < founders.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
+                  background: i % 2 === 0 ? 'transparent' : 'rgba(61,0,85,0.018)',
                 }}
               >
-                <span
-                  style={{
-                    flexShrink: 0,
-                    padding: '0.3rem 0.75rem',
-                    borderRadius: '6px',
-                    background: 'var(--color-primary)',
-                    color: '#fff',
-                    fontSize: '0.72rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.03em',
-                    whiteSpace: 'nowrap',
-                    marginTop: '0.1rem',
-                  }}
-                >
-                  {item.date}
-                </span>
-                <span style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: 1.5 }}>{item.event}</span>
+                <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{f.name}</span>
+                {f.note && (
+                  <span
+                    style={{
+                      padding: '0.2rem 0.75rem',
+                      borderRadius: '50px',
+                      background: 'rgba(128,0,0,0.08)',
+                      color: 'var(--color-primary)',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {f.note}
+                  </span>
+                )}
               </div>
             ))}
           </div>
+
+          {/* Cardinal Principles & Essentials side by side */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '1.5rem',
+              marginBottom: '3.5rem',
+            }}
+          >
+            {/* Cardinal Principles */}
+            <div
+              style={{
+                background: 'var(--color-white)',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-sm)',
+                border: '1px solid rgba(0,0,0,0.05)',
+                padding: '2rem',
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: '1.2rem',
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 700,
+                  color: 'var(--color-primary)',
+                  marginBottom: '1.25rem',
+                }}
+              >
+                Four Cardinal Principles of CE
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {cardinalPrinciples.map((p, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '22px',
+                        height: '22px',
+                        borderRadius: '50%',
+                        background: 'var(--color-primary)',
+                        color: '#fff',
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        flexShrink: 0,
+                        marginTop: '0.1rem',
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.97rem', lineHeight: 1.5 }}>{p}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Four Essentials */}
+            <div
+              style={{
+                background: 'var(--color-white)',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-sm)',
+                border: '1px solid rgba(0,0,0,0.05)',
+                padding: '2rem',
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: '1.2rem',
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 700,
+                  color: 'var(--color-primary)',
+                  marginBottom: '1.25rem',
+                }}
+              >
+                Four Essentials of CE
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {essentials.map((e, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '22px',
+                        height: '22px',
+                        borderRadius: '50%',
+                        background: 'rgba(61,0,85,0.8)',
+                        color: '#fff',
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        flexShrink: 0,
+                        marginTop: '0.1rem',
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.97rem', lineHeight: 1.5 }}>{e}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Regular Meetings & Services */}
+          <h2
+            style={{
+              fontSize: '1.5rem',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              color: 'var(--color-primary)',
+              marginBottom: '1.25rem',
+            }}
+          >
+            Regular Meetings &amp; Services
+          </h2>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.1rem',
+              marginBottom: '3.5rem',
+            }}
+          >
+            {meetings.map((m, i) => (
+              <div
+                key={i}
+                style={{
+                  background: 'var(--color-white)',
+                  border: '1px solid rgba(0,0,0,0.05)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '1.5rem 2rem',
+                  boxShadow: 'var(--shadow-sm)',
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-primary)',
+                    fontWeight: 700,
+                    marginBottom: '0.3rem',
+                  }}
+                >
+                  {m.freq}
+                </p>
+                <p
+                  style={{
+                    fontSize: '1.15rem',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-heading)',
+                    color: 'var(--color-text)',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  {m.title}
+                </p>
+                <p style={{ fontSize: '0.95rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{m.desc}</p>
+              </div>
+            ))}
+          </div>
+
+
+
+          {/* Service & Outreach */}
+          <h2
+            style={{
+              fontSize: '1.5rem',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              color: 'var(--color-primary)',
+              marginBottom: '1.25rem',
+            }}
+          >
+            Service &amp; Outreach
+          </h2>
+          <div
+            style={{
+              background: 'var(--color-white)',
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: 'var(--shadow-sm)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              padding: '2rem 2.5rem',
+              marginBottom: '3.5rem',
+              fontSize: '1rem',
+              color: 'var(--color-text-muted)',
+              lineHeight: 1.8,
+            }}
+          >
+            <p>
+              CE members are ready to help those in need — physically, mentally, and financially — whenever possible. We actively participate in:
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '1rem' }}>
+              {['Burial assistance', 'Medical aid', 'Blood donation drives', 'Patient care support'].map((item) => (
+                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: 'var(--color-primary)',
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Governance */}
+          <h2
+            style={{
+              fontSize: '1.5rem',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              color: 'var(--color-primary)',
+              marginBottom: '1.25rem',
+            }}
+          >
+            Governance
+          </h2>
+          <div
+            style={{
+              background: 'var(--color-white)',
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: 'var(--shadow-sm)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              padding: '2rem 2.5rem',
+              fontSize: '1rem',
+              color: 'var(--color-text-muted)',
+              lineHeight: 1.8,
+              marginBottom: '1rem',
+            }}
+          >
+            Every two years, office-bearers and executive members are elected or appointed during the General Body Meeting, held in the presence of the Chief Advisor and other Pastors.
+          </div>
+
         </div>
       </section>
     </div>

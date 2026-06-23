@@ -323,53 +323,51 @@
   .logoLine2 {
     font-size: 0.7rem;
   }
-  
+
   .hamburger {
     display: block;
   }
-  
+
   .menu {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100%;
+    height: 100dvh;
     background-color: var(--color-white);
     flex-direction: column;
-    align-items: center;
-    padding: 2rem 1.5rem;
-    gap: 1rem;
+    align-items: stretch;
+    padding: 5rem 1.25rem 2rem;
+    gap: 0;
     box-shadow: var(--shadow-md);
     /* GSAP Starting State for mobile */
     opacity: 0;
     visibility: hidden;
     clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
     z-index: 99;
-    /* Add constraints for scrolling */
-    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
 
-  /* .menuOpen is handled by GSAP */
+  .menu::-webkit-scrollbar {
+    width: 4px;
+  }
+  .menu::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+  }
 
   /* Stack nav links vertically on mobile */
   .navLinks {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start;
-    gap: 0.5rem;
+    gap: 0;
     width: 100%;
-    margin-bottom: 1rem;
-    /* Make scrollable */
-    overflow-y: auto;
-    flex: 1 1 auto;
-    /* Custom scrollbar for neatness */
-    scrollbar-width: thin;
-  }
-  .navLinks::-webkit-scrollbar {
-    width: 4px;
-  }
-  .navLinks::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    flex: 0 0 auto;
   }
 
   /* Stack actions below links */
@@ -377,9 +375,11 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 1.25rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(0,0,0,0.08);
     width: 100%;
+    flex-shrink: 0;
   }
 
   .socials {
@@ -389,31 +389,35 @@
     justify-content: center;
   }
 
-  /* On mobile, the menu background is always white, so force dark text */
+  /* On mobile, force dark text since bg is always white */
   .navLinkTransparent,
   .socialIconTransparent {
     color: var(--color-text) !important;
   }
-  
+
   .adminBtn {
     margin-left: 0;
     width: 100%;
     text-align: center;
   }
-  
+
+  /* Dropdown panel: static, accordion style */
   .dropdownMenu {
     position: static;
     box-shadow: none;
     border: none;
     border-radius: 0;
     padding: 0;
-    padding-left: 0.5rem;
     min-width: 100%;
     transform: none !important;
     visibility: visible;
     opacity: 1;
     pointer-events: all;
-    display: none; /* hidden by default — JS controls via .dropdownMenuOpen */
+    display: none;
+    background: rgba(128, 0, 0, 0.03);
+    border-left: 3px solid rgba(128,0,0,0.15);
+    margin: 0 0 0.25rem 0.75rem;
+    border-radius: 0 6px 6px 0;
   }
 
   /* JS-controlled accordion open class for mobile */
@@ -423,32 +427,81 @@
   }
 
   .dropdownItem {
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
+    padding: 0.8rem 1.25rem;
+    font-size: 0.97rem;
     color: #444;
-    text-align: center;
+    text-align: left;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+
+  .dropdownItem:last-child {
+    border-bottom: none;
+  }
+
+  .dropdownItem:hover,
+  .dropdownItem:active {
+    background: rgba(128,0,0,0.07);
+    color: var(--color-primary);
+    transform: none;
+    box-shadow: none;
   }
 
   .dropdownToggle {
     width: 100%;
-    justify-content: center;
-    padding: 0.75rem 1rem;
+    justify-content: space-between;
+    padding: 1rem 0.75rem;
     border-radius: 8px;
     border: none;
     background: transparent;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    color: var(--color-text) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
   }
-  
+
+  .dropdownToggle:active {
+    background: rgba(128,0,0,0.05);
+  }
+
   .navLink {
-    text-align: center;
+    display: block;
+    text-align: left;
     width: 100%;
-    font-size: 1.1rem;
-    padding: 0.75rem 1rem;
+    font-size: 1.05rem;
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-radius: 0;
+    color: var(--color-text) !important;
+  }
+
+  .dropdownContainer {
+    width: 100%;
   }
 
   /* Do NOT use CSS hover on mobile — controlled by JS click */
   .dropdownContainer:hover .dropdownMenu {
     display: none;
+  }
+
+  .dropdownHoverBridge {
+    display: none;
+  }
+}
+
+/* Tablet specific tweaks */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .menu {
+    padding: 5.5rem 2rem 2.5rem;
+  }
+
+  .dropdownItem {
+    font-size: 1rem;
+    padding: 0.9rem 1.5rem;
+  }
+
+  .dropdownToggle,
+  .navLink {
+    font-size: 1.1rem;
+    padding: 1rem 1rem;
   }
 }
 
@@ -461,5 +514,16 @@
   }
   .logoLine2 {
     font-size: 0.62rem;
+  }
+
+  .dropdownToggle,
+  .navLink {
+    font-size: 0.98rem;
+    padding: 0.9rem 0.5rem;
+  }
+
+  .dropdownItem {
+    font-size: 0.92rem;
+    padding: 0.75rem 1rem;
   }
 }

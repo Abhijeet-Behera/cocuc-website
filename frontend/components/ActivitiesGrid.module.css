@@ -19,6 +19,12 @@
   position: relative;
   border-radius: 14px;
   overflow: hidden;
+  aspect-ratio: 4 / 5;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .gridItem:hover,
@@ -206,6 +212,64 @@
     margin-top 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* ---- CE Union Schedule Only: Transparent Red Style ---- */
+.ceSchedule {
+  width: 100%;
+  max-width: 92%;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0.5rem 0.9rem;
+
+  background: rgba(15, 15, 15, 0.58);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 8px;
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ceScheduleItem {
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+
+  padding: 0.7rem 0.35rem;
+  text-align: left;
+}
+
+.ceScheduleItem+.ceScheduleItem {
+  border-left: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.ceScheduleLabel {
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+
+.ceScheduleValue {
+  color: #ff4040;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .gridItem:hover .cardDescription,
 .gridItem:focus-within .cardDescription {
   margin-top: 1rem;
@@ -366,6 +430,13 @@
   visibility: visible;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+/* Move Read More slightly upward only in Service Timing */
+.gridItem:hover .serviceTimingContent .itemLink,
+.gridItem:focus-within .serviceTimingContent .itemLink {
+  margin-top: 0.5rem;
+  transform: translateY(-8px);
 }
 
 /* Compact layout for the Service Timing card */

@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import Link from 'next/link'
 import styles from './ActivitiesGrid.module.css'
 
@@ -99,14 +101,34 @@ export default function ActivitiesGrid() {
       title: 'Counselling and Baptism',
       link: '#',
       description: (
-        <div className={`${styles.scheduleInfo} ${styles.sundaySchedule}`}>
-          <div className={styles.scheduleRow}>
-            <span className={styles.scheduleLabel}>
-              Baptism Class
+        <div className={styles.ceSchedule}>
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Class Day
             </span>
 
-            <span className={styles.scheduleTime}>
-              Saturday · 4:30 pm
+            <span className={styles.ceScheduleValue}>
+              Saturday
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Time
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              4:30 PM
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Venue
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              Union Church Vestry
             </span>
           </div>
         </div>
@@ -119,8 +141,39 @@ export default function ActivitiesGrid() {
     {
       title: 'CE Union',
       link: '#',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Growing together through faith and service.',
+      description: (
+        <div className={styles.ceSchedule}>
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Meeting Day
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              Every Tuesday
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Time
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              7:00 PM
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Venue
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              Union Church
+            </span>
+          </div>
+        </div>
+      ),
 
       imageUrl:
         'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1200&auto=format&fit=crop',
@@ -129,8 +182,39 @@ export default function ActivitiesGrid() {
     {
       title: "Women's Fellowship",
       link: '#',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Building faith, connection and encouragement.',
+      description: (
+        <div className={styles.ceSchedule}>
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Meeting Day
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              Every Saturday
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Time
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              4:00 PM
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Venue
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              Union Church Aminity Hall Ground Floor
+            </span>
+          </div>
+        </div>
+      ),
 
       imageUrl:
         'https://images.unsplash.com/photo-1609234656388-0ff363383899?q=80&w=1200&auto=format&fit=crop',
@@ -139,8 +223,39 @@ export default function ActivitiesGrid() {
     {
       title: 'Youth Fellowship',
       link: '#',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inspiring young people through faith and community.',
+      description: (
+        <div className={styles.ceSchedule}>
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Meeting Day
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              Every Saturday
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Time
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              5:30 PM
+            </span>
+          </div>
+
+          <div className={styles.ceScheduleItem}>
+            <span className={styles.ceScheduleLabel}>
+              Venue
+            </span>
+
+            <span className={styles.ceScheduleValue}>
+              Union Church Aminity Hall First Floor
+            </span>
+          </div>
+        </div>
+      ),
 
       imageUrl:
         'https://images.unsplash.com/photo-1523803326055-9729b9e02e5a?q=80&w=1200&auto=format&fit=crop',
@@ -151,20 +266,20 @@ export default function ActivitiesGrid() {
     gsap.registerPlugin(ScrollTrigger)
 
     const ctx = gsap.context(() => {
-      // Stagger animate cards on scroll
-      gsap.fromTo(`.${styles.gridItem}`,
+      gsap.fromTo(
+        `.${styles.gridItem}`,
         { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
           stagger: 0.15,
-          ease: "power3.out",
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: `.${styles.grid}`,
-            start: "top 80%",
-            once: true
-          }
+            start: 'top 80%',
+            once: true,
+          },
         }
       )
     }, containerRef)

@@ -68,11 +68,18 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
     const iconMap = {};
     churches.forEach(church => {
       const isActive = church.id === activeChurchId;
+      const isMission = church.type === 'mission';
+      const markerColor = isMission ? '#e65100' : '#800000'; // Vibrant orange for mission, Maroon for satellite
+
       iconMap[church.id] = L.divIcon({
         className: styles.markerIcon,
         html: `
-          <div class="${styles.markerLabel} ${isActive ? styles.hiddenLabel : ''}" title="click to get details">${church.name}</div>
-          <img src="/map-pin.svg" class="${styles.pulsatingPin}" title="click to get details" alt="GPS Pin" />
+          <div class="${styles.markerLabel} ${isActive ? styles.hiddenLabel : ''}" style="color: ${markerColor}; border-color: ${markerColor};" title="click to get details">${church.name}</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="${styles.pulsatingPin}" title="click to get details" alt="GPS Pin">
+            <ellipse cx="50" cy="90" rx="20" ry="8" fill="#dce0e3" stroke="#333333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M50 88 C50 88, 20 55, 20 35 A30 30 0 1 1 80 35 C80 55, 50 88, 50 88 Z" fill="${markerColor}" stroke="#333333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="35" r="12" fill="#dce0e3" stroke="#333333" stroke-width="4"/>
+          </svg>
         `,
         iconSize: [40, 40],
         iconAnchor: [20, 40],
@@ -178,7 +185,10 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
               }}
             >
               <Popup className={`customPopup`} autoPan={false}>
-                <div className={styles.popupHeader}>
+                <div 
+                  className={styles.popupHeader}
+                  style={church.type === 'mission' ? { background: 'linear-gradient(135deg, #e65100 0%, #ff6600 60%, #ff8c00 100%)' } : {}}
+                >
                   {church.name}
                 </div>
                 <div className={styles.popupBody}>

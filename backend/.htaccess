@@ -1,0 +1,8 @@
+# Protect sensitive files and configuration from direct public access
+<FilesMatch "\.(env|json|ini|log|sql|git)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Optional: Disable directory browsing
+Options -Indexes

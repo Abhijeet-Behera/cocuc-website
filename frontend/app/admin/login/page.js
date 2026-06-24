@@ -1,9 +1,23 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useAuth } from '../../../components/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
+
+function LoginLogic({ setSuccess }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('logout') === 'success') {
+      setSuccess('Successfully logged out.');
+      router.replace('/admin/login');
+    }
+  }, [searchParams, router, setSuccess]);
+
+  return null;
+}
 
 export default function LoginRegister() {
   const [isLogin, setIsLogin] = useState(true);
@@ -86,6 +100,10 @@ export default function LoginRegister() {
 
       if (res.ok) {
         if (isLogin) {
+          if (data.user.designation !== role) {
+            setError(`Error: Account found, but you are not registered as a ${role}.`);
+            return;
+          }
           login(data.user, data.token);
           router.push('/admin');
         } else {
@@ -123,6 +141,10 @@ export default function LoginRegister() {
       padding: '120px 1rem 2rem 1rem', // Clears the navbar safely
       boxSizing: 'border-box'
     }}>
+      <Suspense fallback={null}>
+        <LoginLogic setSuccess={setSuccess} />
+      </Suspense>
+
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -383,23 +405,7 @@ export default function LoginRegister() {
           </motion.button>
         </form>
 
-        <motion.p 
-          layout
-          style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.95rem', color: '#666' }}
-        >
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
-          <span 
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError('');
-              setSuccess('');
-              setFormData({ ...formData, password: '', confirmPassword: '' });
-            }}
-            style={{ color: 'var(--color-primary)', fontWeight: '600', cursor: 'pointer' }}
-          >
-            {isLogin ? "Register here" : "Login here"}
-          </span>
-        </motion.p>
+
       </motion.div>
     </div>
   );

@@ -1,3 +1,7 @@
+/* ────────────────────────────────────────────
+   LatestBlogs — Editorial Card Design
+──────────────────────────────────────────── */
+
 .loading {
   text-align: center;
   padding: 3rem;
@@ -7,177 +11,237 @@
   text-align: center;
   padding: 3rem;
   color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
+/* ── Card ── */
 .article {
-  background-color: var(--color-white);
-  border-radius: var(--radius-lg);
+  background: #fff;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
   display: flex;
   flex-direction: column;
-  transition: all 0.4s ease;
-  box-shadow: var(--shadow-sm);
+  transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1),
+              box-shadow 0.35s cubic-bezier(0.165, 0.84, 0.44, 1),
+              border-color 0.35s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  position: relative;
 }
 
 .article:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(128, 0, 0, 0.09);
+  border-color: rgba(128, 0, 0, 0.12);
 }
 
+/* ── Image Area ── */
 .imageContainer {
   width: 100%;
-  height: 220px;
-  background-color: #f1f1f1;
+  height: 200px;
+  background-color: #f5f5f5;
   overflow: hidden;
+  position: relative;
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: block;
 }
 
 .article:hover .image {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
+/* ── Fallback when no image ── */
 .fallbackImage {
   width: 100%;
-  height: 220px;
-  background-color: var(--color-primary);
+  height: 200px;
+  background: linear-gradient(135deg, #800000 0%, #5c0000 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.fallbackImage::before {
+  content: '"';
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  font-size: 5rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: rgba(255,255,255,0.08);
+  line-height: 1;
 }
 
 .fallbackTitle {
-  color: white;
-  padding: 1rem;
+  color: rgba(255, 255, 255, 0.92);
   text-align: center;
-  opacity: 0.9;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  line-height: 1.4;
+  position: relative;
+  z-index: 1;
 }
 
+/* ── Content Area ── */
 .content {
-  padding: 2rem;
+  padding: 1.5rem 1.75rem 1.75rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
+/* ── Meta row ── */
 .meta {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
 }
 
 .author {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.1em;
   color: var(--color-primary);
+  font-family: var(--font-heading);
+}
+
+.metaDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ccc;
+  flex-shrink: 0;
 }
 
 .date {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  color: #aaa;
+  font-family: var(--font-body);
 }
 
+/* ── Title ── */
 .title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  transition: color 0.3s;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #1a1a1a;
+  font-family: var(--font-heading);
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  transition: color 0.25s ease;
 }
 
 .article:hover .title {
   color: var(--color-primary);
 }
 
+/* ── Excerpt ── */
 .excerpt {
   color: var(--color-text-muted);
-  margin-bottom: 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+/* ── Read More ── */
 .readMoreContainer {
   margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
 }
 
 .readMore {
   color: var(--color-primary);
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: gap 0.2s ease;
 }
 
-/* Tablet Layout */
+.article:hover .readMore {
+  gap: 0.65rem;
+}
+
+/* ── Tablet ── */
 @media (max-width: 992px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    gap: 1.5rem;
   }
 }
 
-/* Mobile Layout */
+/* ── Mobile ── */
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .article {
     flex-direction: row;
-    height: 140px;
-    border-radius: 12px;
+    min-height: 130px;
+    height: auto;
+    border-radius: 10px;
   }
 
   .article:hover {
-    transform: translateY(-4px); /* subtle hover for mobile */
+    transform: translateY(-3px);
   }
 
-  .imageContainer, .fallbackImage {
-    width: 120px;
-    height: 100%;
+  .imageContainer,
+  .fallbackImage {
+    width: 110px;
+    height: auto;
+    min-height: 130px;
     flex-shrink: 0;
+    border-radius: 0;
   }
 
   .content {
-    padding: 1rem;
+    padding: 0.9rem 1.1rem;
     justify-content: center;
   }
 
   .meta {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
   }
 
   .title {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 1rem;
+    margin-bottom: 0;
+    /* Removed line-clamp so the full title is always visible */
   }
 
-  .excerpt {
-    display: none; /* Hide excerpt on mobile for list view */
-  }
-
+  .excerpt,
   .readMoreContainer {
-    display: none; /* Hide read more on mobile, whole card is clickable */
+    display: none;
   }
 }
+

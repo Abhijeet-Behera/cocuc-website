@@ -135,7 +135,7 @@ export default function ActivitiesGrid() {
       ),
 
       imageUrl:
-        'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=1200&auto=format&fit=crop',
+        'https://images.pexels.com/photos/267559/pexels-photo-267559.jpeg?auto=compress&cs=tinysrgb&w=1200',
       alt: 'Counselling and baptism ministry',
     },
     {
@@ -217,7 +217,7 @@ export default function ActivitiesGrid() {
       ),
 
       imageUrl:
-        'https://images.unsplash.com/photo-1609234656388-0ff363383899?q=80&w=1200&auto=format&fit=crop',
+        'https://images.pexels.com/photos/17030051/pexels-photo-17030051.jpeg?auto=compress&cs=tinysrgb&w=1200',
       alt: 'Women gathered together in a warm fellowship setting',
     },
     {
@@ -262,6 +262,19 @@ export default function ActivitiesGrid() {
       alt: 'Young people worshipping together at a youth gathering',
     },
   ];
+  const [activeCard, setActiveCard] = useState(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(`.${styles.gridItem}`)) {
+        setActiveCard(null)
+      }
+    }
+    
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
 
@@ -291,7 +304,41 @@ export default function ActivitiesGrid() {
     <div className={styles.gridContainer} ref={containerRef}>
       <div className={styles.grid}>
         {activities.map((item, index) => (
-          <div key={index} className={styles.gridItem}>
+          <div 
+            key={index} 
+            className={`${styles.gridItem} ${activeCard === index ? styles.active : ''}`}
+            tabIndex={0}
+            role="button"
+            aria-expanded={activeCard === index}
+            onMouseEnter={() => {
+              if (window.matchMedia('(hover: hover)').matches) {
+                setActiveCard(index);
+              }
+            }}
+            onMouseLeave={() => {
+              if (window.matchMedia('(hover: hover)').matches) {
+                setActiveCard(null);
+              }
+            }}
+            onClick={(e) => {
+              if (e.target.closest('a')) return; // Allow Read More link to navigate
+              
+              if (window.matchMedia('(hover: none)').matches) {
+                // Mobile/Touch: Toggle to close if clicked again
+                setActiveCard(activeCard === index ? null : index);
+              } else {
+                // PC: Click only opens, never closes (unless clicked outside)
+                setActiveCard(index);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if (e.target.closest('a')) return;
+                e.preventDefault();
+                setActiveCard(activeCard === index ? null : index);
+              }
+            }}
+          >
             {/* Full-bleed background image */}
             <img
               src={item.imageUrl}
@@ -349,15 +396,7 @@ export default function ActivitiesGrid() {
               </Link>
             </div>
 
-            {/* Full-card accessible link overlay */}
-            <Link
-              href={item.link}
-              className={styles.cardLinkOverlay}
-              tabIndex={0}
-              aria-label={`Learn more about ${item.title}`}
-            >
-              {item.title}
-            </Link>
+
           </div>
         ))}
       </div>

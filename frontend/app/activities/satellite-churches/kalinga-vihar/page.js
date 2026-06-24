@@ -4,10 +4,6 @@ export const metadata = {
 }
 
 export default function KalingaViharPage() {
-  const leaders = [
-    { name: 'Mr. K. Tulasi Rao', role: 'Worship Center In-charge & Former Ex-Treasurer' },
-    { name: 'Rev. Sandeep Kumar Giri', role: 'Associate Pastor & Caretaker' }
-  ]
 
   return (
     <div>
@@ -22,26 +18,36 @@ export default function KalingaViharPage() {
           overflow: 'hidden',
         }}
       >
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            opacity: 0.04,
-            fontWeight: 900,
-            lineHeight: 1,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            fontFamily: 'serif',
-          }}
-        >
-          ✝
-        </div>
-
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '20rem',
+              height: '30rem',
+              opacity: 0.04,
+              pointerEvents: 'none',
+              userSelect: 'none',
+              zIndex: -1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg
+              viewBox="0 0 24 36"
+              style={{
+                width: '100%',
+                height: '100%',
+                fill: 'currentColor',
+              }}
+            >
+              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
+            </svg>
+          </div>
           <p
             style={{
               fontSize: '0.85rem',
@@ -165,41 +171,7 @@ export default function KalingaViharPage() {
             </div>
           </div>
 
-          {/* Leaders Grid */}
-          <h2
-            style={{
-              fontSize: '1.5rem',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              color: 'var(--color-primary-dark)',
-              marginBottom: '1.5rem',
-            }}
-          >
-            Worship Center Leadership
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '1.25rem',
-            }}
-          >
-            {leaders.map((l, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.1)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '1.5rem 1.25rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
-                <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.4rem', fontSize: '1rem' }}>{l.name}</p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600 }}>{l.role}</p>
-              </div>
-            ))}
-          </div>
+
 
         </div>
       </section>

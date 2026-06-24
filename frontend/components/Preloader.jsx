@@ -4,12 +4,20 @@ import { useEffect, useState, useRef } from 'react'
 import gsap from 'gsap'
 import styles from './Preloader.module.css'
 
+let hasPreloaded = false;
+
 export default function Preloader() {
   const [progress, setProgress] = useState(0)
   const [visible, setVisible] = useState(true)
   const containerRef = useRef(null)
 
   useEffect(() => {
+    if (hasPreloaded) {
+      setVisible(false)
+      return
+    }
+    hasPreloaded = true
+
     document.body.style.overflow = 'hidden'
     
     const tl = gsap.timeline({

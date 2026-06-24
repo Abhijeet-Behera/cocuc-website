@@ -1,36 +1,62 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
-const CHURCHES = [
-  { id: 1, name: "Jagatsinghpur", coords: [20.2644, 86.1666], desc: "Our satellite church in Jagatsinghpur district." },
-  { id: 2, name: "Nayagarh", coords: [20.1255, 85.1066], desc: "Our satellite church in Nayagarh district." },
-  { id: 3, name: "Baripada", coords: [21.9320, 86.7265], desc: "Our satellite church in Baripada (Mayurbhanj)." },
-  { id: 4, name: "Sundarpada", coords: [20.2177, 85.8055], desc: "Local satellite church serving the Sundarpada area." },
-  { id: 5, name: "CSPUR", coords: [20.3100, 85.8150], desc: "Local satellite church serving Chandrasekharpur." },
-  { id: 6, name: "Kalinga Vihar", coords: [20.2520, 85.7663], desc: "Local satellite church serving Kalinga Vihar." },
+const SATELLITE_CHURCHES = [
+  { id: 4, name: "Sundarpada",       coords: [20.2177, 85.8055], desc: "Coordinator: Evg. Ranjit Singh",               type: 'satellite' },
+  { id: 5, name: "Chandrasekharpur", coords: [20.3100, 85.8150], desc: "Coordinator: Amon Chandra Nag",                type: 'satellite' },
+  { id: 6, name: "Kalinga Vihar",    coords: [20.2520, 85.7663], desc: "Local satellite church serving Kalinga Vihar.", type: 'satellite' },
 ];
 
-// Dynamically import the map to disable SSR (Server Side Rendering)
-// because Leaflet relies on the window object
+const MISSION_FIELDS = [
+  { id: 1, name: "Jagatsinghpur", coords: [20.2644, 86.1666], desc: "Our mission field in Jagatsinghpur district.", type: 'mission' },
+  { id: 2, name: "Nayagarh",      coords: [20.1255, 85.1066], desc: "Our mission field in Nayagarh district.",      type: 'mission' },
+  { id: 3, name: "Baripada",      coords: [21.9320, 86.7265], desc: "Our mission field in Baripada (Mayurbhanj).",  type: 'mission' },
+];
+
+const ALL_CHURCHES = [...SATELLITE_CHURCHES, ...MISSION_FIELDS];
+
+// ── Unified warm palette ──
+const SATELLITE_COLOR = '#800000'; // deep maroon
+const MISSION_COLOR   = '#e65100'; // vibrant deep orange per user request
+
 const MapComponent = dynamic(() => import('./MapComponent'), {
   ssr: false,
   loading: () => (
     <div style={{ height: '550px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8f9fa', borderRadius: '16px' }}>
-      <div className="jumping-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+      <div className="jumping-dots"><span></span><span></span><span></span></div>
     </div>
   )
 });
 
 export default function ChurchesMapSection() {
   const [activeChurchId, setActiveChurchId] = useState(null);
-
   const mapContainerRef = useRef(null);
+  const sectionRef      = useRef(null);
+  const headingRef      = useRef(null);
+  const col1Ref         = useRef(null);
+  const col2Ref         = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      gsap.fromTo(headingRef.current,
+        { opacity: 0, y: 28 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: headingRef.current, start: 'top 88%', once: true } }
+      );
+      gsap.fromTo([col1Ref.current, col2Ref.current],
+        { opacity: 0, y: 32 },
+        { opacity: 1, y: 0, duration: 0.7, stagger: 0.14, ease: 'power2.out',
+          scrollTrigger: { trigger: col1Ref.current, start: 'top 84%', once: true } }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   const handleClosePopup = (churchId) => {
     setActiveChurchId((prev) => (prev === churchId ? null : prev));
@@ -40,73 +66,61 @@ export default function ChurchesMapSection() {
     setActiveChurchId(churchId);
     if (window.innerWidth <= 992 && mapContainerRef.current) {
       setTimeout(() => {
-        const offset = 80;
-        const bodyRect = document.body.getBoundingClientRect().top;
+        const bodyRect    = document.body.getBoundingClientRect().top;
         const elementRect = mapContainerRef.current.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        window.scrollTo({ top: elementRect - bodyRect - 80, behavior: 'smooth' });
       }, 150);
     }
   };
 
   return (
-    <section className="section container" style={{ padding: '60px 20px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+    <section ref={sectionRef} className="section container" style={{ padding: '60px 20px' }}>
+      <div ref={headingRef} style={{ textAlign: 'center', marginBottom: '2.5rem', opacity: 0 }}>
         <h2 className="section-title-elegant">
-          <span className="title-normal">Our </span>
-          <em className="title-italic">Satellite Churches</em>
+          <span className="title-normal">Satellite Churches</span>
+          <em className="title-italic"> &amp; Mission Fields</em>
         </h2>
-        <p style={{ color: '#666', marginTop: '10px' }}>Find our extended church family locations across the state.</p>
+        <p style={{ color: 'var(--color-text-muted)', marginTop: '10px', fontFamily: 'var(--font-body)', fontSize: '1rem' }}>
+          Find our extended church family locations and mission fields across the state.
+        </p>
       </div>
 
       <div className="sc-content-grid">
-
-        {/* Map Container */}
-        <div
-          ref={mapContainerRef}
-          className="sc-map-item"
-          style={{
-            width: '100%',
-            minHeight: '600px',
-            borderRadius: '20px',
-            overflow: 'hidden',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-            border: '4px solid #fff',
-            zIndex: 10
-          }}
-        >
+        {/* Map */}
+        <div ref={mapContainerRef} className="sc-map-item" style={{ width: '100%', minHeight: '600px', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', border: '4px solid #fff', zIndex: 10 }}>
           <MapComponent
-            churches={CHURCHES}
+            churches={ALL_CHURCHES}
             activeChurchId={activeChurchId}
             onMarkerClick={setActiveChurchId}
             onClosePopup={handleClosePopup}
           />
         </div>
 
-        {/* Location List Cards */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ marginBottom: '1.5rem', color: '#333', fontSize: '1.4rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              width: '38px', height: '38px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, #800000, #a30000)',
-              boxShadow: '0 4px 12px rgba(128,0,0,0.3)', flexShrink: 0
-            }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
-                <line x1="9" x2="9" y1="3" y2="18"/>
-                <line x1="15" x2="15" y1="6" y2="21"/>
-              </svg>
-            </span>
-            Find on map
-          </h3>
-
+        {/* Satellite Churches */}
+        <div ref={col1Ref} className="sc-list-col" style={{ opacity: 0 }}>
+          <ListHeader label="Satellite Churches" color={SATELLITE_COLOR} />
           <div className="sc-list custom-scrollbar">
-            {CHURCHES.map((church, index) => (
-              <ChurchCard 
+            {SATELLITE_CHURCHES.map((church) => (
+              <ChurchCard
                 key={church.id}
                 church={church}
+                themeColor={SATELLITE_COLOR}
+                isActive={activeChurchId === church.id}
+                onClick={() => handleChurchClick(church.id)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Mission Fields */}
+        <div ref={col2Ref} className="sc-list-col" style={{ opacity: 0 }}>
+          <ListHeader label="Mission Fields" color={MISSION_COLOR} />
+          <div className="sc-list custom-scrollbar">
+            {MISSION_FIELDS.map((church) => (
+              <ChurchCard
+                key={church.id}
+                church={church}
+                themeColor={MISSION_COLOR}
                 isActive={activeChurchId === church.id}
                 onClick={() => handleChurchClick(church.id)}
               />
@@ -116,127 +130,178 @@ export default function ChurchesMapSection() {
       </div>
 
       <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f5f5f5; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ccc; }
 
         .sc-list {
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 6px;
           max-height: 600px;
           overflow-y: auto;
+          padding-top: 4px;
           padding-right: 4px;
           padding-bottom: 10px;
         }
-
-        .sc-content-grid {
-          display: flex;
-          flex-direction: column-reverse;
-          gap: 30px;
-        }
+        .sc-list-col { display: flex; flex-direction: column; }
+        .sc-content-grid { display: flex; flex-direction: column-reverse; gap: 30px; }
 
         @media (min-width: 992px) {
           .sc-content-grid {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr;
             align-items: start;
+            gap: 20px;
           }
-          .sc-map-item {
-            position: sticky;
-            top: 100px;
-          }
+          .sc-map-item { position: sticky; top: 100px; }
         }
       `}</style>
     </section>
   );
 }
 
-function ChurchCard({ church, isActive, onClick }) {
-  const [isHovered, setIsHovered] = useState(false);
-  const hoverState = isHovered && !isActive;
+/* ── Column heading ── */
+function ListHeader({ label, color }) {
+  return (
+    <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '3px', height: '22px', background: color, borderRadius: '2px', flexShrink: 0 }} />
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+        fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        style={{ opacity: 0.75, flexShrink: 0 }}
+      >
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      <h3 style={{
+        fontSize: '0.75rem', fontWeight: '700', color, margin: 0,
+        fontFamily: 'var(--font-heading)', letterSpacing: '0.12em', textTransform: 'uppercase'
+      }}>{label}</h3>
+    </div>
+  );
+}
+
+/* ── Location card — no background overlay, border+shadow drive the states ── */
+function ChurchCard({ church, isActive, onClick, themeColor }) {
+  const cardRef = useRef(null);
+
+  const handleClick = () => {
+    if (cardRef.current) {
+      gsap.fromTo(cardRef.current,
+        { scale: 0.97 },
+        { scale: 1, duration: 0.3, ease: 'back.out(2.5)' }
+      );
+    }
+    onClick();
+  };
 
   return (
-    <div
-      className="church-card"
+    <motion.div
+      ref={cardRef}
+      onClick={handleClick}
+      whileHover={{ y: -2, transition: { type: 'spring', stiffness: 420, damping: 26 } }}
       style={{
-        background: isActive ? '#fffbfa' : '#fff',
-        borderRadius: '14px',
-        padding: '16px 18px 16px 16px',
+        flexShrink: 0,
+        borderRadius: '10px',
+        padding: '12px 14px',
         cursor: 'pointer',
-        border: `1px solid ${isActive ? 'rgba(128,0,0,0.25)' : (hoverState ? 'rgba(128,0,0,0.1)' : 'rgba(0,0,0,0.06)')}`,
+        background: isActive ? `${themeColor}0a` : '#fff',
+        border: isActive
+          ? `1.5px solid ${themeColor}55`
+          : '1.5px solid #f0f0f0',
         boxShadow: isActive
-          ? '0 12px 30px rgba(128,0,0,0.12)'
-          : (hoverState ? '0 8px 24px rgba(128,0,0,0.08)' : '0 2px 8px rgba(0,0,0,0.03)'),
-        transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+          ? `0 6px 20px ${themeColor}1a`
+          : '0 1px 4px rgba(0,0,0,0.04)',
+        transition: 'background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease',
         position: 'relative',
-        overflow: 'visible'
+        overflow: 'hidden',
       }}
-      onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.background = `${themeColor}08`;
+          e.currentTarget.style.borderColor = `${themeColor}30`;
+          e.currentTarget.style.boxShadow = `0 4px 14px ${themeColor}14`;
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.background = '#fff';
+          e.currentTarget.style.borderColor = '#f0f0f0';
+          e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)';
+        }
+      }}
     >
-      {/* Background Overlay */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-        background: 'linear-gradient(to right, #fff4f4, #ffffff)',
-        opacity: hoverState ? 1 : 0,
-        transition: 'opacity 0.3s ease',
-        zIndex: 0, borderRadius: '14px'
-      }}></div>
+      {/* Active left accent */}
+      <AnimatePresence>
+        {isActive && (
+          <motion.div
+            key="bar"
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            exit={{ scaleY: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            style={{
+              position: 'absolute', top: 0, left: 0, bottom: 0,
+              width: '3px', background: themeColor,
+              transformOrigin: 'top', borderRadius: '3px 0 0 3px',
+            }}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Clean inner content wrapper */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '15px', position: 'relative', zIndex: 1, transition: 'padding 0.3s ease' }}>
-        {/* Elegant circular icon */}
-        <div style={{
-          width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
-          background: isActive ? '#800000' : (hoverState ? 'rgba(128,0,0,0.08)' : '#f5f5f5'),
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: isActive ? '0 4px 12px rgba(128,0,0,0.3)' : 'none',
-          transition: 'all 0.3s ease'
-        }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={isActive ? '#fff' : (hoverState ? '#800000' : '#777')} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '12px',
+        paddingLeft: isActive ? '4px' : '0',
+        transition: 'padding 0.22s ease'
+      }}>
+        {/* Icon */}
+        <motion.div
+          animate={{
+            background: isActive ? themeColor : '#f5f5f5',
+            boxShadow: isActive ? `0 3px 10px ${themeColor}30` : 'none',
+          }}
+          transition={{ duration: 0.22 }}
+          style={{ width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+            fill="none" stroke={isActive ? '#fff' : '#b0b0b0'}
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          >
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
           </svg>
-        </div>
+        </motion.div>
 
         <div style={{ minWidth: 0, flex: 1 }}>
           <h4 style={{
-            margin: 0,
-            color: isActive ? '#800000' : (hoverState ? '#600000' : '#222'),
-            fontSize: '1rem',
-            fontWeight: '700',
-            letterSpacing: '0.01em',
-            lineHeight: 1.2,
-            marginBottom: '4px',
-            transition: 'color 0.2s ease'
+            margin: '0 0 2px 0', fontSize: '0.92rem', fontWeight: '700',
+            fontFamily: 'var(--font-heading)',
+            color: isActive ? themeColor : '#1a1a1a',
+            transition: 'color 0.2s ease', lineHeight: 1.25,
           }}>{church.name}</h4>
           <p style={{
-            margin: 0, fontSize: '0.8rem', color: '#777',
-            lineHeight: 1.4,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            margin: 0, fontSize: '0.75rem', color: '#9a9a9a',
+            fontFamily: 'var(--font-body)', lineHeight: 1.4,
+            display: '-webkit-box', WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>{church.desc}</p>
         </div>
 
-        {/* Arrow indicator */}
-        <div style={{
-          flexShrink: 0,
-          width: '24px', height: '24px',
-          borderRadius: '50%',
-          background: isActive ? 'rgba(128,0,0,0.08)' : 'transparent',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 0.3s ease',
-          transform: isActive ? 'translateX(2px)' : 'translateX(0)'
-        }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isActive ? '#800000' : '#bbb'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        {/* Chevron */}
+        <motion.div
+          animate={{ x: isActive ? 2 : 0, opacity: isActive ? 1 : 0.25 }}
+          transition={{ duration: 0.2 }}
+          style={{ flexShrink: 0 }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+            stroke={isActive ? themeColor : '#ccc'}
+            strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          >
             <path d="M9 18l6-6-6-6"/>
           </svg>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

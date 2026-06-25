@@ -72,14 +72,18 @@ if ($method === 'GET') {
     $title = $_POST['title'] ?? '';
     $content = $_POST['content'] ?? '';
     
-    if (!$title || !$content) {
+    $has_attachment = (isset($_FILES['image1']) && $_FILES['image1']['error'] === UPLOAD_ERR_OK) ||
+                      (isset($_FILES['image2']) && $_FILES['image2']['error'] === UPLOAD_ERR_OK) ||
+                      (isset($_FILES['pdf']) && $_FILES['pdf']['error'] === UPLOAD_ERR_OK);
+
+    if ((!$title || !$content) && !$has_attachment) {
         http_response_code(400);
-        echo json_encode(["error" => "Missing title or content"]);
+        echo json_encode(["error" => "Please provide either title & content, or an attachment"]);
         exit;
     }
 
     $target_dir = "../uploads/blogs/";
-    if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+    if (!is_dir($target_dir)) @mkdir($target_dir, 0777, true);
 
     function handleUpload($fileInputName, $targetDir) {
         if (isset($_FILES[$fileInputName]) && $_FILES[$fileInputName]['error'] === UPLOAD_ERR_OK) {
@@ -92,36 +96,41 @@ if ($method === 'GET') {
         return null;
     }
 
-    // UPDATE MODE
-    if ($id) {
-        $stmt = $pdo->prepare("SELECT * FROM blogs WHERE id = ?");
-        $stmt->execute([$id]);
-        $existing = $stmt->fetch();
-        if (!$existing) {
-            http_response_code(404);
-            echo json_encode(["error" => "Blog not found"]);
-            exit;
+    try {
+        // UPDATE MODE
+        if ($id) {
+            $stmt = $pdo->prepare("SELECT * FROM blogs WHERE id = ?");
+            $stmt->execute([$id]);
+            $existing = $stmt->fetch();
+            if (!$existing) {
+                http_response_code(404);
+                echo json_encode(["error" => "Blog not found"]);
+                exit;
+            }
+
+            $image1_path = handleUpload('image1', $target_dir) ?? $existing['image1_path'];
+            $image2_path = handleUpload('image2', $target_dir) ?? $existing['image2_path'];
+            $pdf_path = handleUpload('pdf', $target_dir) ?? $existing['pdf_path'];
+
+            $stmt = $pdo->prepare("UPDATE blogs SET title = ?, content = ?, image1_path = ?, image2_path = ?, pdf_path = ? WHERE id = ?");
+            $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $id]);
+            
+            echo json_encode(["message" => "Blog updated successfully"]);
+        } 
+        // INSERT MODE
+        else {
+            $image1_path = handleUpload('image1', $target_dir);
+            $image2_path = handleUpload('image2', $target_dir);
+            $pdf_path = handleUpload('pdf', $target_dir);
+
+            $stmt = $pdo->prepare("INSERT INTO blogs (title, content, image1_path, image2_path, pdf_path, author_id) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $payload['id']]);
+            
+            echo json_encode(["message" => "Blog created successfully", "id" => $pdo->lastInsertId()]);
         }
-
-        $image1_path = handleUpload('image1', $target_dir) ?? $existing['image1_path'];
-        $image2_path = handleUpload('image2', $target_dir) ?? $existing['image2_path'];
-        $pdf_path = handleUpload('pdf', $target_dir) ?? $existing['pdf_path'];
-
-        $stmt = $pdo->prepare("UPDATE blogs SET title = ?, content = ?, image1_path = ?, image2_path = ?, pdf_path = ? WHERE id = ?");
-        $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $id]);
-        
-        echo json_encode(["message" => "Blog updated successfully"]);
-    } 
-    // INSERT MODE
-    else {
-        $image1_path = handleUpload('image1', $target_dir);
-        $image2_path = handleUpload('image2', $target_dir);
-        $pdf_path = handleUpload('pdf', $target_dir);
-
-        $stmt = $pdo->prepare("INSERT INTO blogs (title, content, image1_path, image2_path, pdf_path, author_id) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $payload['id']]);
-        
-        echo json_encode(["message" => "Blog created successfully", "id" => $pdo->lastInsertId()]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(["error" => "Database error: " . $e->getMessage()]);
     }
 }
 ?>

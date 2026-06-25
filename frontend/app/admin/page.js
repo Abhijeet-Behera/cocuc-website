@@ -71,7 +71,7 @@ export default function AdminPortal() {
     }
   }
 
-  if (loading || !user) {
+  if (loading || !user || user.designation !== 'Developer') {
     return <div className="section container" style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</div>
   }
 

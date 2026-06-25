@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function SecretaryPortal() {
   const { user, token, loading, logout } = useAuth()
@@ -108,16 +110,14 @@ export default function SecretaryPortal() {
     }
   }, [activeTab])
 
+  const getLocalFormattedDate = (d = new Date()) => {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
   useEffect(() => {
     setMounted(true)
     
-    // Set IST Date automatically
-    const istDate = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"});
-    const d = new Date(istDate);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    const formattedDate = `${yyyy}-${mm}-${dd}`;
+    const formattedDate = getLocalFormattedDate();
     
     setWeeklyDate(formattedDate);
     setSpecialDate(formattedDate);
@@ -241,7 +241,12 @@ export default function SecretaryPortal() {
 
   const handleWeeklySubmit = async (e) => {
     e.preventDefault()
-    if (!weeklyDate) return showToast('error', 'Release date is required.')
+    
+    const noticesToSave = individualNotices.map(n => ({ title: n.title, details: n.details })).filter(n => n.title.trim() || n.details.trim());
+    const hasText = noticesToSave.length > 0;
+    const hasFile = weeklyFiles.length > 0;
+    
+    if (!hasText && !hasFile) return showToast('error', 'Please provide either a notice title/detail or an attachment.')
     
     setSubmitLoading(true)
     try {
@@ -268,7 +273,7 @@ export default function SecretaryPortal() {
 
       if (res.ok) {
         showToast('success', 'Weekly Notice published successfully!')
-        setWeeklyDate(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}).split(',')[0].split('/').reverse().join('-')); 
+        setWeeklyDate(getLocalFormattedDate()); 
         setWeeklyFiles([]); document.getElementById('weeklyFiles').value = ''
         weeklyFilesPreviews.forEach(p => URL.revokeObjectURL(p.url))
         setWeeklyFilesPreviews([])
@@ -288,7 +293,11 @@ export default function SecretaryPortal() {
 
   const handleSpecialSubmit = async (e) => {
     e.preventDefault()
-    if (!specialDate || !specialTitle || !specialWing) return showToast('error', 'All fields required.')
+    
+    const hasText = specialTitle.trim() && specialEventFrom;
+    const hasFile = !!specialFile;
+    if (!hasText && !hasFile) return showToast('error', 'Please provide either Title & Date, or an Attachment.')
+    if (!specialWing) return showToast('error', 'Wing is required.')
     
     setSubmitLoading(true)
     try {
@@ -312,7 +321,7 @@ export default function SecretaryPortal() {
 
       if (res.ok) {
         showToast('success', 'Special Programme added successfully!')
-        setSpecialDate(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}).split(',')[0].split('/').reverse().join('-')); 
+        setSpecialDate(getLocalFormattedDate()); 
         setSpecialTitle(''); setSpecialWing('Church (General)'); setCustomWing(''); setSpecialEditId(null);
         setSpecialEventFrom(''); setSpecialEventTo(''); setSpecialDuration(''); setSpecialDetails('');
         clearSingleFile('specialFile', setSpecialFile, setSpecialFilePreview, specialFilePreview);
@@ -330,7 +339,11 @@ export default function SecretaryPortal() {
 
   const handleSpeakingSubmit = async (e) => {
     e.preventDefault()
-    if (!speakingSection || !speakingDate) return showToast('error', 'Section and Date are required.')
+    
+    const hasText = speakingSection && speakingDetails.trim();
+    const hasFile = !!speakingFile1 || !!speakingFile2 || !!speakingFile3;
+    if (!hasText && !hasFile) return showToast('error', 'Please provide either Section & Details, or an Attachment.')
+    if (!speakingDate) return showToast('error', 'Event date is required.')
     
     setSubmitLoading(true)
     try {
@@ -351,7 +364,7 @@ export default function SecretaryPortal() {
 
       if (res.ok) {
         showToast('success', 'Speaking Arrangement added successfully!')
-        setSpeakingDate(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}).split(',')[0].split('/').reverse().join('-'));
+        setSpeakingDate(getLocalFormattedDate());
         setSpeakingSection('Sunday Worships'); setSpeakingDetails(''); setSpeakingEditId(null);
         clearSingleFile('spkFile1', setSpeakingFile1, setSpeakingFile1Preview, speakingFile1Preview);
         clearSingleFile('spkFile2', setSpeakingFile2, setSpeakingFile2Preview, speakingFile2Preview);
@@ -581,17 +594,29 @@ export default function SecretaryPortal() {
                   </div>
                 )}
                 <div>
-                  <label style={labelStyle}>Programme Title *</label>
-                  <input type="text" required value={specialTitle} onChange={e => setSpecialTitle(e.target.value)} style={inputStyle} placeholder="e.g. Christmas Eve Celebration" />
+                  <label style={labelStyle}>Programme Title</label>
+                  <input type="text" value={specialTitle} onChange={e => setSpecialTitle(e.target.value)} style={inputStyle} placeholder="e.g. Christmas Eve Celebration" />
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   <div style={{ flex: 1, minWidth: '150px' }}>
-                    <label style={labelStyle}>Event Date (From) *</label>
-                    <input type="date" required value={specialEventFrom} onChange={e => setSpecialEventFrom(e.target.value)} style={inputStyle} />
+                    <label style={labelStyle}>Event Date (From)</label>
+                    <DatePicker 
+                       selected={specialEventFrom ? new Date(specialEventFrom) : null} 
+                       onChange={(date) => setSpecialEventFrom(date ? getLocalFormattedDate(date) : '')} 
+                       dateFormat="dd/MM/yyyy"
+                       placeholderText="DD/MM/YYYY"
+                       customInput={<input style={inputStyle} />}
+                    />
                   </div>
                   <div style={{ flex: 1, minWidth: '150px' }}>
-                    <label style={labelStyle}>Event Date (To) *</label>
-                    <input type="date" required value={specialEventTo} onChange={e => setSpecialEventTo(e.target.value)} style={inputStyle} />
+                    <label style={labelStyle}>Event Date (To)</label>
+                    <DatePicker 
+                       selected={specialEventTo ? new Date(specialEventTo) : null} 
+                       onChange={(date) => setSpecialEventTo(date ? getLocalFormattedDate(date) : '')} 
+                       dateFormat="dd/MM/yyyy"
+                       placeholderText="DD/MM/YYYY"
+                       customInput={<input style={inputStyle} />}
+                    />
                   </div>
                   <div style={{ width: '120px', minWidth: '100px' }}>
                     <label style={labelStyle}>Duration</label>
@@ -772,9 +797,9 @@ export default function SecretaryPortal() {
           onMouseLeave={handlePreviewMouseUp}
           onTouchEnd={handlePreviewMouseUp}
         >
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '1rem', gap: '1rem', zIndex: 1102 }}>
+          <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '1rem', gap: '1rem', zIndex: 1102 }}>
             {fullscreenPreview.type === 'image' && (
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(0,0,0,0.5)', padding: '0.5rem', borderRadius: '12px' }}>
                 <button onClick={(e) => { e.stopPropagation(); setPreviewZoom(z => Math.max(z - 0.2, 0.5)); }} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1.2rem' }}>-</button>
                 <button onClick={(e) => { e.stopPropagation(); setPreviewZoom(1); setPreviewPan({x:0, y:0}); }} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}>Reset</button>
                 <button onClick={(e) => { e.stopPropagation(); setPreviewZoom(z => Math.min(z + 0.2, 5)); }} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1.2rem' }}>+</button>
@@ -782,16 +807,16 @@ export default function SecretaryPortal() {
             )}
             <button 
               onClick={() => setFullscreenPreview(null)} 
-              style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: '2.5rem', cursor: 'pointer', opacity: 0.8, transition: 'opacity 0.2s', padding: '0 0.5rem' }}
-              onMouseOver={(e) => e.target.style.opacity = '1'}
-              onMouseOut={(e) => e.target.style.opacity = '0.8'}
+              style={{ background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', fontSize: '2.5rem', cursor: 'pointer', transition: 'background 0.2s', padding: '0.2rem 1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onMouseOver={(e) => e.target.style.background = 'rgba(220,38,38,0.8)'}
+              onMouseOut={(e) => e.target.style.background = 'rgba(0,0,0,0.5)'}
             >
               &times;
             </button>
           </div>
           
           <div 
-            style={{ flex: 1, overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ flex: 1, width: '100%', height: '100%', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', touchAction: 'none' }}
             onMouseDown={fullscreenPreview.type === 'image' ? handlePreviewMouseDown : undefined}
             onMouseMove={fullscreenPreview.type === 'image' ? handlePreviewMouseMove : undefined}
             onTouchStart={fullscreenPreview.type === 'image' ? handlePreviewTouchStart : undefined}

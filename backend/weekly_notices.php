@@ -24,9 +24,9 @@ if ($method === 'GET') {
         exit;
     }
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Secretary') {
+    if (!$payload || ($payload['designation'] !== 'Secretary' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Secretary can delete notices"]);
+        echo json_encode(["error" => "Forbidden: Only Secretary or Developers can delete notices"]);
         exit;
     }
 
@@ -41,6 +41,11 @@ if ($method === 'GET') {
 
     $stmt = $pdo->prepare("DELETE FROM weekly_notices WHERE id = ?");
     $stmt->execute([$id]);
+    
+    if ($payload['designation'] === 'Developer') {
+        logDeveloperAction($pdo, $payload['email'], 'DELETE', 'weekly_notices', "Deleted notice ID {$id}");
+    }
+    
     echo json_encode(["message" => "Notice deleted successfully"]);
 
 } elseif ($method === 'POST') {
@@ -52,9 +57,9 @@ if ($method === 'GET') {
     }
 
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Secretary') {
+    if (!$payload || ($payload['designation'] !== 'Secretary' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Secretary can post notices"]);
+        echo json_encode(["error" => "Forbidden: Only Secretary or Developers can post notices"]);
         exit;
     }
 
@@ -140,6 +145,10 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("UPDATE weekly_notices SET release_date = ?, documents_json = ?, notices_json = ? WHERE id = ?");
             $stmt->execute([$release_date, json_encode($finalDocs), $notices_json_final, $id]);
             
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'UPDATE', 'weekly_notices', "Updated notice ID {$id}");
+            }
+            
             echo json_encode(["message" => "Notice updated successfully"]);
         } else {
             foreach ($noticesArray as $idx => &$notice) {
@@ -154,7 +163,12 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("INSERT INTO weekly_notices (release_date, documents_json, notices_json, author_id) VALUES (?, ?, ?, ?)");
             $stmt->execute([$release_date, json_encode($newDocs), $notices_json_final, $payload['id']]);
             
-            echo json_encode(["message" => "Notice created successfully", "id" => $pdo->lastInsertId()]);
+            $new_id = $pdo->lastInsertId();
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'INSERT', 'weekly_notices', "Created new notice ID {$new_id}");
+            }
+            
+            echo json_encode(["message" => "Notice created successfully", "id" => $new_id]);
         }
     } catch (PDOException $e) {
         http_response_code(500);

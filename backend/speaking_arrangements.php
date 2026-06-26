@@ -24,9 +24,9 @@ if ($method === 'GET') {
         exit;
     }
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Secretary') {
+    if (!$payload || ($payload['designation'] !== 'Secretary' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Secretary can delete arrangements"]);
+        echo json_encode(["error" => "Forbidden: Only Secretary or Developers can delete arrangements"]);
         exit;
     }
 
@@ -41,6 +41,11 @@ if ($method === 'GET') {
 
     $stmt = $pdo->prepare("DELETE FROM speaking_arrangements WHERE id = ?");
     $stmt->execute([$id]);
+    
+    if ($payload['designation'] === 'Developer') {
+        logDeveloperAction($pdo, $payload['email'], 'DELETE', 'speaking_arrangements', "Deleted arrangement ID {$id}");
+    }
+    
     echo json_encode(["message" => "Arrangement deleted successfully"]);
 
 } elseif ($method === 'POST') {
@@ -52,9 +57,9 @@ if ($method === 'GET') {
     }
 
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Secretary') {
+    if (!$payload || ($payload['designation'] !== 'Secretary' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Secretary can post arrangements"]);
+        echo json_encode(["error" => "Forbidden: Only Secretary or Developers can post arrangements"]);
         exit;
     }
 
@@ -111,6 +116,10 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("UPDATE speaking_arrangements SET sub_section = ?, details = ?, event_date = ?, attachment1_path = ?, attachment2_path = ?, attachment3_path = ? WHERE id = ?");
             $stmt->execute([$sub_section, $details, $event_date, $attachment1_path, $attachment2_path, $attachment3_path, $id]);
             
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'UPDATE', 'speaking_arrangements', "Updated arrangement ID {$id}");
+            }
+            
             echo json_encode(["message" => "Arrangement updated successfully"]);
         } else {
             $attachment1_path = handleUpload('attachment1', $target_dir);
@@ -120,7 +129,12 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("INSERT INTO speaking_arrangements (sub_section, details, event_date, attachment1_path, attachment2_path, attachment3_path, author_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$sub_section, $details, $event_date, $attachment1_path, $attachment2_path, $attachment3_path, $payload['id']]);
             
-            echo json_encode(["message" => "Arrangement created successfully", "id" => $pdo->lastInsertId()]);
+            $new_id = $pdo->lastInsertId();
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'INSERT', 'speaking_arrangements', "Created new arrangement ID {$new_id}");
+            }
+            
+            echo json_encode(["message" => "Arrangement created successfully", "id" => $new_id]);
         }
     } catch (PDOException $e) {
         http_response_code(500);

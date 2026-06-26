@@ -34,6 +34,10 @@ export default function LoginRegister() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
+  const [devOtpSent, setDevOtpSent] = useState(false);
+  const [devOtp, setDevOtp] = useState('');
+  const allowedDevEmails = process.env.NEXT_PUBLIC_ALLOWED_DEV_EMAILS ? process.env.NEXT_PUBLIC_ALLOWED_DEV_EMAILS.split(',') : [];
+  
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +68,58 @@ export default function LoginRegister() {
     setError('');
     setSuccess('');
     setIsLoading(true);
+
+    if (role === 'Developer') {
+      if (!allowedDevEmails.includes(formData.email)) {
+        setError("Error: This email is not authorized for Developer access.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!devOtpSent) {
+        // Step 1: Verify Password and Send OTP
+        try {
+          const res = await fetch(`${API_URL}/developer_auth.php?action=verify_credentials`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: formData.email, password: formData.password })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            setSuccess('OTP sent successfully to your email.');
+            setDevOtpSent(true);
+          } else {
+            setError(data.error || 'Invalid credentials');
+          }
+        } catch (err) {
+          setError('Network error. Ensure API is running.');
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      } else {
+        // Step 2: Verify OTP
+        try {
+          const res = await fetch(`${API_URL}/developer_auth.php?action=verify_otp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: formData.email, otp: devOtp })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            login(data.user, data.token);
+            router.push('/admin');
+          } else {
+            setError(data.error || 'Invalid OTP');
+          }
+        } catch (err) {
+          setError('Network error. Ensure API is running.');
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
+    }
 
     if (!isLogin) {
       if (formData.password !== formData.confirmPassword) {
@@ -127,6 +183,11 @@ export default function LoginRegister() {
     setRole(selectedRole);
     setError('');
     setSuccess('');
+    setDevOtpSent(false);
+    setDevOtp('');
+    if (selectedRole === 'Developer') {
+      setIsLogin(true); // Developers only login, no register here
+    }
   };
 
   const roles = ['Pastor', 'Secretary', 'Developer'];
@@ -174,7 +235,7 @@ export default function LoginRegister() {
             fontWeight: '700'
           }}
         >
-          {isLogin ? 'Welcome Back' : 'Create Account'}
+          {role === 'Developer' ? 'Developer Access' : (isLogin ? 'Welcome Back' : 'Create Account')}
         </motion.h2>
         
         {/* Role Switcher */}
@@ -251,7 +312,7 @@ export default function LoginRegister() {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <AnimatePresence mode="popLayout">
-            {!isLogin && (
+            {role !== 'Developer' && !isLogin && (
               <motion.div 
                 key="fullNameField"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -270,7 +331,27 @@ export default function LoginRegister() {
               </motion.div>
             )}
 
-            {isLogin ? (
+            {role === 'Developer' && (
+              <motion.div 
+                key="devEmail"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <input 
+                  type="email" placeholder="Developer Email" required 
+                  disabled={devOtpSent}
+                  value={formData.email} 
+                  onChange={e => setFormData({...formData, email: e.target.value})} 
+                  style={{ width: '100%', padding: '1rem', border: '1px solid #ddd', borderRadius: '12px', fontSize: '1rem', transition: 'all 0.3s', backgroundColor: devOtpSent ? '#f5f5f5' : 'white' }}
+                  onFocus={e => e.target.style.borderColor = 'var(--color-primary)'}
+                  onBlur={e => e.target.style.borderColor = '#ddd'}
+                />
+              </motion.div>
+            )}
+
+            {role !== 'Developer' && isLogin ? (
               <motion.div 
                 key="identifier"
                 initial={{ opacity: 0, x: -20 }}
@@ -287,7 +368,7 @@ export default function LoginRegister() {
                   onBlur={e => e.target.style.borderColor = '#ddd'}
                 />
               </motion.div>
-            ) : (
+            ) : role !== 'Developer' && (
               <motion.div 
                 key="registerFields"
                 initial={{ opacity: 0, x: 20 }}
@@ -315,43 +396,63 @@ export default function LoginRegister() {
               </motion.div>
             )}
 
-            <motion.div layout key="passwordField" style={{ position: 'relative' }}>
-              <input 
-                type={showPassword ? 'text' : 'password'} 
-                placeholder="Password" 
-                required 
-                value={formData.password} 
-                onChange={e => setFormData({...formData, password: e.target.value})} 
-                style={{ width: '100%', padding: '1rem', paddingRight: '3rem', border: '1px solid #ddd', borderRadius: '12px', fontSize: '1rem', transition: 'all 0.3s' }}
-                onFocus={e => e.target.style.borderColor = 'var(--color-primary)'}
-                onBlur={e => e.target.style.borderColor = '#ddd'}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{ position: 'absolute', right: '1rem', top: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-              
-              {!isLogin && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  {formData.password && (
-                    <div style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                      <div style={{ flex: 1, height: '4px', background: '#ddd', borderRadius: '2px', overflow: 'hidden' }}>
-                        <div style={{ width: `${(passStrength.score / 5) * 100}%`, height: '100%', background: passStrength.color, transition: 'all 0.3s' }} />
+            {(!devOtpSent) && (
+              <motion.div layout key="passwordField" style={{ position: 'relative' }}>
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  placeholder="Password" 
+                  required 
+                  value={formData.password} 
+                  onChange={e => setFormData({...formData, password: e.target.value})} 
+                  style={{ width: '100%', padding: '1rem', paddingRight: '3rem', border: '1px solid #ddd', borderRadius: '12px', fontSize: '1rem', transition: 'all 0.3s' }}
+                  onFocus={e => e.target.style.borderColor = 'var(--color-primary)'}
+                  onBlur={e => e.target.style.borderColor = '#ddd'}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: 'absolute', right: '1rem', top: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                
+                {role !== 'Developer' && !isLogin && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    {formData.password && (
+                      <div style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                        <div style={{ flex: 1, height: '4px', background: '#ddd', borderRadius: '2px', overflow: 'hidden' }}>
+                          <div style={{ width: `${(passStrength.score / 5) * 100}%`, height: '100%', background: passStrength.color, transition: 'all 0.3s' }} />
+                        </div>
+                        <span style={{ color: passStrength.color, fontWeight: '600' }}>{passStrength.label}</span>
                       </div>
-                      <span style={{ color: passStrength.color, fontWeight: '600' }}>{passStrength.label}</span>
+                    )}
+                    <div style={{ fontSize: '0.75rem', color: '#888', lineHeight: '1.4' }}>
+                      Password must be at least 8 characters long, and include an uppercase letter, lowercase letter, number, and symbol.
                     </div>
-                  )}
-                  <div style={{ fontSize: '0.75rem', color: '#888', lineHeight: '1.4' }}>
-                    Password must be at least 8 characters long, and include an uppercase letter, lowercase letter, number, and symbol.
                   </div>
-                </div>
-              )}
-            </motion.div>
+                )}
+              </motion.div>
+            )}
 
-            {!isLogin && (
+            {role === 'Developer' && devOtpSent && (
+              <motion.div 
+                key="devOtpField"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <input 
+                  type="text" placeholder="6-Digit OTP" required 
+                  value={devOtp} 
+                  onChange={e => setDevOtp(e.target.value)} 
+                  maxLength={6}
+                  style={{ width: '100%', padding: '1rem', border: '2px solid var(--color-primary)', borderRadius: '12px', fontSize: '1.2rem', textAlign: 'center', transition: 'all 0.3s', letterSpacing: '4px' }}
+                />
+              </motion.div>
+            )}
+
+            {role !== 'Developer' && !isLogin && (
               <motion.div 
                 key="confirmPasswordField"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -401,7 +502,11 @@ export default function LoginRegister() {
               transition: 'all 0.2s'
             }}
           >
-            {isLoading ? 'Processing...' : (isLogin ? `Login as ${role}` : `Register as ${role}`)}
+            {isLoading ? 'Processing...' : (
+              role === 'Developer' 
+                ? (devOtpSent ? 'Verify OTP' : 'Send OTP') 
+                : (isLogin ? `Login as ${role}` : `Register as ${role}`)
+            )}
           </motion.button>
         </form>
 

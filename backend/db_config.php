@@ -45,4 +45,22 @@ try {
     echo json_encode(["error" => "Database connection failed."]);
     exit;
 }
+
+function getClientIP() {
+    return $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
+}
+
+function logDeveloperAction($pdo, $email, $action_type, $target_table, $details) {
+    $ip = getClientIP();
+    $stmt = $pdo->prepare("INSERT INTO developer_audit_logs (email, action_type, target_table, details, ip_address) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$email, $action_type, $target_table, $details, $ip]);
+}
+
+// Auto-cleanup: Delete logs older than 30 days
+try {
+    $pdo->query("DELETE FROM developer_login_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)");
+    $pdo->query("DELETE FROM developer_audit_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)");
+} catch (PDOException $e) {
+    // Ignore error if tables don't exist yet
+}
 ?>

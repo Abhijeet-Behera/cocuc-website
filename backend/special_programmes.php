@@ -24,9 +24,9 @@ if ($method === 'GET') {
         exit;
     }
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Secretary') {
+    if (!$payload || ($payload['designation'] !== 'Secretary' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Secretary can delete programmes"]);
+        echo json_encode(["error" => "Forbidden: Only Secretary or Developers can delete programmes"]);
         exit;
     }
 
@@ -41,6 +41,11 @@ if ($method === 'GET') {
 
     $stmt = $pdo->prepare("DELETE FROM special_programmes WHERE id = ?");
     $stmt->execute([$id]);
+    
+    if ($payload['designation'] === 'Developer') {
+        logDeveloperAction($pdo, $payload['email'], 'DELETE', 'special_programmes', "Deleted programme ID {$id}");
+    }
+    
     echo json_encode(["message" => "Programme deleted successfully"]);
 
 } elseif ($method === 'POST') {
@@ -52,9 +57,9 @@ if ($method === 'GET') {
     }
 
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Secretary') {
+    if (!$payload || ($payload['designation'] !== 'Secretary' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Secretary can post programmes"]);
+        echo json_encode(["error" => "Forbidden: Only Secretary or Developers can post programmes"]);
         exit;
     }
 
@@ -110,6 +115,10 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("UPDATE special_programmes SET upload_date = ?, title = ?, wing = ?, custom_wing = ?, event_from = ?, event_to = ?, duration = ?, details = ?, document_path = ? WHERE id = ?");
             $stmt->execute([$upload_date, $title, $wing, $custom_wing, $event_from, $event_to, $duration, $details, $document_path, $id]);
             
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'UPDATE', 'special_programmes', "Updated programme ID {$id}");
+            }
+            
             echo json_encode(["message" => "Programme updated successfully"]);
         } else {
             $document_path = handleUpload('document', $target_dir);
@@ -117,7 +126,12 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("INSERT INTO special_programmes (upload_date, title, wing, custom_wing, event_from, event_to, duration, details, document_path, author_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$upload_date, $title, $wing, $custom_wing, $event_from, $event_to, $duration, $details, $document_path, $payload['id']]);
             
-            echo json_encode(["message" => "Programme created successfully", "id" => $pdo->lastInsertId()]);
+            $new_id = $pdo->lastInsertId();
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'INSERT', 'special_programmes', "Created new programme ID {$new_id}");
+            }
+            
+            echo json_encode(["message" => "Programme created successfully", "id" => $new_id]);
         }
     } catch (PDOException $e) {
         http_response_code(500);

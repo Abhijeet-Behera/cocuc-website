@@ -33,9 +33,9 @@ if ($method === 'GET') {
         exit;
     }
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Pastor') {
+    if (!$payload || ($payload['designation'] !== 'Pastor' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Pastors can delete blogs"]);
+        echo json_encode(["error" => "Forbidden: Only Pastors or Developers can delete blogs"]);
         exit;
     }
 
@@ -50,6 +50,11 @@ if ($method === 'GET') {
 
     $stmt = $pdo->prepare("DELETE FROM blogs WHERE id = ?");
     $stmt->execute([$id]);
+    
+    if ($payload['designation'] === 'Developer') {
+        logDeveloperAction($pdo, $payload['email'], 'DELETE', 'blogs', "Deleted blog ID {$id}");
+    }
+    
     echo json_encode(["message" => "Blog deleted successfully"]);
 
 } elseif ($method === 'POST') {
@@ -62,9 +67,9 @@ if ($method === 'GET') {
     }
 
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Pastor') {
+    if (!$payload || ($payload['designation'] !== 'Pastor' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Pastors can post blogs"]);
+        echo json_encode(["error" => "Forbidden: Only Pastors or Developers can post blogs"]);
         exit;
     }
 
@@ -115,6 +120,10 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("UPDATE blogs SET title = ?, content = ?, image1_path = ?, image2_path = ?, pdf_path = ? WHERE id = ?");
             $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $id]);
             
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'UPDATE', 'blogs', "Updated blog ID {$id}");
+            }
+            
             echo json_encode(["message" => "Blog updated successfully"]);
         } 
         // INSERT MODE
@@ -126,7 +135,12 @@ if ($method === 'GET') {
             $stmt = $pdo->prepare("INSERT INTO blogs (title, content, image1_path, image2_path, pdf_path, author_id) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $payload['id']]);
             
-            echo json_encode(["message" => "Blog created successfully", "id" => $pdo->lastInsertId()]);
+            $new_id = $pdo->lastInsertId();
+            if ($payload['designation'] === 'Developer') {
+                logDeveloperAction($pdo, $payload['email'], 'INSERT', 'blogs', "Created new blog ID {$new_id}");
+            }
+            
+            echo json_encode(["message" => "Blog created successfully", "id" => $new_id]);
         }
     } catch (PDOException $e) {
         http_response_code(500);

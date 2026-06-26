@@ -126,7 +126,7 @@ export default function SecretaryPortal() {
     if (!loading) {
       if (!user) {
         router.push('/admin/login')
-      } else if (user.designation !== 'Secretary') {
+      } else if (user.designation !== 'Secretary' && user.designation !== 'Developer') {
         router.push('/admin')
       } else {
         fetchAllData()
@@ -491,7 +491,14 @@ export default function SecretaryPortal() {
             <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3rem)', color: '#111', fontWeight: '800', lineHeight: '1.1', letterSpacing: '-1px' }}>Secretary Dashboard</h1>
             <p style={{ color: '#666', fontSize: '1.1rem', marginTop: '0.8rem' }}>Welcome back, <strong style={{color: 'var(--color-primary)'}}>{user.full_name}</strong></p>
           </div>
-          <button onClick={() => setShowLogoutConfirm(true)} style={{ padding: '0.7rem 1.8rem', border: 'none', color: '#fff', backgroundColor: 'var(--color-primary)', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(139,0,0,0.2)' }} onMouseOver={(e) => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 6px 20px rgba(139,0,0,0.3)'; }} onMouseOut={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 15px rgba(139,0,0,0.2)'; }}>Sign Out</button>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            {user.designation === 'Developer' && (
+              <button onClick={() => router.push('/admin')} style={{ padding: '0.7rem 1.8rem', border: '1px solid #444', color: '#444', backgroundColor: 'transparent', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', transition: 'all 0.2s ease' }} onMouseOver={(e) => { e.target.style.backgroundColor = '#f5f5f5'; }} onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; }}>
+                ← Back to Developer Portal
+              </button>
+            )}
+            <button onClick={() => setShowLogoutConfirm(true)} style={{ padding: '0.7rem 1.8rem', border: 'none', color: '#fff', backgroundColor: 'var(--color-primary)', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(139,0,0,0.2)' }} onMouseOver={(e) => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 6px 20px rgba(139,0,0,0.3)'; }} onMouseOut={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 15px rgba(139,0,0,0.2)'; }}>Sign Out</button>
+          </div>
         </div>
 
         {/* Tabs */}

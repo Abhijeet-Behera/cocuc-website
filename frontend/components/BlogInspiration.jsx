@@ -59,6 +59,21 @@ export default function BlogInspiration() {
     }
   }, [activeBlogModal])
 
+  // 3. Carousel Layout Parameters for Responsiveness
+  const getCarouselParams = () => {
+    if (typeof window === 'undefined') {
+      return { spacing: 310, translateY: 16, translateZ: 180, rotateY: 22 }
+    }
+    const w = window.innerWidth
+    if (w < 480) {
+      return { spacing: 215, translateY: 8, translateZ: 110, rotateY: 18 }
+    }
+    if (w < 768) {
+      return { spacing: 245, translateY: 12, translateZ: 140, rotateY: 20 }
+    }
+    return { spacing: 310, translateY: 16, translateZ: 180, rotateY: 22 }
+  }
+
   // 3. 3D Card Style Update Logic
   const updateCardStyles = (progress) => {
     const track = trackRef.current
@@ -69,14 +84,14 @@ export default function BlogInspiration() {
 
     for (let i = 0; i < N; i++) {
       const card = cards[i]
-      
+
       // Calculate wrapped circular offset
       let diff = i - progress
       while (diff < -N / 2) diff += N
       while (diff > N / 2) diff -= N
 
       const absDiff = Math.abs(diff)
-      
+
       let opacity = 0
       let pointerEvents = 'none'
 
@@ -94,11 +109,11 @@ export default function BlogInspiration() {
 
       // Calculations for circular track positioning
       const scale = 1 - Math.min(absDiff, 1.35) * 0.15
-      const spacing = 310 // horizontal pixel offset per card
-      const translateX = diff * spacing
-      const translateY = absDiff * 16 // dip down slightly at neighbors for circular path
-      const translateZ = -absDiff * 180 // push neighbors back
-      const rotateY = -diff * 22 // rotate neighbors inward to face center
+      const params = getCarouselParams()
+      const translateX = diff * params.spacing
+      const translateY = absDiff * params.translateY // dip down slightly at neighbors for circular path
+      const translateZ = -absDiff * params.translateZ // push neighbors back
+      const rotateY = -diff * params.rotateY // rotate neighbors inward to face center
 
       card.style.transform = `translate3d(${translateX}px, ${translateY}px, ${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`
       card.style.opacity = opacity
@@ -123,7 +138,7 @@ export default function BlogInspiration() {
 
     const tick = () => {
       const N = blogs.length
-      
+
       // Wrap positions back to [0, N) range to prevent float inaccuracies over time
       if (N > 0 && !isDragging.current) {
         const wrappedProgress = ((scrollProgress.current % N) + N) % N
@@ -159,8 +174,9 @@ export default function BlogInspiration() {
   }
 
   const handleDragMove = (clientX) => {
+    const params = getCarouselParams()
     const deltaX = clientX - startX.current
-    const deltaProgress = deltaX / 310
+    const deltaProgress = deltaX / params.spacing
     scrollTarget.current = startScrollProgress.current - deltaProgress
     if (Math.abs(deltaX) > 5) {
       hasDragged.current = true
@@ -209,9 +225,10 @@ export default function BlogInspiration() {
 
     const handleTouchMove = (e) => {
       if (!isDragging.current) return
+      const params = getCarouselParams()
       const touch = e.touches[0]
       const deltaX = touch.clientX - startX.current
-      const deltaProgress = deltaX / 310
+      const deltaProgress = deltaX / params.spacing
       scrollTarget.current = startScrollProgress.current - deltaProgress
       if (Math.abs(deltaX) > 5) {
         hasDragged.current = true
@@ -243,16 +260,14 @@ export default function BlogInspiration() {
     let snapTimeout
 
     const handleWheel = (e) => {
+      // Prevent default page scroll when cursor is over the carousel
+      e.preventDefault()
+
       const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY)
       const scrollDelta = isHorizontal ? e.deltaX : e.deltaY
-      
+
       // Update target position
       scrollTarget.current += scrollDelta * 0.003
-      
-      // Prevent browser default gesture back/forward for horizontal swipes
-      if (isHorizontal) {
-        e.preventDefault()
-      }
 
       // Debounced snapping to nearest whole card
       clearTimeout(snapTimeout)
@@ -319,30 +334,30 @@ export default function BlogInspiration() {
 
       {/* Slider Controls Sub-Header */}
       <div className={styles.sliderHeader}>
-        <span className={styles.sliderSubtitle}>Scroll, drag, or swipe to explore</span>
+        <span className={styles.sliderSubtitle}></span>
         <div className={styles.sliderControls}>
           <button
             className={styles.navButton}
             onClick={handlePrev}
             aria-label="Previous posts"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
           </button>
           <button
             className={styles.navButton}
             onClick={handleNext}
             aria-label="Next posts"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         </div>
       </div>
 
       {/* Drag Hint */}
       <div className={styles.dragHint} aria-hidden="true">
-        <span className={styles.dragHintLine}/>
+        <span className={styles.dragHintLine} />
         <span>drag to explore</span>
-        <span className={styles.dragHintLine}/>
+        <span className={styles.dragHintLine} />
       </div>
 
       {/* Main Viewport Container */}

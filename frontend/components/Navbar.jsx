@@ -89,7 +89,7 @@ export default function Navbar() {
     { name: 'What We Believe', href: '/about/what-we-believe' },
     { name: 'Supervisory Committee', href: '/about/supervisory-committe' },
     { name: 'Leadership Team', href: '/about/leadership' },
-    { name: 'Secretary’s Corner', href: '#' },
+    { name: 'Secretary’s Corner', href: '/about/secretary' },
     { name: 'Pastor’s Note', href: '/pastors-note' },
     { name: 'Celebrations', href: '#' },
     { name: 'Service Timing', href: '/about/service-times' },

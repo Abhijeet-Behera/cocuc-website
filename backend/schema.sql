@@ -114,3 +114,20 @@ CREATE TABLE IF NOT EXISTS developer_audit_logs (
     ip_address VARCHAR(45),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS frontend_knowledge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    source_file VARCHAR(255) NOT NULL UNIQUE,
+    content TEXT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FULLTEXT KEY ft_content (content)
+);
+
+CREATE TABLE IF NOT EXISTS chatbot_rate_limits (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL UNIQUE,
+    message_count INT DEFAULT 0,
+    first_message_time DATETIME NOT NULL,
+    cooldown_until DATETIME NULL,
+    spam_strikes INT DEFAULT 0
+);

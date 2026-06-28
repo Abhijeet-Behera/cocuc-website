@@ -1,3 +1,5 @@
+import PageHeader from '@/components/PageHeader'
+
 export const metadata = {
   title: 'C.E Union | Church of Christ Union Church Bhubaneswar',
   description:
@@ -67,85 +69,11 @@ export default function CEUnionPage() {
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background:
-            'linear-gradient(135deg, #0a0018 0%, #3d0055 50%, var(--color-primary-dark) 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20rem',
-              height: '30rem',
-              opacity: 0.04,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              zIndex: -1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              viewBox="0 0 24 36"
-              style={{
-                width: '100%',
-                height: '100%',
-                fill: 'currentColor',
-              }}
-            >
-              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Activities
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            C.E Union
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '620px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Christian Endeavour Union &mdash; established 28 May 1972, gathering young believers
-            in fellowship, prayer, and service for Christ and His Church.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="Activities"
+        title="C.E Union"
+        description="Christian Endeavour Union — established 28 May 1972, gathering young believers in fellowship, prayer, and service for Christ and His Church."
+      />
 
       {/* ── Content ── */}
       <section className="section">

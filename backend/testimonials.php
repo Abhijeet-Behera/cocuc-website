@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once 'env.php';
 
 // Load Sheet ID exclusively from environment
-$SPREADSHEET_ID = getenv('TESTIMONIES_SHEET_ID');
+$SPREADSHEET_ID = $_ENV['TESTIMONIES_SHEET_ID'] ?? $_SERVER['TESTIMONIES_SHEET_ID'] ?? getenv('TESTIMONIES_SHEET_ID');
 $CREDENTIALS_PATH = __DIR__ . '/google-credentials.json';
 
 if (!$SPREADSHEET_ID) {

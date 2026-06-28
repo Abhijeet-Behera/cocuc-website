@@ -45,24 +45,24 @@ export default function Navbar() {
     if (typeof window !== 'undefined') {
       if (window.innerWidth <= 1024 && menuRef.current) {
         if (mobileMenuOpen) {
-          gsap.to(menuRef.current, { 
+          gsap.to(menuRef.current, {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
             autoAlpha: 1,
-            duration: 0.6, 
+            duration: 0.6,
             ease: 'power3.out',
             overwrite: true
           });
         } else {
-          gsap.to(menuRef.current, { 
+          gsap.to(menuRef.current, {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
             autoAlpha: 0,
-            duration: 0.4, 
+            duration: 0.4,
             ease: 'power3.inOut',
             overwrite: true
           });
         }
       } else if (menuRef.current) {
-         gsap.set(menuRef.current, { clearProps: 'all' });
+        gsap.set(menuRef.current, { clearProps: 'all' });
       }
     }
   }, { dependencies: [mobileMenuOpen], scope: navRef })
@@ -74,7 +74,7 @@ export default function Navbar() {
         if (menuRef.current) gsap.set(menuRef.current, { clearProps: 'all' });
       } else {
         if (!mobileMenuOpen && menuRef.current) {
-            gsap.set(menuRef.current, { autoAlpha: 0, clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' });
+          gsap.set(menuRef.current, { autoAlpha: 0, clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' });
         }
       }
     };
@@ -87,8 +87,9 @@ export default function Navbar() {
   const aboutMenu = [
     { name: 'History', href: '/about/history' },
     { name: 'What We Believe', href: '/about/what-we-believe' },
+    { name: 'Supervisory Committee', href: '/about/supervisory-committe' },
     { name: 'Leadership Team', href: '/about/leadership' },
-    { name: 'Secretary’s Corner', href: '#' },
+    { name: 'Secretary’s Corner', href: '/about/secretary' },
     { name: 'Pastor’s Note', href: '/pastors-note' },
     { name: 'Celebrations', href: '#' },
     { name: 'Service Timing', href: '/about/service-times' },
@@ -98,21 +99,14 @@ export default function Navbar() {
   const activitiesMenu = [
     { name: 'Satellite Churches', href: '/activities/satellite-churches' },
     { name: 'Sunday Worship', href: '/activities/sunday-worship' },
+    { name: 'Worship Team', href: '/activities/worship-team' },
     { name: 'Sunday School', href: '/activities/sunday-school' },
     { name: 'C.E Union', href: '/activities/ce-union' },
     { name: 'Baptism Classes', href: '/activities/baptism-classes' },
-    { name: 'Counselling', href: '/activities/counselling' },
     { name: 'Women’s Fellowship', href: '/activities/womens-fellowship' },
     { name: 'Youth Fellowship', href: '/activities/youth-fellowship' },
   ]
 
-  const prayerMenu = [
-    { name: 'Morning Prayer', href: '/prayer/morning-prayer' },
-    { name: 'Monday Prayer', href: '/prayer/monday-prayer' },
-    { name: 'Thursday Cottage Prayer', href: '/prayer/thursday-cottage-prayer' },
-    { name: 'Second Saturday Prayer', href: '/prayer/second-saturday-prayer' },
-    { name: 'United Chain Prayer', href: '#' },
-  ]
 
   const eventsMenu = [
     { name: 'Monthly Programme', href: '#' },
@@ -122,14 +116,7 @@ export default function Navbar() {
     { name: 'Baptism', href: '#' },
   ]
 
-  const faithMenu = [
-    { name: 'Photos', href: '#' },
-    { name: 'Inspirational', href: '#' },
-    { name: 'Encouraging Quotes', href: '#' },
-    { name: 'Promises', href: '#' },
-    { name: 'Testimonials', href: '#' },
-    { name: 'Amazing Grace', href: '#' },
-  ]
+
 
   return (
     <nav ref={navRef} className={`${styles.nav} ${isNavSolid ? styles.navScrolled : styles.navTransparent}`}>
@@ -169,9 +156,8 @@ export default function Navbar() {
             <NavDropdown title="About" items={aboutMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavLink href="/gallery" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Gallery</NavLink>
             <NavDropdown title="Activities" items={activitiesMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
-            <NavDropdown title="Prayer Time" items={prayerMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
+            <NavLink href="#" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Prayer Wings</NavLink>
             <NavDropdown title="Events" items={eventsMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
-            <NavDropdown title="Faith & Hope" items={faithMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavLink href="/blog" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Blog</NavLink>
           </div>
 
@@ -250,7 +236,7 @@ function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown, se
   }
 
   return (
-    <div 
+    <div
       className={styles.dropdownContainer}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -270,7 +256,7 @@ function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown, se
 
       <AnimatePresence>
         {(isHovered || isMobileOpen) && (
-          <motion.div 
+          <motion.div
             className={`${styles.dropdownMenu} ${isMobileOpen ? styles.dropdownMenuOpen : ''}`}
             initial={{ opacity: 0, y: 15, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
@@ -280,7 +266,7 @@ function NavDropdown({ title, items, scrolled, openDropdown, setOpenDropdown, se
             {/* Invisible bridge to prevent hover loss when moving mouse across the gap */}
             <div className={styles.dropdownHoverBridge} />
             {items.map((item, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}

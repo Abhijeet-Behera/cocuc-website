@@ -4,77 +4,17 @@ export const metadata = {
     'Join us every Sunday for our English and Odia worship services at Union Church, Bhubaneswar, and our satellite worship centres.',
 }
 
+import PageHeader from '@/components/PageHeader'
+
 export default function SundayWorshipPage() {
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Decorative cross watermark */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            opacity: 0.04,
-            fontWeight: 900,
-            lineHeight: 1,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            fontFamily: 'serif',
-          }}
-        >
-          ✝
-        </div>
+      <PageHeader
+        category="Activities"
+        title="Sunday Worship"
+        description="Gathering together in the name of Christ — every Sunday, across all our centres."
+      />
 
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Activities
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Sunday Worship
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Gathering together in the name of Christ — every Sunday, across all our centres.
-          </p>
-        </div>
-      </section>
 
       {/* ── Content ── */}
       <section className="section">
@@ -93,7 +33,7 @@ export default function SundayWorshipPage() {
           >
             {[
               { label: 'English Service', time: '10:00 AM', loc: 'Union Church' },
-              { label: 'Odia Service', time: '3:30 PM', loc: 'Union Church' },
+              { label: 'Odia Service', time: '4:30 PM', loc: 'Union Church' },
               { label: 'Satellite Centres', time: '9:30 AM', loc: 'C.S. Pur · Kalinga Vihar · Sundarpada' },
             ].map((s) => (
               <div
@@ -152,7 +92,7 @@ export default function SundayWorshipPage() {
             }}
           >
             <p>
-              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>3:30 PM</strong> (w.e.f. 4th November 2018). Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>9:30 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
+              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>9:30 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
             </p>
 
             <div
@@ -167,7 +107,7 @@ export default function SundayWorshipPage() {
             </div>
 
             <p>
-              Besides our Associate Pastors, <strong style={{ color: 'var(--color-text)' }}>Rev. Ayub Chhinchani</strong> and <strong style={{ color: 'var(--color-text)' }}>Rev. B.N. Satpathy</strong>, preachers from within and outside the city and state are invited to share God&rsquo;s Word on Sundays.
+              Besides Pastors, <strong style={{ color: 'var(--color-text)' }}>Rev. Songram K Singh</strong> , <strong style={{ color: 'var(--color-text)' }}>Rev. Dr. Ayub Chhinchani</strong> and <strong style={{ color: 'var(--color-text)' }}>Rev. Satish Kumar Pani</strong> , preachers from within and outside the city and state are invited to share God&rsquo;s Word on Sundays.
             </p>
 
             <p>

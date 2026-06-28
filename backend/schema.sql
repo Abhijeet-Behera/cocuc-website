@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS blogs;
-CREATE TABLE blogs (
+CREATE TABLE IF NOT EXISTS blogs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
@@ -44,3 +43,91 @@ CREATE TABLE IF NOT EXISTS broadcasts (
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS weekly_notices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    release_date DATE NOT NULL,
+    documents_json JSON,
+    notices_json JSON,
+    author_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS special_programmes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    upload_date DATE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    wing VARCHAR(100) NOT NULL,
+    custom_wing VARCHAR(255),
+    event_from DATE,
+    event_to DATE,
+    duration VARCHAR(50),
+    details TEXT,
+    document_path VARCHAR(255),
+    author_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS speaking_arrangements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sub_section ENUM('Sunday Worships', 'Morning prayer', 'Monday Prayer', 'C.E Union', 'Wednesday Prayer', 'Zoom Prayer') NOT NULL,
+    details TEXT,
+    event_date DATE NOT NULL,
+    attachment1_path VARCHAR(255),
+    attachment2_path VARCHAR(255),
+    attachment3_path VARCHAR(255),
+    author_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS developer_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) UNIQUE NOT NULL,
+    setting_value VARCHAR(255) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS developer_otps (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    hashed_otp VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS developer_login_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(45),
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS developer_audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    action_type VARCHAR(50) NOT NULL,
+    target_table VARCHAR(100) NOT NULL,
+    details TEXT NOT NULL,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS frontend_knowledge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    source_file VARCHAR(255) NOT NULL UNIQUE,
+    content TEXT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FULLTEXT KEY ft_content (content)
+);
+
+CREATE TABLE IF NOT EXISTS chatbot_rate_limits (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL UNIQUE,
+    message_count INT DEFAULT 0,
+    first_message_time DATETIME NOT NULL,
+    cooldown_until DATETIME NULL,
+    spam_strikes INT DEFAULT 0
+);

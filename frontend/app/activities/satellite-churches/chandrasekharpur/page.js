@@ -3,89 +3,24 @@ export const metadata = {
   description: 'Odia Worship Service held every Sunday morning at 9:30 AM in Chandrasekharpur, Bhubaneswar.',
 }
 
+import PageHeader from '@/components/PageHeader'
+
 export default function ChandrasekharpurPage() {
-  const leaders = [
-    { name: 'Mr. Sushil Kumar Supakar', role: 'Worship Center In-charge & Former Board Member' },
-    { name: 'Mr. Manas Ranjan Behera', role: 'Worship Center Team Member' },
-    { name: 'Rev. Satya Ranjan Singh', role: 'Worship Center Pastoral Lead' },
-    { name: 'Bro. Pratap Kumar Sahoo', role: 'Resident Evangelist & Caretaker' },
-    { name: 'Mr. Amon Nag', role: 'Area In-charge (since 2019)' }
-  ]
+  const leaders = [];
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            opacity: 0.04,
-            fontWeight: 900,
-            lineHeight: 1,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            fontFamily: 'serif',
-          }}
-        >
-          ✝
-        </div>
+      <PageHeader
+        category="Satellite Churches"
+        title="Chandrasekharpur Worship Center"
+        description="Serving the Chandrasekharpur community since the early 1990s."
+      />
 
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Satellite Churches
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Chandrasekharpur Worship Center
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Serving the Chandrasekharpur community since the early 1990s.
-          </p>
-        </div>
-      </section>
 
       {/* ── Content ── */}
       <section className="section">
         <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
-          
+
           {/* Quick Schedule Banner */}
           <div
             style={{
@@ -109,6 +44,14 @@ export default function ChandrasekharpurPage() {
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Location</p>
               <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>96, District Center, Chandrasekharpur</p>
+            </div>
+            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div>
+              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Coordinator</p>
+              <p style={{ fontSize: '1rem', fontWeight: 600, lineHeight: 1.5 }}>
+                <strong>Mr. Amon Chandra Nag</strong><br />
+                <strong>Evg. Pratap Kumar Sahoo</strong>
+              </p>
             </div>
           </div>
 
@@ -166,42 +109,6 @@ export default function ChandrasekharpurPage() {
             >
               ⚠️ <strong>Kindly Note:</strong> On Christmas and Good Friday, there is no Service in the C.S. Pur Worship center as the Special Service is held only in the main Church of Christ (Union Church).
             </div>
-          </div>
-
-          {/* Leaders Grid */}
-          <h2
-            style={{
-              fontSize: '1.5rem',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              color: 'var(--color-primary-dark)',
-              marginBottom: '1.5rem',
-            }}
-          >
-            Worship Center Leadership
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '1.25rem',
-            }}
-          >
-            {leaders.map((l, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.1)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '1.5rem 1.25rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
-                <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.4rem', fontSize: '1rem' }}>{l.name}</p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600 }}>{l.role}</p>
-              </div>
-            ))}
           </div>
 
         </div>

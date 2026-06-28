@@ -21,10 +21,74 @@ if (empty($message)) {
     exit;
 }
 
+require_once __DIR__ . '/db_config.php';
+
+// Auto-sync frontend knowledge if files were modified via SCP/SSH
+require_once __DIR__ . '/sync_knowledge.php';
+try {
+    syncKnowledgeIfChanged($pdo);
+} catch (Exception $e) {
+    // Silently continue if sync fails so chat isn't disrupted
+}
+
+// Rate Limiting & Spam Protection
+$ipAddress = getClientIP();
+$stmt = $pdo->prepare("SELECT * FROM chatbot_rate_limits WHERE ip_address = ?");
+$stmt->execute([$ipAddress]);
+$rateLimit = $stmt->fetch();
+
+$now = new DateTime();
+if ($rateLimit) {
+    if ($rateLimit['cooldown_until']) {
+        $cooldown = new DateTime($rateLimit['cooldown_until']);
+        if ($now < $cooldown) {
+            http_response_code(429);
+            echo json_encode(['reply' => "You are currently on a cooldown to prevent spam. Please try again after " . $cooldown->format('Y-m-d H:i:s T') . "."]);
+            exit;
+        } else {
+            // Cooldown expired
+            $stmt = $pdo->prepare("UPDATE chatbot_rate_limits SET cooldown_until = NULL, message_count = 0, first_message_time = NOW() WHERE ip_address = ?");
+            $stmt->execute([$ipAddress]);
+            $rateLimit['message_count'] = 0;
+            $rateLimit['first_message_time'] = $now->format('Y-m-d H:i:s');
+        }
+    }
+
+    $firstMessageTime = new DateTime($rateLimit['first_message_time']);
+    $interval = $now->diff($firstMessageTime);
+    $hours = $interval->h + ($interval->days * 24);
+
+    if ($hours >= 1) {
+        // Reset after an hour
+        $stmt = $pdo->prepare("UPDATE chatbot_rate_limits SET message_count = 1, first_message_time = NOW() WHERE ip_address = ?");
+        $stmt->execute([$ipAddress]);
+    } else {
+        $newCount = $rateLimit['message_count'] + 1;
+        if ($newCount > 50) {
+            $strikes = $rateLimit['spam_strikes'] + 1;
+            $cooldownHours = ($strikes > 1) ? 6 : 3;
+            $cooldownUntil = (clone $now)->modify("+$cooldownHours hours")->format('Y-m-d H:i:s');
+            
+            $stmt = $pdo->prepare("UPDATE chatbot_rate_limits SET message_count = ?, cooldown_until = ?, spam_strikes = ? WHERE ip_address = ?");
+            $stmt->execute([$newCount, $cooldownUntil, $strikes, $ipAddress]);
+            
+            http_response_code(429);
+            echo json_encode(['reply' => "You have exceeded the limit of 50 messages per hour. A cooldown of $cooldownHours hours has been applied to prevent spam. Please try again later."]);
+            exit;
+        } else {
+            $stmt = $pdo->prepare("UPDATE chatbot_rate_limits SET message_count = ? WHERE ip_address = ?");
+            $stmt->execute([$newCount, $ipAddress]);
+        }
+    }
+} else {
+    $stmt = $pdo->prepare("INSERT INTO chatbot_rate_limits (ip_address, message_count, first_message_time) VALUES (?, 1, NOW())");
+    $stmt->execute([$ipAddress]);
+}
+
 $lowerMessage = strtolower($message);
 
-// 2. Crisis Interception
-$crisisRegex = '/(suicid|kill|end my|take my|die|death|no reason to live|giving up|give up|hate my life|worthless|hopeless|depress|anxi|panic|self harm|hurt my|cut my|overdose|poison|jump off|hang my|strangle|disappear|burden|988|hotline|abuse|assault|lonely)/i';
+// 2. Crisis Interception - Refined regex to avoid false positives for religious queries
+$crisisRegex = '/\b(suicid[ea]|kill myself|end my life|take my own life|no reason to live|giving up on life|hate my life|overdose|jump off|hang myself|strangle myself)\b/i';
 
 if (preg_match($crisisRegex, $lowerMessage)) {
     echo json_encode([
@@ -36,7 +100,7 @@ if (preg_match($crisisRegex, $lowerMessage)) {
 // 3. Load Environment Variables
 $envPath = __DIR__ . '/.env';
 if (!file_exists($envPath)) {
-    echo json_encode(['reply' => "Sorry, my brain hasn't been connected to any AI Cloud yet! The admin needs to add API keys to the .env file."]);
+    echo json_encode(['reply' => "Sorry, my brain hasn't been connected to any AI Cloud yet!"]);
     exit;
 }
 
@@ -65,7 +129,7 @@ foreach ($targetOrder as $p) {
 }
 
 if (empty($availableProviders)) {
-    echo json_encode(['reply' => "Sorry, my brain hasn't been connected to any AI Cloud yet! No API keys found."]);
+    echo json_encode(['reply' => "Sorry, my brain hasn't been connected to any AI Cloud yet!"]);
     exit;
 }
 
@@ -83,126 +147,239 @@ $shiftedProviders = array_merge(
 $roundRobinIndex = ($roundRobinIndex + 1) % count($availableProviders);
 file_put_contents($rrFile, $roundRobinIndex);
 
-// 4. Keyword RAG Engine
-$knowledgePath = __DIR__ . '/chatbot_knowledge.txt';
-$rawFrontendCode = "\n--- FRONTEND WEBSITE DATA ---\n";
-
-if (file_exists($knowledgePath)) {
-    $combinedText = file_get_contents($knowledgePath);
-    
-    // Convert to lowercase for searching
-    $lowerText = strtolower($combinedText);
-    $searchTerms = preg_split('/\W+/', $lowerMessage, -1, PREG_SPLIT_NO_EMPTY);
-    
-    // Filter out common stop words
-    $stopWords = ["the", "is", "at", "which", "and", "on", "a", "an", "to", "in", "of", "for", "with", "about", "what", "who", "where", "how", "why"];
-    $searchTerms = array_filter($searchTerms, function($w) use ($stopWords) {
-        return strlen($w) > 3 && !in_array($w, $stopWords);
-    });
-
-    if (empty($searchTerms)) {
-        // Fallback to taking first 15000 chars if no meaningful keywords
-        $rawFrontendCode .= substr($combinedText, 0, 15000);
-    } else {
-        // Split by blocks [Source: ...]
-        $chunks = explode('[Source:', $combinedText);
-        $chunkScores = [];
-
-        foreach ($chunks as $chunk) {
-            if (trim($chunk) === '') continue;
-            $chunkContent = '[Source:' . $chunk;
-            $lowerChunk = strtolower($chunkContent);
-            $score = 0;
-
-            foreach ($searchTerms as $term) {
-                // Count occurrences
-                $score += substr_count($lowerChunk, $term);
-            }
-            // Always keep header/footer chunks
-            if (strpos($lowerChunk, 'header') !== false || strpos($lowerChunk, 'footer') !== false) {
-                $score += 0.5;
-            }
-
-            if ($score > 0) {
-                $chunkScores[] = ['content' => $chunkContent, 'score' => $score];
-            }
-        }
-
-        // Sort by score descending
-        usort($chunkScores, function($a, $b) {
-            return $b['score'] <=> $a['score'];
-        });
-
-        $highlyRelevantContext = "";
-        $maxChars = 15000;
-
-        foreach ($chunkScores as $c) {
-            if (strlen($highlyRelevantContext) + strlen($c['content']) > $maxChars) {
-                break;
-            }
-            $highlyRelevantContext .= $c['content'] . "\n\n";
-        }
-
-        if (empty($highlyRelevantContext)) {
-            $rawFrontendCode .= substr($combinedText, 0, 15000);
-        } else {
-            $rawFrontendCode .= $highlyRelevantContext;
-        }
-    }
-}
-
-// 5. Fetch Database Live Context
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$baseUrl = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
-if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
-    $baseUrl = 'http://localhost:8000';
-}
-
-// We'll use curl_multi for parallel fetching to match JS Promise.allSettled
-$apisToFetch = [
-    'upcoming' => $baseUrl . '/upcoming.php',
-    'blogs' => $baseUrl . '/blogs.php',
-    'announcements' => $baseUrl . '/announcements.php',
-    'verses' => $baseUrl . '/verses.php',
-    'youtube' => $baseUrl . '/youtube.php'
-];
-
-$mh = curl_multi_init();
-$curlHandles = [];
-
-foreach ($apisToFetch as $key => $url) {
+function fetchLocalApi($url) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 4);
-    curl_multi_add_handle($mh, $ch);
-    $curlHandles[$key] = $ch;
+    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $res = curl_exec($ch);
+    curl_close($ch);
+    return $res;
 }
 
-$running = null;
-do {
-    curl_multi_exec($mh, $running);
-} while ($running);
+// 4. Keyword RAG Engine (Database)
+$searchTerms = preg_split('/\W+/', $lowerMessage, -1, PREG_SPLIT_NO_EMPTY);
+$stopWords = ["the", "is", "at", "which", "and", "on", "a", "an", "to", "in", "of", "for", "with", "about", "what", "who", "where", "how", "why", "explain", "tell", "me", "details"];
+$searchTerms = array_filter($searchTerms, function($w) use ($stopWords) {
+    return strlen($w) > 2 && !in_array($w, $stopWords);
+});
 
-$liveDatabaseContext = "\n--- LIVE DATABASE CONTENT ---\n";
-foreach ($curlHandles as $key => $ch) {
-    $response = curl_multi_getcontent($ch);
-    curl_multi_remove_handle($mh, $ch);
-    curl_close($ch);
+$liveDatabaseContext = "";
+if (!empty($searchTerms)) {
+    $likeClauses = [];
+    $params = [];
+    foreach ($searchTerms as $term) {
+        $likeClauses[] = "(content LIKE ?)";
+        $params[] = '%' . $term . '%';
+    }
+    $whereClause = implode(" OR ", $likeClauses);
     
-    $liveDatabaseContext .= strtoupper($key) . " DATA:\n";
-    if ($response) {
-        $json = json_decode($response, true);
-        if ($json && !isset($json['error'])) {
-            $liveDatabaseContext .= json_encode($json) . "\n\n";
-        } else {
-            $liveDatabaseContext .= "None/Error\n\n";
+    // Website Data
+    $stmt = $pdo->prepare("SELECT content FROM frontend_knowledge WHERE $whereClause LIMIT 3");
+    $stmt->execute($params);
+    $frontendResults = $stmt->fetchAll();
+    if ($frontendResults) {
+        $liveDatabaseContext .= "WEBSITE INFO:\n";
+        foreach ($frontendResults as $row) {
+            $liveDatabaseContext .= "- " . substr($row['content'], 0, 800) . "...\n";
         }
-    } else {
-        $liveDatabaseContext .= "None\n\n";
+    }
+
+    // Verses, Testimonies, YouTube (from Google Sheets / YouTube API via local API)
+    $wantsVerses = false;
+    $wantsTestimonies = false;
+    $wantsYouTube = false;
+    foreach ($searchTerms as $term) {
+        if (strpos($term, 'vers') !== false || strpos($term, 'memor') !== false || strpos($term, 'scriptur') !== false) $wantsVerses = true;
+        if (strpos($term, 'testimon') !== false || strpos($term, 'stor') !== false) $wantsTestimonies = true;
+        if (strpos($term, 'youtub') !== false || strpos($term, 'video') !== false || strpos($term, 'sermon') !== false || strpos($term, 'jyoti') !== false || strpos($term, 'santi') !== false || strpos($term, 'barta') !== false) $wantsYouTube = true;
+    }
+
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    $baseUrl = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+    if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) $baseUrl = 'http://localhost:8000';
+
+    if ($wantsVerses) {
+        $vRes = fetchLocalApi($baseUrl . '/verses.php');
+        if ($vRes) {
+            $vData = json_decode($vRes, true);
+            if ($vData && !isset($vData['error'])) {
+                $liveDatabaseContext .= "MEMORY VERSES:\n";
+                if (isset($vData['daily']) && $vData['daily']) $liveDatabaseContext .= "Daily: {$vData['daily']['reference']} - {$vData['daily']['scripture']}\n";
+                if (isset($vData['weekly']) && $vData['weekly']) $liveDatabaseContext .= "Weekly: {$vData['weekly']['reference']} - {$vData['weekly']['scripture']}\n";
+                if (isset($vData['monthly']) && $vData['monthly']) $liveDatabaseContext .= "Monthly: {$vData['monthly']['reference']} - {$vData['monthly']['scripture']}\n";
+            }
+        }
+    }
+
+    if ($wantsTestimonies) {
+        $tRes = fetchLocalApi($baseUrl . '/testimonials.php');
+        if ($tRes) {
+            $tData = json_decode($tRes, true);
+            if ($tData && !isset($tData['error']) && isset($tData['testimonials'])) {
+                $liveDatabaseContext .= "TESTIMONIES:\n";
+                foreach (array_slice($tData['testimonials'], 0, 2) as $t) {
+                    $liveDatabaseContext .= "Testimony by {$t['name']}: " . substr($t['content'], 0, 300) . "...\n";
+                }
+            }
+        }
+    }
+
+    if ($wantsYouTube) {
+        $yRes = fetchLocalApi($baseUrl . '/youtube.php');
+        if ($yRes) {
+            $yData = json_decode($yRes, true);
+            if (is_array($yData)) {
+                $liveDatabaseContext .= "LATEST YOUTUBE VIDEOS:\n";
+                foreach ($yData as $v) {
+                    if (isset($v['error']) && $v['error'] === false && isset($v['playlist_title']) && isset($v['title'])) {
+                        $liveDatabaseContext .= "{$v['playlist_title']}: {$v['title']} (Published: {$v['published_at']})\n";
+                    }
+                }
+            }
+        }
+    }
+
+    // Blogs
+    $blogLikeClauses = [];
+    $blogParams = [];
+    foreach ($searchTerms as $term) {
+        $blogLikeClauses[] = "(title LIKE ? OR content LIKE ?)";
+        $blogParams[] = '%' . $term . '%';
+        $blogParams[] = '%' . $term . '%';
+    }
+    $blogWhere = implode(" OR ", $blogLikeClauses);
+    $stmt = $pdo->prepare("SELECT title, content FROM blogs WHERE $blogWhere LIMIT 2");
+    $stmt->execute($blogParams);
+    $blogs = $stmt->fetchAll();
+    if ($blogs) {
+        $liveDatabaseContext .= "BLOGS:\n";
+        foreach ($blogs as $b) {
+            $liveDatabaseContext .= "Title: {$b['title']}. Content: " . substr($b['content'], 0, 500) . "...\n";
+        }
+    }
+
+    // Announcements
+    $annLikeClauses = [];
+    $annParams = [];
+    foreach ($searchTerms as $term) {
+        $annLikeClauses[] = "(title LIKE ? OR content LIKE ?)";
+        $annParams[] = '%' . $term . '%';
+        $annParams[] = '%' . $term . '%';
+    }
+    $annWhere = implode(" OR ", $annLikeClauses);
+    $stmt = $pdo->prepare("SELECT title, content FROM announcements WHERE $annWhere LIMIT 2");
+    $stmt->execute($annParams);
+    $anns = $stmt->fetchAll();
+    if ($anns) {
+        $liveDatabaseContext .= "ANNOUNCEMENTS:\n";
+        foreach ($anns as $a) {
+            $liveDatabaseContext .= "Announcement: {$a['title']} - " . substr($a['content'], 0, 500) . "...\n";
+        }
+    }
+
+    // Upcoming Events (special_programmes)
+    $spLikeClauses = [];
+    $spParams = [];
+    foreach ($searchTerms as $term) {
+        $spLikeClauses[] = "(title LIKE ? OR details LIKE ?)";
+        $spParams[] = '%' . $term . '%';
+        $spParams[] = '%' . $term . '%';
+    }
+    $spWhere = implode(" OR ", $spLikeClauses);
+    $stmt = $pdo->prepare("SELECT title, details, event_from, event_to FROM special_programmes WHERE $spWhere LIMIT 2");
+    $stmt->execute($spParams);
+    $events = $stmt->fetchAll();
+    if ($events) {
+        $liveDatabaseContext .= "UPCOMING EVENTS:\n";
+        foreach ($events as $e) {
+            $liveDatabaseContext .= "Event: {$e['title']} ({$e['event_from']} to {$e['event_to']}) - " . substr($e['details'], 0, 300) . "...\n";
+        }
+    }
+
+    // Speaking Arrangements
+    $saLikeClauses = [];
+    $saParams = [];
+    foreach ($searchTerms as $term) {
+        $saLikeClauses[] = "(sub_section LIKE ? OR details LIKE ?)";
+        $saParams[] = '%' . $term . '%';
+        $saParams[] = '%' . $term . '%';
+    }
+    $saWhere = implode(" OR ", $saLikeClauses);
+    $stmt = $pdo->prepare("SELECT sub_section, event_date, details FROM speaking_arrangements WHERE $saWhere LIMIT 2");
+    $stmt->execute($saParams);
+    $arrangements = $stmt->fetchAll();
+    if ($arrangements) {
+        $liveDatabaseContext .= "SPEAKING ARRANGEMENTS:\n";
+        foreach ($arrangements as $sa) {
+            $liveDatabaseContext .= "{$sa['sub_section']} on {$sa['event_date']}: " . substr($sa['details'], 0, 300) . "...\n";
+        }
+    }
+    // Weekly Notices
+    $wnLikeClauses = [];
+    $wnParams = [];
+    foreach ($searchTerms as $term) {
+        $wnLikeClauses[] = "(notices_json LIKE ?)";
+        $wnParams[] = '%' . $term . '%';
+    }
+    $wnWhere = implode(" OR ", $wnLikeClauses);
+    $stmt = $pdo->prepare("SELECT release_date, notices_json FROM weekly_notices WHERE $wnWhere ORDER BY release_date DESC LIMIT 1");
+    $stmt->execute($wnParams);
+    $notices = $stmt->fetchAll();
+    if ($notices) {
+        $liveDatabaseContext .= "WEEKLY NOTICES:\n";
+        foreach ($notices as $wn) {
+            $liveDatabaseContext .= "Notice on {$wn['release_date']}: " . substr(strip_tags($wn['notices_json']), 0, 300) . "...\n";
+        }
+    }
+
+    // Broadcasts
+    $bcLikeClauses = [];
+    $bcParams = [];
+    foreach ($searchTerms as $term) {
+        $bcLikeClauses[] = "(title LIKE ? OR message LIKE ?)";
+        $bcParams[] = '%' . $term . '%';
+        $bcParams[] = '%' . $term . '%';
+    }
+    $bcWhere = implode(" OR ", $bcLikeClauses);
+    $stmt = $pdo->prepare("SELECT title, message, created_at FROM broadcasts WHERE $bcWhere ORDER BY created_at DESC LIMIT 2");
+    $stmt->execute($bcParams);
+    $broadcasts = $stmt->fetchAll();
+    if ($broadcasts) {
+        $liveDatabaseContext .= "BROADCAST MESSAGES:\n";
+        foreach ($broadcasts as $bc) {
+            $liveDatabaseContext .= "Broadcast: {$bc['title']} ({$bc['created_at']}) - " . substr($bc['message'], 0, 300) . "...\n";
+        }
     }
 }
-curl_multi_close($mh);
+
+// Fallback to latest standard info if context is empty
+if (empty($liveDatabaseContext)) {
+    try {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $baseUrl = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+        if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) $baseUrl = 'http://localhost:8000';
+
+        $vRes = fetchLocalApi($baseUrl . '/verses.php');
+        if ($vRes) {
+            $vData = json_decode($vRes, true);
+            if ($vData && isset($vData['daily']) && $vData['daily']) {
+                $liveDatabaseContext .= "Latest Daily Verse: {$vData['daily']['reference']} - {$vData['daily']['scripture']}\n";
+            }
+        }
+    
+        $stmt = $pdo->query("SELECT title, content FROM announcements ORDER BY created_at DESC LIMIT 1");
+        $a = $stmt->fetch();
+        if ($a) {
+            $liveDatabaseContext .= "Latest Announcement: {$a['title']} - " . substr($a['content'], 0, 300) . "...\n";
+        }
+    } catch (Exception $e) {}
+}
+
+// CRITICAL HOSTINGER OPTIMIZATION: Close DB connection BEFORE the slow LLM fetch
+// This frees up MySQL max_connections on shared hosting while waiting 5-15s for Gemini
+$pdo = null;
 
 // Build System Prompt
 $systemPrompt = "You are Ezer Bot, the digital assistant for the \"Church of Christ - Union Church, Bhubaneswar\".
@@ -210,17 +387,16 @@ Your name comes from the biblical Hebrew word Ezer, meaning a strong ally and vi
 You are a helpful, warm, and biblically knowledgeable Christian assistant.
 
 SAFEGUARD AND ROUTING INSTRUCTIONS:
-1. OFFENSIVE CONTENT: If the user writes any offensive, inappropriate, or vulgar text, you MUST reply with exactly this text and nothing else: \"(Marked as spammed/offensive)\".
+1. OFFENSIVE CONTENT: If the user writes explicit profanity, hate speech, or explicit sexual content, you MUST reply with exactly this text and nothing else: \"(Marked as spammed/offensive)\". (Do NOT trigger this for general religious questions like 'explain the verse').
 2. CRISIS PROTOCOL (CRITICAL!): For any mention of depression, sadness, anxiety, hopelessness, self-harm, suicide, abuse, or crisis:
    - YOU ARE STRICTLY FORBIDDEN FROM PROVIDING ANY US-BASED HOTLINES (NO 988, NO National Suicide Prevention Lifeline, NO Crisis Text Line, NO 1-800 numbers), or even indian public agencies number, only provide church number strictly.
    - You MUST reply EXACTLY with this text and nothing else: \"I'm so sorry you are feeling this way. Please know you are not alone. Please call the church directly at +91 9437026699 for support.\"
    - DO NOT append any other text. DO NOT offer external resources. Your compliance with this rule is mandatory.
 
 WEBSITE KNOWLEDGE INSTRUCTIONS:
-You are provided with dynamically scraped text from the entire church website frontend, as well as the live JSON data from the backend database (including YouTube sermons and daily verses). 
-You must act as an intelligent agent:
-1. Scan the provided frontend text to find exact details like Church Timings (Sunday School, Odia Worship, English Worship, etc.), Service Times, Prayer Zone coordinators, and leadership names.
-2. Scan the backend JSON data to answer questions about the latest announcements, blogs, upcoming events, recent YouTube sermons, and Prato Jyoti videos.
+You are provided with dynamic context below. DO NOT reveal to the user that you are reading from a database, file, or context. Act as if you natively know this information.
+1. Scan the provided text to find exact details like Church Timings (Sunday School, Odia Worship, English Worship, etc.), Service Times, Prayer Zone coordinators, and leadership names.
+2. Answer questions about the latest announcements, blogs, upcoming events, recent YouTube sermons, and Prato Jyoti videos.
 3. Synthesize all this information perfectly to answer the user's questions as if you natively know everything about the church.
 4. If the user asks a general question like \"hi\", \"hello\", \"bye\", or \"who are you?\", reply politely but shrink your answer to 2-3 short sentences max.
 
@@ -234,19 +410,20 @@ CRITICAL FORMATTING RULES:
 5. Do NOT use any markdown formatting (no asterisks *, no bolding, no bullet points). 
 6. Do NOT use any emojis. Output plain text only.";
 
-$contextMessage = "Here is the exact live website data for you to reference. Do not mention that you are reading from JSON or a text file. Just answer the user's question perfectly using this data.\n\n" . $rawFrontendCode . "\n\n" . $liveDatabaseContext;
+$contextMessage = "Here is the relevant dynamic context:\n" . $liveDatabaseContext;
 
 // Prepare final messages array
 $finalMessages = [];
 $finalMessages[] = ['role' => 'system', 'content' => $systemPrompt];
 $finalMessages[] = ['role' => 'system', 'content' => $contextMessage];
 
-// Append history (last 5 msgs max)
-$recentHistory = array_slice($history, -5);
+// Append history: ONLY TAKE THE LAST 3 USER/BOT MESSAGES to prevent token overflow/timeout null errors
+$recentHistory = array_slice($history, -3);
 foreach ($recentHistory as $msg) {
     if (isset($msg['role']) && isset($msg['content'])) {
         $mappedRole = $msg['role'] === 'bot' ? 'assistant' : $msg['role'];
-        $finalMessages[] = ['role' => $mappedRole, 'content' => $msg['content']];
+        // Truncate past messages to 400 chars each to aggressively prevent context overflow
+        $finalMessages[] = ['role' => $mappedRole, 'content' => substr($msg['content'], 0, 400)];
     }
 }
 $finalMessages[] = ['role' => 'user', 'content' => $message];
@@ -319,7 +496,9 @@ function fetchFromProvider($provider, $envKeys, $finalMessages) {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+    // Set a slightly higher timeout to accommodate asynchronous-like flow, 
+    // avoiding standard 15s timeout nulls for larger models.
+    curl_setopt($ch, CURLOPT_TIMEOUT, 20); 
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     $response = curl_exec($ch);
@@ -369,5 +548,5 @@ foreach ($shiftedProviders as $provider) {
 http_response_code(500);
 echo json_encode([
     'error' => 'All configured AI providers failed.',
-    'reply' => 'I apologize, but all of my AI service connections are currently down or overloaded. Please try again in a few moments. ' . $lastError
+    'reply' => 'I apologize, but all of my AI service connections are currently down or overloaded. Please try again in a few moments.'
 ]);

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 const DEACONS_DATA = [
   { id: 101, name: "Mr. Asish Baran Parida", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/asish_baran_parida.jpg" },
@@ -53,15 +54,11 @@ export default function LeadershipPage() {
 
   return (
     <div>
-      {/* Banner Section */}
-      <section style={{ backgroundColor: 'var(--color-primary-dark)', color: 'var(--color-white)', padding: '150px 0 100px 0', textAlign: 'center' }}>
-        <div className="container">
-          <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>Leadership Team</h1>
-          <p style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto', fontFamily: 'var(--font-body)' }}>
-            Meet the dedicated individuals serving our congregation.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="About"
+        title="Leadership Team"
+        description="Meet the dedicated individuals serving our congregation."
+      />
 
       {/* Main Content Section */}
       <section className="section" style={{ backgroundColor: 'var(--color-surface)' }}>

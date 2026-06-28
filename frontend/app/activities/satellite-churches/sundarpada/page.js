@@ -3,84 +3,18 @@ export const metadata = {
   description: 'Odia Worship Service held every Sunday morning at 9:30 AM in Sundarpada, Bhubaneswar.',
 }
 
+import PageHeader from '@/components/PageHeader'
+
 export default function SundarpadaPage() {
-  const leaders = [
-    { name: 'Bro. Ranjit Singh', role: 'Evangelist in Charge' },
-    { name: 'Bro. Samuel Nayak', role: 'Worship Center Team Member' },
-    { name: 'Bro. Jashobant Nag', role: 'Worship Center Team Member' },
-    { name: 'Bro. Biswajit Mohanty', role: 'Caretaker (appointed Feb 2018)' },
-    { name: 'Bro. Mosa Kumar', role: 'Caretaker (appointed Feb 2018)' }
-  ]
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            opacity: 0.04,
-            fontWeight: 900,
-            lineHeight: 1,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            fontFamily: 'serif',
-          }}
-        >
-          ✝
-        </div>
+      <PageHeader
+        category="Satellite Churches"
+        title="Sundarpada Worship Center"
+        description="Our third worship center, established on 26th February 2017."
+      />
 
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Satellite Churches
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Sundarpada Worship Center
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Our third worship center, established on 26th February 2017.
-          </p>
-        </div>
-      </section>
 
       {/* ── Content ── */}
       <section className="section">
@@ -109,6 +43,13 @@ export default function SundarpadaPage() {
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Established</p>
               <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>26th February, 2017</p>
+            </div>
+            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div>
+              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Coordinator</p>
+              <p style={{ fontSize: '1rem', fontWeight: 600 }}>
+                <strong>Evg. Ranjit Singh</strong>
+              </p>
             </div>
           </div>
 
@@ -157,41 +98,7 @@ export default function SundarpadaPage() {
             </div>
           </div>
 
-          {/* Leaders Grid */}
-          <h2
-            style={{
-              fontSize: '1.5rem',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              color: 'var(--color-primary-dark)',
-              marginBottom: '1.5rem',
-            }}
-          >
-            Worship Center Leadership
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '1.25rem',
-            }}
-          >
-            {leaders.map((l, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.1)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '1.5rem 1.25rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
-                <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.4rem', fontSize: '1rem' }}>{l.name}</p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600 }}>{l.role}</p>
-              </div>
-            ))}
-          </div>
+
 
         </div>
       </section>

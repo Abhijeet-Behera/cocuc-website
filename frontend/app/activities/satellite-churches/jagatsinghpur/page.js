@@ -3,76 +3,17 @@ export const metadata = {
   description: 'Worship Service led by Evangelist Gobinda Sahu in Jagatsinghpur, Odisha.',
 }
 
+import PageHeader from '@/components/PageHeader'
+
 export default function JagatsinghpurPage() {
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            opacity: 0.04,
-            fontWeight: 900,
-            lineHeight: 1,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            fontFamily: 'serif',
-          }}
-        >
-          ✝
-        </div>
+      <PageHeader
+        category="Satellite Churches"
+        title="Jagatsinghpur Worship Center"
+        description="Spreading the love of Christ in Jagatsinghpur, led by Evangelist Gobinda Sahu."
+      />
 
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Satellite Churches
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Jagatsinghpur Worship Center
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Spreading the love of Christ in Jagatsinghpur, led by Evangelist Gobinda Sahu.
-          </p>
-        </div>
-      </section>
 
       {/* ── Content ── */}
       <section className="section">

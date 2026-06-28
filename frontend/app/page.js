@@ -9,12 +9,16 @@ import UpcomingEvents from '@/components/UpcomingEvents'
 import ChurchesMapSection from '@/components/ChurchesMapSection'
 import PrayerZonesMapSection from '@/components/PrayerZonesMapSection'
 import ChatBotWidget from '@/components/ChatBotWidget'
+import SecretaryAnnouncements from '@/components/SecretaryAnnouncements'
 import styles from './page.module.css'
 
 export default function Home() {
   return (
     <div>
       <HeroSection />
+
+      {/* Secretary Announcements Proxy */}
+      <SecretaryAnnouncements />
 
       {/* Activities Grid */}
       <section className={`section ${styles.activitiesSection}`}>
@@ -43,19 +47,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* News & Updates */}
-      <section className="section container">
-        <Reveal delay={0.25}>
-          <h2 className="section-title-elegant">
-            <span className="title-normal">News & </span>
-            <em className="title-italic">Updates</em>
-          </h2>
-          <LatestBlogs />
-        </Reveal>
-      </section>
+
 
       {/* Blog & Inspiration */}
-      <section className="section container" style={{ backgroundColor: '#fdfbfb', borderRadius: '24px', padding: '4rem 2rem', marginTop: '2rem' }}>
+      <section className="section container" style={{ background: 'linear-gradient(160deg, #fffdf9 0%, #fdf6ee 100%)', borderRadius: '28px', padding: '4.5rem 2rem', marginTop: '2rem', border: '1px solid rgba(128,0,0,0.05)' }}>
         <Reveal delay={0.25}>
           <h2 className="section-title-elegant">
             <span className="title-normal">Blog & </span>
@@ -67,7 +62,7 @@ export default function Home() {
 
       {/* Testimonies */}
       <Testimonies />
-      
+
       <ChatBotWidget />
     </div>
   )

@@ -1,14 +1,14 @@
+import PageHeader from '@/components/PageHeader'
+
 export default function LeadershipPage() {
   return (
     <div>
-      <section style={{ backgroundColor: 'var(--color-primary-dark)', color: 'var(--color-white)', padding: '150px 0 100px 0', textAlign: 'center' }}>
-        <div className="container">
-          <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>Leadership Team</h1>
-          <p style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
-            Meet the dedicated individuals serving our congregation.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="About"
+        title="Leadership Team"
+        description="Meet the dedicated individuals serving our congregation."
+      />
+
 
       <section className="section container">
         <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>

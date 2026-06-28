@@ -1,3 +1,5 @@
+import PageHeader from '@/components/PageHeader'
+
 export default function AboutUs() {
   const boardMembers = [
     { name: 'Dr. Johnson Smith', role: 'Senior Pastor & Chairman' },
@@ -9,14 +11,12 @@ export default function AboutUs() {
 
   return (
     <div>
-      <section style={{ backgroundColor: 'var(--color-primary-dark)', color: 'var(--color-white)', padding: '150px 0 100px 0', textAlign: 'center' }}>
-        <div className="container">
-          <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>About Us</h1>
-          <p style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
-            Learn more about our mission, vision, and the people behind Union Church.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="About"
+        title="About Us"
+        description="Learn more about our mission, vision, and the people behind Union Church."
+      />
+
 
       <section className="section container">
         <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', marginBottom: '4rem' }}>

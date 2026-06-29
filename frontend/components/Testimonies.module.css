@@ -1,0 +1,458 @@
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 4rem;
+}
+
+/* ─── Carousel Section Layout ────────────────────────────────────────────── */
+.sliderSection {
+  width: 100%;
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding: 0 0.25rem;
+}
+
+.sliderSubtitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.85rem;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.sliderControls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.navButton {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 1.5px solid rgba(128, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-size: 0.95rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  user-select: none;
+}
+
+.navButton:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 4px 12px rgba(128, 0, 0, 0.18);
+}
+
+.navButton:active {
+  transform: scale(0.92);
+}
+
+/* ─── 3D Viewport ────────────────────────────────────────────────────────── */
+.sliderViewport {
+  position: relative;
+  width: 100%;
+  height: 580px;
+  perspective: 1200px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  cursor: default;
+  border-radius: 16px;
+  background: rgba(128, 0, 0, 0.015);
+  border: 1px solid rgba(128, 0, 0, 0.03);
+}
+
+.sliderViewport.scrolling,
+.sliderViewport.scrolling * {
+  cursor: grabbing !important;
+}
+
+/* ─── Pages Horizontal Slider ────────────────────────────────────────────── */
+.pageTrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Vertical Track Inside Each Page ──────────────────────────────────────────── */
+.verticalTrack {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/* ─── Card Base ───────────────────────────────────────────────────────────── */
+.article {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  margin: 0 auto;
+  width: 94%;
+  max-width: 470px;
+  height: 120px;
+  background: linear-gradient(160deg, #fffdfb 0%, #fefcf7 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(128, 0, 0, 0.06);
+  padding: 1.1rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.03),
+    0 1px 3px rgba(128, 0, 0, 0.03);
+  pointer-events: auto;
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition:
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.4s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Top ornamental accent strip */
+.article::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(128, 0, 0, 0.12), transparent);
+  border-radius: 0 0 2px 2px;
+}
+
+/* Active / Center card – glowing red halo */
+.article.activeCard {
+  cursor: pointer;
+  background: linear-gradient(160deg, #fffdf8 0%, #fdf5ea 100%);
+  border-color: rgba(128, 0, 0, 0.28);
+  box-shadow:
+    0 12px 30px rgba(128, 0, 0, 0.08),
+    0 4px 12px rgba(128, 0, 0, 0.04),
+    0 0 0 1px rgba(128, 0, 0, 0.04);
+}
+
+.article.activeCard::before {
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  height: 3px;
+  opacity: 0.65;
+}
+
+/* Card Header */
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.date {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+.quoteIcon {
+  color: var(--color-primary);
+  opacity: 0.12;
+  transition: opacity 0.3s;
+}
+
+.article:hover .quoteIcon {
+  opacity: 0.22;
+}
+
+/* Card Content styling */
+.title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-heading);
+  line-height: 1.25;
+  transition: color 0.3s;
+}
+
+.article.activeCard:hover .title {
+  color: var(--color-primary);
+}
+
+.excerpt {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  font-family: var(--font-body);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.readMoreContainer {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.readMore {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.article.activeCard .readMore {
+  opacity: 0.85;
+  transform: translateX(4px);
+}
+
+.article.activeCard:hover .readMore {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--color-primary-dark);
+}
+
+/* ─── Page Number Pagination ────────────────────────────────────────────────── */
+.paginationRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  user-select: none;
+}
+
+.pageButton {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 1px solid rgba(128, 0, 0, 0.12);
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.pageButton:hover {
+  border-color: var(--color-primary);
+  background: rgba(128, 0, 0, 0.04);
+}
+
+.activePageButton {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 10px rgba(128, 0, 0, 0.15);
+}
+
+/* ─── Editorial Reading Modal Overlay ─────────────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 18, 18, 0.45);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modalContent {
+  position: relative;
+  background: linear-gradient(160deg, #fffefe 0%, #fdfaf5 100%);
+  width: 90%;
+  max-width: 580px;
+  max-height: 82vh;
+  border-radius: 20px;
+  border: 1px solid rgba(128, 0, 0, 0.08);
+  box-shadow: 
+    0 24px 60px rgba(128, 0, 0, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  overflow-y: auto;
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 0, 0, 0.2) transparent;
+}
+
+.modalContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+/* Decorative red line on modal */
+.modalContent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary), var(--color-primary-light));
+}
+
+.modalClose {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: #f7f3ed;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1;
+  outline: none;
+}
+
+.modalClose:hover {
+  background: var(--color-primary);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.modalMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-body);
+}
+
+.modalTitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.95rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(128, 0, 0, 0.08);
+  padding-bottom: 1rem;
+}
+
+.modalBody {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #3e3232;
+  white-space: pre-wrap;
+  margin-bottom: 2rem;
+}
+
+/* ─── Keyframes ───────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+/* ─── Responsive Adjustments ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sliderViewport {
+    height: 520px;
+  }
+  
+  .article {
+    width: 96%;
+    height: 112px;
+    padding: 0.95rem 1.15rem;
+  }
+  
+  .excerpt {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+  
+  .title {
+    font-size: 0.9rem;
+  }
+  
+  .modalContent {
+    padding: 2rem 1.5rem;
+    width: 95%;
+  }
+  
+  .modalTitle {
+    font-size: 1.65rem;
+  }
+  
+  .modalClose {
+    top: 1.1rem;
+    right: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sliderViewport {
+    height: 460px;
+  }
+  
+  .article {
+    height: 106px;
+    padding: 0.85rem 1.1rem;
+  }
+  
+  .excerpt {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}

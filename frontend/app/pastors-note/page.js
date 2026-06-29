@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import PageHeader from '@/components/PageHeader'
+
 import styles from './page.module.css'
 
 // TEMPORARY PASTOR’S NOTE IMAGE DATA
@@ -69,44 +71,6 @@ export default function PastorsNotePage() {
     gsap.registerPlugin(ScrollTrigger)
 
     const ctx = gsap.context(() => {
-      // ── HERO ANIMATIONS ───────────────────────────────────────
-      const heroTl = gsap.timeline()
-
-      // Hero Text Entrance (600-800ms)
-      heroTl
-        .fromTo(
-          `.${styles.eyebrow}`,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out"
-          }
-        )
-        .fromTo(
-          `.${styles.title}`,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out"
-          },
-          "-=0.6"
-        )
-        .fromTo(
-          `.${styles.subtitle}`,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out"
-          },
-          "-=0.6"
-        )
-
       // ── CONTENT REVEAL ANIMATIONS ─────────────────────────────
 
       // 1. Vertical Line Drawing (1000-1400ms)
@@ -177,7 +141,7 @@ export default function PastorsNotePage() {
             "-=0.65"
           )
       })
-    }, heroRef)
+    }, timelineRef)
 
     return () => ctx.revert()
   }, [])
@@ -185,87 +149,11 @@ export default function PastorsNotePage() {
   return (
     <main className={styles.main}>
       {/* HERO SECTION */}
-      <section className={styles.hero} ref={heroRef}>
-        {/* ANIMATED CROSS AND SMOKE BACKDROP */}
-        <div className={styles.animatedBackdrop} aria-hidden="true">
-          {/* Permanent ambient background glow */}
-          <div className={styles.backgroundGlow} />
-
-          {/* Large smoke layers behind the cross */}
-          <div
-            className={`${styles.smokeCloud} ${styles.smokeLeftBack}`}
-          />
-
-          <div
-            className={`${styles.smokeCloud} ${styles.smokeRightBack}`}
-          />
-
-          {/* Existing central smoke layers */}
-          <div className={styles.smokeLayerOne} />
-          <div className={styles.smokeLayerTwo} />
-          <div className={styles.smokeLayerThree} />
-
-          {/* Central cross illumination */}
-          <div className={styles.crossAura} />
-
-          {/* Existing scalable SVG cross */}
-          <svg
-            className={styles.crossGraphic}
-            viewBox="0 0 400 500"
-            preserveAspectRatio="xMidYMid meet"
-            focusable="false"
-          >
-            {/* Soft Glow Layer */}
-            <path
-              className={styles.crossGlow}
-              d="M170 50 L230 50 L230 150 L330 150 L330 210 L230 210 L230 450 L170 450 L170 210 L70 210 L70 150 L170 150 Z"
-            />
-
-            {/* Main Cross Body */}
-            <path
-              className={styles.crossBody}
-              d="M175 55 L225 55 L225 155 L325 155 L325 205 L225 205 L225 445 L175 445 L175 205 L75 205 L75 155 L175 155 Z"
-            />
-          </svg>
-
-          {/* Existing red aura */}
-          <div className={styles.redAura} />
-
-          {/* Foreground smoke entering from both sides */}
-          <div
-            className={`${styles.smokeCloud} ${styles.smokeLeftFront}`}
-          />
-
-          <div
-            className={`${styles.smokeCloud} ${styles.smokeRightFront}`}
-          />
-
-          {/* Upper and lower atmospheric mist */}
-          <div
-            className={`${styles.smokeCloud} ${styles.smokeTop}`}
-          />
-
-          <div
-            className={`${styles.smokeCloud} ${styles.smokeBottom}`}
-          />
-
-          {/* Edge vignette for depth and text readability */}
-          <div className={styles.heroVignette} />
-
-          {/* Existing hero shading layer */}
-          <div className={styles.heroShade} />
-        </div>
-
-        <div className={styles.heroContent}>
-          <p className={styles.eyebrow}>ABOUT</p>
-
-          <h1 className={styles.title}>Pastor’s Note</h1>
-
-          <p className={styles.subtitle}>
-            A message of faith, hope and encouragement from our Pastor.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="About"
+        title="Pastor’s Note"
+        description="A message of faith, hope and encouragement from our Pastor."
+      />
 
       {/* EDITORIAL CONTENT SECTION */}
       <section className={styles.editorialSection}>

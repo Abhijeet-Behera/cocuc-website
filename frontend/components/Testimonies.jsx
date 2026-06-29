@@ -10,6 +10,7 @@ export default function Testimonies() {
   const [loading, setLoading] = useState(true)
   const [activeTestimonyModal, setActiveTestimonyModal] = useState(null)
   const [activeIndex, setActiveIndex] = useState(0) // Start at index 0 (most recent in center)
+  const [activePage, setActivePage] = useState(0)
   const [isDraggingState, setIsDraggingState] = useState(false)
 
   const [formTitle, setFormTitle] = useState('')
@@ -144,6 +145,21 @@ export default function Testimonies() {
 
   const pages = getPages()
 
+  // Carousel Layout Parameters for Responsiveness
+  const getCarouselParams = () => {
+    if (typeof window === 'undefined') {
+      return { spacingY: 108, translateZ: 80 }
+    }
+    const w = window.innerWidth
+    if (w < 480) {
+      return { spacingY: 82, translateZ: 60 }
+    }
+    if (w < 768) {
+      return { spacingY: 92, translateZ: 70 }
+    }
+    return { spacingY: 108, translateZ: 80 }
+  }
+
   // Update card coordinates and animations on 3D path
   const updateCarouselStyles = () => {
     const slider = sliderRef.current
@@ -157,8 +173,13 @@ export default function Testimonies() {
     const currVertProg = verticalScrollProgress.current
     const N = 5
 
-    // Spacing between cards in pixels — must match CSS viewport
-    const spacingY = 108
+    const targetActivePage = ((Math.round(currPageProg) % M) + M) % M
+    if (activePage !== targetActivePage) {
+      setActivePage(targetActivePage)
+    }
+
+    const params = getCarouselParams()
+    const spacingY = params.spacingY
 
     for (let p = 0; p < M; p++) {
       const pageEl = pageElements[p]
@@ -209,10 +230,10 @@ export default function Testimonies() {
           // Scale: center=1.0, ±1=0.88, ±2=0.76
           const scale = Math.max(0.7, 1 - absDiff * 0.12)
           const translateY = diff * spacingY
-          const translateZ = -Math.min(absDiff, 2) * 80  // depth
+          const translateZ = -Math.min(absDiff, 2) * params.translateZ  // depth
           const rotateX = Math.sign(diff) * Math.min(absDiff, 2) * 12  // tilt toward center
 
-          card.style.transform = `translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`
+          card.style.transform = `translateY(calc(-50% + ${translateY}px)) translateZ(${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`
           card.style.opacity = cardOpacity
           card.style.pointerEvents = pointerEvents
           card.style.zIndex = Math.round(10 - absDiff * 4)
@@ -287,6 +308,20 @@ export default function Testimonies() {
         }
       }
 
+      // Check if carousel is actively moving or dragging
+      const pageDiff = Math.abs(pageTarget.current - pageProgress.current)
+      const vertDiff = Math.abs(verticalScrollTarget.current - verticalScrollProgress.current)
+      const isMoving = pageDiff > 0.005 || vertDiff > 0.005 || (isDragging.current && hasDragged.current)
+
+      const slider = sliderRef.current
+      if (slider) {
+        if (isMoving) {
+          slider.classList.add(styles.scrolling)
+        } else {
+          slider.classList.remove(styles.scrolling)
+        }
+      }
+
       updateCarouselStyles()
       animationFrameId = requestAnimationFrame(tick)
     }
@@ -313,9 +348,9 @@ export default function Testimonies() {
     const deltaY = clientY - startY.current
 
     if (!dragDirection.current) {
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 8) {
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
         dragDirection.current = 'horizontal'
-      } else if (Math.abs(deltaY) >= Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+      } else if (Math.abs(deltaY) >= Math.abs(deltaX) && Math.abs(deltaY) > 20) {
         dragDirection.current = 'vertical'
       }
     }
@@ -324,21 +359,35 @@ export default function Testimonies() {
       const viewportWidth = sliderRef.current ? sliderRef.current.clientWidth : 480
       const deltaProgress = deltaX / viewportWidth
       pageTarget.current = startPageProgress.current - deltaProgress * 1.2
-      if (Math.abs(deltaX) > 5) hasDragged.current = true
+      if (Math.abs(deltaX) > 15) hasDragged.current = true
     } else if (dragDirection.current === 'vertical') {
-      const spacingY = 108
+      const params = getCarouselParams()
+      const spacingY = params.spacingY
       const deltaProgress = deltaY / spacingY
       verticalScrollTarget.current = startScrollProgress.current - deltaProgress
-      if (Math.abs(deltaY) > 5) hasDragged.current = true
+      if (Math.abs(deltaY) > 15) hasDragged.current = true
     }
   }
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (clientX, clientY) => {
     isDragging.current = false
     pageTarget.current = Math.round(pageTarget.current)
     verticalScrollTarget.current = Math.round(verticalScrollTarget.current)
     setIsDraggingState(false)
     dragDirection.current = null
+
+    if (clientX !== undefined && clientY !== undefined) {
+      const deltaX = clientX - startX.current
+      const deltaY = clientY - startY.current
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+      if (distance < 25) {
+        hasDragged.current = false
+      }
+    } else {
+      if (!dragDirection.current) {
+        hasDragged.current = false
+      }
+    }
   }
 
   useEffect(() => {
@@ -347,9 +396,9 @@ export default function Testimonies() {
       handleDragMove(e.clientX, e.clientY)
     }
 
-    const handleWindowMouseUp = () => {
+    const handleWindowMouseUp = (e) => {
       if (isDragging.current) {
-        handleDragEnd()
+        handleDragEnd(e.clientX, e.clientY)
       }
     }
 
@@ -384,9 +433,14 @@ export default function Testimonies() {
       handleDragMove(touch.clientX, touch.clientY)
     }
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (e) => {
       if (isDragging.current) {
-        handleDragEnd()
+        const touch = e.changedTouches ? e.changedTouches[0] : null
+        if (touch) {
+          handleDragEnd(touch.clientX, touch.clientY)
+        } else {
+          handleDragEnd()
+        }
       }
     }
 
@@ -473,7 +527,7 @@ export default function Testimonies() {
     let diff = cardIdx - verticalScrollProgress.current
     diff = diff - N * Math.round(diff / N)
 
-    if (Math.abs(diff) < 0.25) {
+    if (Math.abs(diff) < 0.48) {
       setActiveTestimonyModal(testimony)
     } else {
       e.preventDefault()
@@ -584,53 +638,16 @@ export default function Testimonies() {
               }} />
             </div>
             
-            {/* Header / Controls Navigation row */}
+            {/* Header row */}
             <div className={styles.sliderHeader}>
               <span className={styles.sliderSubtitle}>Swipe horizontally for pages, vertically for cards</span>
-              <div className={styles.sliderControls}>
-                {/* Vertical Scroll Buttons */}
-                <button
-                  className={styles.navButton}
-                  onClick={handleScrollUp}
-                  aria-label="Scroll Up Testimonies"
-                  title="Scroll Up"
-                >
-                  ↑
-                </button>
-                <button
-                  className={styles.navButton}
-                  onClick={handleScrollDown}
-                  aria-label="Scroll Down Testimonies"
-                  title="Scroll Down"
-                >
-                  ↓
-                </button>
-                <span style={{ color: '#ccc', margin: '0 0.15rem' }}>|</span>
-                {/* Horizontal Page Buttons */}
-                <button
-                  className={styles.navButton}
-                  onClick={handlePrevPage}
-                  aria-label="Previous page"
-                  title="Previous Page"
-                >
-                  ←
-                </button>
-                <button
-                  className={styles.navButton}
-                  onClick={handleNextPage}
-                  aria-label="Next page"
-                  title="Next Page"
-                >
-                  →
-                </button>
-              </div>
             </div>
           </div>
 
           {/* 3D Viewport View */}
           <div
             ref={sliderRef}
-            className={`${styles.sliderViewport} ${isDraggingState ? styles.dragging : ''}`}
+            className={styles.sliderViewport}
             onMouseDown={handleMouseDown}
           >
             {loading ? (
@@ -677,7 +694,14 @@ export default function Testimonies() {
                           <p className={styles.excerpt} draggable="false">{displayText}</p>
 
                           <div className={styles.readMoreContainer} draggable="false">
-                            <span className={styles.readMore}>
+                            <span
+                              className={styles.readMore}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setActiveTestimonyModal(t)
+                              }}
+                              style={{ cursor: 'pointer' }}
+                            >
                               Read full testimony <span style={{ fontFamily: 'sans-serif' }}>→</span>
                             </span>
                           </div>
@@ -690,24 +714,25 @@ export default function Testimonies() {
             )}
           </div>
 
-          {/* Dot Indicators (for pages) */}
+          {/* Page Number Pagination */}
           {pages.length > 1 && (
-            <div className={styles.dotsRow} aria-hidden="true">
+            <div className={styles.paginationRow} aria-label="Pagination">
               {pages.map((_, i) => {
-                const targetPage = ((Math.round(pageProgress.current) % pages.length) + pages.length) % pages.length
+                const isActive = i === activePage
                 return (
-                  <span
+                  <button
                     key={i}
-                    className={`${styles.dot} ${i === targetPage ? styles.activeDot : ''}`}
+                    className={`${styles.pageButton} ${isActive ? styles.activePageButton : ''}`}
                     onClick={() => {
-                      // Compute shortest circular path from current progress to dot i
-                      // then offset the target by that delta (never assign raw i to avoid drift bugs)
                       const M = pages.length
                       let diff = i - pageProgress.current
-                      diff = diff - M * Math.round(diff / M) // shortest path: [-M/2, M/2]
+                      diff = diff - M * Math.round(diff / M)
                       pageTarget.current = pageProgress.current + diff
                     }}
-                  />
+                    aria-label={`Go to page ${i + 1}`}
+                  >
+                    {i + 1}
+                  </button>
                 )
               })}
             </div>

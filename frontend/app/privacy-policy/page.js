@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
             <strong>Church of Christ (Union Church)</strong><br/>
             Lokseva Marg, Unit-4, PO Box 751001<br/>
             Bhubaneswar, Odisha, India<br/>
-            Email: info@unionchurch.org.in
+            Email: pastor@unionchurch.in or secretary@unionchurch.in
           </p>
         </div>
       </div>

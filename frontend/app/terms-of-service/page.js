@@ -40,7 +40,7 @@ export default function TermsOfService() {
 
           <h2 style={{ fontSize: '1.5rem', color: 'var(--color-primary)', marginTop: '1rem' }}>5. Contact Information</h2>
           <p>
-            If you have any questions about these Terms, please contact us at: info@unionchurch.org.in
+            If you have any questions about these Terms, please contact us at: pastor@unionchurch.in or secretary@unionchurch.in
           </p>
         </div>
       </div>

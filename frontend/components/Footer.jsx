@@ -113,9 +113,9 @@ export default function Footer() {
             <li className={styles.contactItem} style={{ marginTop: '0.5rem' }}>
               <Mail size={18} className={styles.contactIcon} />
               <div>
-                <span>info@unionchurch.org.in</span><br/>
+                <span>pastor@unionchurch.in</span><br/>
                 <span style={{ display: 'block', marginTop: '0.3rem', wordBreak: 'break-word' }}>
-                  prayerrequest@unionchurch.org.in
+                  secretary@unionchurch.in
                 </span>
               </div>
             </li>

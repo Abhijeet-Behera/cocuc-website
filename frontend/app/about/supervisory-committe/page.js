@@ -8,11 +8,11 @@ import PageHeader from '@/components/PageHeader'
 
 export default function SupervisoryCommitteePage() {
   const members = [
-    { name: 'Mr. Paresh K. Das',       role: 'Convenor' },
-    { name: 'Mr. Ranjan Pati',         role: 'Member'   },
-    { name: 'Mr. Rajballabh Supakar',  role: 'Member'   },
-    { name: 'Mr. Ranjan Rout',         role: 'Member'   },
-    { name: 'Mr. Tapas Dey',           role: 'Member'   },
+    { name: 'Mr. Paresh Kumar Das', role: 'Convenor' },
+    { name: 'Mr. Ranjan Pati', role: 'Member' },
+    { name: 'Mr. Rajballabh Supakar', role: 'Member' },
+    { name: 'Mr. Ranjan Rout', role: 'Member' },
+    { name: 'Mr. Tapas Dey', role: 'Member' },
   ]
 
   const responsibilities = [
@@ -20,7 +20,7 @@ export default function SupervisoryCommitteePage() {
     'Supervise the functioning of different Church wings including the Mahila Sabha, Sunday School, Christian Endeavour Union, and others.',
     'Function as the Disciplinary Committee of the Church — introduced for the first time through the new amendment.',
     'Take all decisions pertaining to maintenance of discipline in the Church covering all members, associate members, Pastors, Evangelists and employees.',
-    'All decisions are final, binding on all stakeholders and supersede any other decision.',
+
   ]
 
   return (
@@ -70,7 +70,7 @@ export default function SupervisoryCommitteePage() {
                 color: 'var(--color-text)',
               }}
             >
-              All decisions taken by the Supervisory Committee shall be final and supersede any other decision and shall be binding on all stakeholders in the Church. The decisions of the Supervisory Committee cannot be challenged.
+
             </div>
           </div>
 

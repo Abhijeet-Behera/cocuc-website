@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Sundarpada Worship Center | Church of Christ Union Church Bhubaneswar',
-  description: 'Odia Worship Service held every Sunday morning at 9:30 AM in Sundarpada, Bhubaneswar.',
+  description: 'Odia Worship Service held every Sunday morning at 10:00 AM in Sundarpada, Bhubaneswar.',
 }
 
 import PageHeader from '@/components/PageHeader'
@@ -19,7 +19,7 @@ export default function SundarpadaPage() {
       {/* ── Content ── */}
       <section className="section">
         <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
-          
+
           {/* Quick Schedule Banner */}
           <div
             style={{
@@ -37,7 +37,7 @@ export default function SundarpadaPage() {
           >
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Worship Timing</p>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 9:30 AM</p>
+              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 10:00 AM</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
@@ -71,7 +71,7 @@ export default function SundarpadaPage() {
             }}
           >
             <p>
-              We are extremely happy to inform you that the Lord has enabled us to start a third worship centre at Sundarpada. The Worship is held <strong style={{ color: 'var(--color-text)' }}>every Sunday at 9:30 AM</strong> at Sundarpada.
+              We are extremely happy to inform you that the Lord has enabled us to start a third worship centre at Sundarpada. The Worship is held <strong style={{ color: 'var(--color-text)' }}>every Sunday at 10:00 AM</strong> at Sundarpada.
             </p>
 
             <p>

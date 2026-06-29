@@ -34,7 +34,7 @@ export default function SundayWorshipPage() {
             {[
               { label: 'English Service', time: '10:00 AM', loc: 'Union Church' },
               { label: 'Odia Service', time: '4:30 PM', loc: 'Union Church' },
-              { label: 'Satellite Centres', time: '9:30 AM', loc: 'C.S. Pur · Kalinga Vihar · Sundarpada' },
+              { label: 'Satellite Centres', time: '10:00 AM', loc: 'C.S. Pur · Kalinga Vihar · Sundarpada' },
             ].map((s) => (
               <div
                 key={s.label}
@@ -92,7 +92,7 @@ export default function SundayWorshipPage() {
             }}
           >
             <p>
-              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>9:30 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
+              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
             </p>
 
             <div
@@ -103,11 +103,11 @@ export default function SundayWorshipPage() {
                 color: 'var(--color-text)',
               }}
             >
-              Lord&rsquo;s Supper is observed in the 1st week here in Union Church. It is observed in the 2nd week in C.S. Pur, 3rd week in Kalinga Vihar Worship centre and 4th week in the Sundarpada Worship centre. Both our Associate Pastors conduct the Holy Communion on an alternate basis every month.
+              Lord&rsquo;s Supper is observed in the 1st week here in Union Church. It is observed in the 2nd week in C.S. Pur, 3rd week in Kalinga Vihar Worship centre and 4th week in the Sundarpada Worship centre. Our Pastors conduct the Holy Communion on an alternate basis every month.
             </div>
 
             <p>
-              Besides Pastors, <strong style={{ color: 'var(--color-text)' }}>Rev. Songram K Singh</strong> , <strong style={{ color: 'var(--color-text)' }}>Rev. Dr. Ayub Chhinchani</strong> and <strong style={{ color: 'var(--color-text)' }}>Rev. Satish Kumar Pani</strong> , preachers from within and outside the city and state are invited to share God&rsquo;s Word on Sundays.
+              Besides Pastors <strong style={{ color: 'var(--color-text)' }}>(Rev. Songram Keshari Singh</strong> , <strong style={{ color: 'var(--color-text)' }}>Rev. Dr. Ayub Chhinchani</strong> and <strong style={{ color: 'var(--color-text)' }}>Rev. Satish Kumar Pani)</strong> , preachers from within and outside the city and state are invited to share God&rsquo;s Word on Sundays.
             </p>
 
             <p>

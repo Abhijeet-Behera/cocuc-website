@@ -97,14 +97,14 @@ export default function Navbar() {
   ]
 
   const activitiesMenu = [
-    { name: 'Satellite Churches', href: '/activities/satellite-churches' },
-    { name: 'Sunday Worship', href: '/activities/sunday-worship' },
-    { name: 'Worship Team', href: '/activities/worship-team' },
     { name: 'Sunday School', href: '/activities/sunday-school' },
-    { name: 'C.E Union', href: '/activities/ce-union' },
-    { name: 'Baptism Classes', href: '/activities/baptism-classes' },
+    { name: 'Sunday Worship', href: '/activities/sunday-worship' },
+    { name: 'Satellite Churches', href: '/activities/satellite-churches' },
+    { name: 'Christian Endeavour Union', href: '/activities/ce-union' },
     { name: 'Women’s Fellowship', href: '/activities/womens-fellowship' },
+    { name: 'Baptism Classes', href: '/activities/baptism-classes' },
     { name: 'Youth Fellowship', href: '/activities/youth-fellowship' },
+    { name: 'Worship Team', href: '/activities/worship-team' },
   ]
 
 

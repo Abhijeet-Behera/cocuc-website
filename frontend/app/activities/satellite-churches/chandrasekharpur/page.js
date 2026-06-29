@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Chandrasekharpur Worship Center | Church of Christ Union Church Bhubaneswar',
-  description: 'Odia Worship Service held every Sunday morning at 9:30 AM in Chandrasekharpur, Bhubaneswar.',
+  description: 'Odia Worship Service held every Sunday morning at 10:00 AM in Chandrasekharpur, Bhubaneswar.',
 }
 
 import PageHeader from '@/components/PageHeader'
@@ -38,12 +38,12 @@ export default function ChandrasekharpurPage() {
           >
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Worship Timing</p>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 9:30 AM</p>
+              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 10:00 AM</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Location</p>
-              <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>96, District Center, Chandrasekharpur</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>Chandrasekharpur</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
@@ -73,7 +73,7 @@ export default function ChandrasekharpurPage() {
             }}
           >
             <p>
-              We have a vibrant Odia Worship Service held <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 9:30 AM</strong>. This worship center is located in the Chandrasekharpur area. The center started way back in the early 90&rsquo;s and we have a wonderful congregation who turns up every Sunday morning to listen to God&rsquo;s Word. On December 15, 2019, it was shifted to a new location at <strong style={{ color: 'var(--color-text)' }}>96, District Center, Chandrasekharpur</strong>.
+              We have a vibrant Odia Worship Service held <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 10:00 AM</strong>. This worship center is located in the Chandrasekharpur area. The center started way back in the early 90&rsquo;s and we have a wonderful congregation who turns up every Sunday morning to listen to God&rsquo;s Word. On December 15, 2019, it was shifted to a new location at <strong style={{ color: 'var(--color-text)' }}>Chandrasekharpur</strong>.
             </p>
 
             <div
@@ -92,7 +92,7 @@ export default function ChandrasekharpurPage() {
             </p>
 
             <p>
-              They have their separate Sunday School for children in the area. The Sunday School classes are held in the morning before the main Worship Service commences at 9:30 AM.
+              They have their separate Sunday School for children in the area. The Sunday School classes are held in the morning before the main Worship Service commences at 10:00 AM.
             </p>
 
             {/* Warning / Note Alert */}

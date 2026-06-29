@@ -10,9 +10,9 @@ export default function BaptismClassesPage() {
   const leaders = [
     'Rev. Ayub Chinchani',
     'Rev. Songram Keshari Singh',
-    'Rev. Satish Pani',
-    'Evangelist Ranjit Singh',
-    'Evangelist Pratap Kumar Sahoo',
+    'Rev. Satish Kumar Pani',
+    'Evg. Ranjit Singh',
+    'Evg. Pratap Kumar Sahoo',
   ]
 
   const topics = [
@@ -25,8 +25,8 @@ export default function BaptismClassesPage() {
 
   const contacts = [
     'Rev. Songram Keshari Singh',
-    'Evangelist Ranjit Singh',
-    'Secretary Er. Michael Rajesh Behera',
+    'Evg. Ranjit Singh',
+    'Er. Michael Rajesh Behera (Secretary)',
   ]
 
   const committee = [
@@ -34,14 +34,14 @@ export default function BaptismClassesPage() {
     { name: 'Rev. Songram Keshari Singh', role: 'Co-Convenor' },
     { name: 'Rev. Satish Kumar Pani', role: 'Co-Convenor' },
     { name: 'Er. Michael Rajesh Behera', role: 'Secretary' },
-    { name: 'Evangelist Pratap Kumar Sahoo', role: 'Member' },
-    { name: 'Evangelist Ranjit Singh', role: 'Member' },
-    { name: 'Mrs. Jeeta Pati', role: 'Member' },
+    { name: 'Evg. Pratap Kumar Sahoo', role: 'Member' },
+    { name: 'Evg. Ranjit Singh', role: 'Member' },
     { name: 'Mr. Asit Kumar Mohanty', role: 'Member' },
+    { name: 'Mrs. Jeeta Pati', role: 'Member' },
     { name: 'Mrs. Alakananda Samantaray', role: 'Member' },
-    { name: 'Mrs. Madhulita Samantaray', role: 'Member' },
+    { name: 'Mrs. Madhuleeta Samantaray', role: 'Member' },
     { name: 'Mrs. Anita Nayak', role: 'Member' },
-    { name: 'Mrs. Swarnamoyee Patra', role: 'Member' },
+    { name: 'Mrs. Swarnamayee Patra', role: 'Member' },
   ]
 
   return (
@@ -345,8 +345,8 @@ export default function BaptismClassesPage() {
                 text: '\u201cTherefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit.\u201d',
               },
               {
-                ref: 'Colossians 2:11-12 (NLT)',
-                text: '\u201cWhen you came to Christ, you were \u201ccircumcised,\u201d but not by a physical procedure. It was a spiritual procedure\u2013the cutting away of your sinful nature. For you were buried with Christ when you were baptized. And with him you were raised to a new life because you trusted the mighty power of God, who raised Christ from the dead.\u201d',
+                ref: 'Colossians 2:11-12 (NIV)',
+                text: '\u201cIn him you were also circumcised with a circumcision not performed by human hands. Your whole self ruled by the flesh was put off when you were circumcised by Christ, having been buried with him in baptism, in which you were also raised with him through your faith in the working of God, who raised him from the dead.\u201d',
               },
               {
                 ref: 'Romans 6:4 (NIV)',

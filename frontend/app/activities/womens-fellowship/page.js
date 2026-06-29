@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function WomensFellowshipPage() {
   const committee = [
-    { name: 'Mrs. Manaharoni Muduli', role: 'President' },
+    { name: 'Mrs. Manaharini Muduli', role: 'President' },
     { name: 'Mrs. Minakhi Rout', role: 'Vice President' },
     { name: 'Mrs. Tarangini Pradhan', role: 'Secretary' },
     { name: 'Mrs. Itishree Das', role: 'Joint Secretary' },
@@ -294,7 +294,7 @@ export default function WomensFellowshipPage() {
                     fontFamily: 'var(--font-heading)',
                   }}
                 >
-                  {c.location} Women&rsquo;s Fellowship
+                  {c.location}
                 </p>
                 <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
                   <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>Coordinator:</span> {c.coordinator}

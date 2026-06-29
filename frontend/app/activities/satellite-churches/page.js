@@ -13,7 +13,7 @@ export default function SatelliteChurchesPage() {
     {
       id: 'chandrasekharpur',
       name: 'Chandrasekharpur Worship Center',
-      timing: 'Sundays @ 9:30 AM',
+      timing: 'Sundays @ 10:00 AM',
       location: '96, District Center, Chandrasekharpur',
       brief:
         "Serving the community since the early 90s, offering Odia worship services and children's Sunday school.",
@@ -21,7 +21,7 @@ export default function SatelliteChurchesPage() {
     {
       id: 'kalinga-vihar',
       name: 'Kalinga Vihar Worship Center',
-      timing: 'Sundays @ 9:30 AM',
+      timing: 'Sundays @ 10:00 AM',
       location: 'Kalinga Vihar, Bhubaneswar',
       brief:
         'Established in July 2015, this growing congregation gathers weekly for Odia worship and fellowship.',
@@ -29,7 +29,7 @@ export default function SatelliteChurchesPage() {
     {
       id: 'sundarpada',
       name: 'Sundarpada Worship Center',
-      timing: 'Sundays @ 9:30 AM',
+      timing: 'Sundays @ 10:00 AM',
       location: 'Sundarpada, Bhubaneswar',
       brief:
         'Our third worship center established in 2017 to expand our outreach and bring the Gospel to Sundarpada.',

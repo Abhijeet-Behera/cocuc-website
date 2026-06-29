@@ -24,6 +24,18 @@ try {
   } else {
     console.warn('Source dark image not found at:', srcDark);
   }
+
+  // Cleanup redundant folders
+  const oldPage = './app/about/secretary-corner/page.js';
+  if (fs.existsSync(oldPage)) {
+    fs.unlinkSync(oldPage);
+    console.log('Cleaned up redundant secretary-corner/page.js');
+  }
+  const oldDir = './app/about/secretary-corner';
+  if (fs.existsSync(oldDir)) {
+    fs.rmdirSync(oldDir);
+    console.log('Cleaned up redundant secretary-corner folder');
+  }
 } catch (err) {
   console.error('Error during setup copies in next.config.mjs:', err);
 }

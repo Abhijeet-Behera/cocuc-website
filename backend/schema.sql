@@ -117,7 +117,8 @@ CREATE TABLE IF NOT EXISTS developer_audit_logs (
 
 CREATE TABLE IF NOT EXISTS frontend_knowledge (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    source_file VARCHAR(255) NOT NULL UNIQUE,
+    source_file VARCHAR(255) NOT NULL,
+    chunk_index INT NOT NULL,
     content TEXT NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FULLTEXT KEY ft_content (content)
@@ -130,4 +131,11 @@ CREATE TABLE IF NOT EXISTS chatbot_rate_limits (
     first_message_time DATETIME NOT NULL,
     cooldown_until DATETIME NULL,
     spam_strikes INT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS chatbot_dynamic_knowledge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    knowledge_type VARCHAR(50) NOT NULL UNIQUE,
+    content TEXT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

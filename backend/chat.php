@@ -167,23 +167,22 @@ $searchTerms = array_filter($searchTerms, function($w) use ($stopWords) {
 
 $liveDatabaseContext = "";
 if (!empty($searchTerms)) {
-    $likeClauses = [];
-    $params = [];
-    foreach ($searchTerms as $term) {
-        $likeClauses[] = "(content LIKE ?)";
-        $params[] = '%' . $term . '%';
-    }
-    $whereClause = implode(" OR ", $likeClauses);
+    // Frontend Knowledge
+    // Use FULLTEXT SEARCH for better accuracy and to prevent hallucinations
+    $searchString = implode(' ', $searchTerms);
+    $stmt = $pdo->prepare("SELECT content, MATCH(content) AGAINST(? IN NATURAL LANGUAGE MODE) as score 
+                           FROM frontend_knowledge 
+                           WHERE MATCH(content) AGAINST(? IN NATURAL LANGUAGE MODE) 
+                           ORDER BY score DESC LIMIT 4");
+    $stmt->execute([$searchString, $searchString]);
     
-    // Website Data
-    $stmt = $pdo->prepare("SELECT content FROM frontend_knowledge WHERE $whereClause LIMIT 3");
-    $stmt->execute($params);
-    $frontendResults = $stmt->fetchAll();
-    if ($frontendResults) {
-        $liveDatabaseContext .= "WEBSITE INFO:\n";
-        foreach ($frontendResults as $row) {
-            $liveDatabaseContext .= "- " . substr($row['content'], 0, 800) . "...\n";
+    $results = $stmt->fetchAll();
+    if (count($results) > 0) {
+        $liveDatabaseContext .= "STATIC WEBSITE KNOWLEDGE (Highly Relevant):\n";
+        foreach ($results as $row) {
+            $liveDatabaseContext .= "- " . trim($row['content']) . "\n";
         }
+        $liveDatabaseContext .= "\n";
     }
 
     // Verses, Testimonies, YouTube (from Google Sheets / YouTube API via local API)
@@ -201,44 +200,21 @@ if (!empty($searchTerms)) {
     if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) $baseUrl = 'http://localhost:8000';
 
     if ($wantsVerses) {
-        $vRes = fetchLocalApi($baseUrl . '/verses.php');
-        if ($vRes) {
-            $vData = json_decode($vRes, true);
-            if ($vData && !isset($vData['error'])) {
-                $liveDatabaseContext .= "MEMORY VERSES:\n";
-                if (isset($vData['daily']) && $vData['daily']) $liveDatabaseContext .= "Daily: {$vData['daily']['reference']} - {$vData['daily']['scripture']}\n";
-                if (isset($vData['weekly']) && $vData['weekly']) $liveDatabaseContext .= "Weekly: {$vData['weekly']['reference']} - {$vData['weekly']['scripture']}\n";
-                if (isset($vData['monthly']) && $vData['monthly']) $liveDatabaseContext .= "Monthly: {$vData['monthly']['reference']} - {$vData['monthly']['scripture']}\n";
-            }
-        }
+        $stmt = $pdo->prepare("SELECT content FROM chatbot_dynamic_knowledge WHERE knowledge_type = 'verses'");
+        $stmt->execute();
+        if ($row = $stmt->fetch()) $liveDatabaseContext .= $row['content'] . "\n";
     }
 
     if ($wantsTestimonies) {
-        $tRes = fetchLocalApi($baseUrl . '/testimonials.php');
-        if ($tRes) {
-            $tData = json_decode($tRes, true);
-            if ($tData && !isset($tData['error']) && isset($tData['testimonials'])) {
-                $liveDatabaseContext .= "TESTIMONIES:\n";
-                foreach (array_slice($tData['testimonials'], 0, 2) as $t) {
-                    $liveDatabaseContext .= "Testimony by {$t['name']}: " . substr($t['content'], 0, 300) . "...\n";
-                }
-            }
-        }
+        $stmt = $pdo->prepare("SELECT content FROM chatbot_dynamic_knowledge WHERE knowledge_type = 'testimonies'");
+        $stmt->execute();
+        if ($row = $stmt->fetch()) $liveDatabaseContext .= $row['content'] . "\n";
     }
 
     if ($wantsYouTube) {
-        $yRes = fetchLocalApi($baseUrl . '/youtube.php');
-        if ($yRes) {
-            $yData = json_decode($yRes, true);
-            if (is_array($yData)) {
-                $liveDatabaseContext .= "LATEST YOUTUBE VIDEOS:\n";
-                foreach ($yData as $v) {
-                    if (isset($v['error']) && $v['error'] === false && isset($v['playlist_title']) && isset($v['title'])) {
-                        $liveDatabaseContext .= "{$v['playlist_title']}: {$v['title']} (Published: {$v['published_at']})\n";
-                    }
-                }
-            }
-        }
+        $stmt = $pdo->prepare("SELECT content FROM chatbot_dynamic_knowledge WHERE knowledge_type = 'youtube'");
+        $stmt->execute();
+        if ($row = $stmt->fetch()) $liveDatabaseContext .= $row['content'] . "\n";
     }
 
     // Blogs
@@ -357,15 +333,15 @@ if (!empty($searchTerms)) {
 // Fallback to latest standard info if context is empty
 if (empty($liveDatabaseContext)) {
     try {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $baseUrl = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
-        if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) $baseUrl = 'http://localhost:8000';
-
-        $vRes = fetchLocalApi($baseUrl . '/verses.php');
-        if ($vRes) {
-            $vData = json_decode($vRes, true);
-            if ($vData && isset($vData['daily']) && $vData['daily']) {
-                $liveDatabaseContext .= "Latest Daily Verse: {$vData['daily']['reference']} - {$vData['daily']['scripture']}\n";
+        $stmt = $pdo->prepare("SELECT content FROM chatbot_dynamic_knowledge WHERE knowledge_type = 'verses'");
+        $stmt->execute();
+        if ($row = $stmt->fetch()) {
+            $lines = explode("\n", $row['content']);
+            foreach ($lines as $line) {
+                if (strpos($line, 'Daily:') !== false) {
+                    $liveDatabaseContext .= "Latest Daily Verse: " . str_replace("Daily: ", "", $line) . "\n";
+                    break;
+                }
             }
         }
     
@@ -408,7 +384,17 @@ CRITICAL FORMATTING RULES:
    - GOOD: \"Contact A (1), B (2), and C (3).\"
 4. NEVER use the word \"respectively\".
 5. Do NOT use any markdown formatting (no asterisks *, no bolding, no bullet points). 
-6. Do NOT use any emojis. Output plain text only.";
+6. Do NOT use any emojis. Output plain text only.
+7. WEBSITE NAVIGATION STRUCTURE: The website has the following navigation tabs and dropdowns:
+- About (History, What We Believe, Supervisory Committee, Leadership Team, Secretary's Corner, Pastor's Note, Celebrations, Service Timing, Contact Us)
+- Gallery
+- Activities (Satellite Churches, Sunday Worship, Worship Team, Sunday School, C.E Union, Baptism Classes, Women's Fellowship, Youth Fellowship)
+- Prayer Wings
+- Events (Monthly Programme, Special Announcements, Speaking Engagements, Holy Week, Baptism)
+- Blog
+Also, the main homepage features: Church Updates, Activity Section, COCUC Prayer zones, Satellite Churches & Mission Fields, Latest Videos, Upcoming Events, Blog, and Share Your Testimony. 
+If a user asks where to find a section (like Celebrations or Baptism), YOU MUST accurately tell them exactly which navigation bar tab and dropdown to click based on the map above (e.g. \"This is present at the navigation bar, About tab -> Celebrations\").";
+
 
 $contextMessage = "Here is the relevant dynamic context:\n" . $liveDatabaseContext;
 

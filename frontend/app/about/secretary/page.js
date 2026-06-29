@@ -1,3 +1,5 @@
+import PageHeader from '@/components/PageHeader'
+
 export const metadata = {
   title: "Secretary's Corner | Church of Christ Union Church Bhubaneswar",
   description:
@@ -29,81 +31,11 @@ export default function SecretarysCornerPage() {
           color: #ffffff !important;
         }
       `}</style>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)',
-          color: 'var(--color-white)',
-          padding: '150px 0 90px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Decorative large faded cross */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '28rem',
-            color: 'rgba(255,255,255,0.04)',
-            fontFamily: 'serif',
-            lineHeight: 1,
-            userSelect: 'none',
-            pointerEvents: 'none',
-          }}
-        >
-          ✝
-        </div>
-
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          {/* Small tag */}
-          <div
-            style={{
-              display: 'inline-block',
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.65)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              borderRadius: '50px',
-              padding: '0.35rem 1rem',
-              marginBottom: '1.25rem',
-            }}
-          >
-            From the Secretary&rsquo;s Desk
-          </div>
-
-          <h1
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '3.2rem',
-              fontWeight: 800,
-              lineHeight: 1.1,
-              marginBottom: '1rem',
-            }}
-          >
-            Secretary&rsquo;s Corner
-          </h1>
-
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '1.1rem',
-              opacity: 0.82,
-              maxWidth: '560px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Church of Christ, Union Church &mdash; Worship, Fellowship &amp; Witness
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="From the Secretary's Desk"
+        title="Secretary's Corner"
+        description="Church of Christ, Union Church — Worship, Fellowship & Witness"
+      />
 
       {/* ── Letter Section ── */}
       <section className="section container">

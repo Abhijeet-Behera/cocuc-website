@@ -60,7 +60,7 @@ export default function Home() {
       </section>
 
       {/* Blog & Inspiration */}
-      <section id="blog" className="section container" style={{ background: 'linear-gradient(160deg, #fffdf9 0%, #fdf6ee 100%)', borderRadius: '28px', padding: '4.5rem 2rem', marginTop: '2rem', border: '1px solid rgba(128,0,0,0.05)' }}>
+      <section id="blog" className="section container" style={{ background: 'var(--color-surface)', borderRadius: '28px', padding: '4.5rem 2rem', marginTop: '2rem', border: '1px solid rgba(128,0,0,0.05)' }}>
         <Reveal delay={0.25}>
           <h2 className="section-title-elegant">
             <span className="title-normal">Blog & </span>

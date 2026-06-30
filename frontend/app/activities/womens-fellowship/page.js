@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './womens-fellowship.module.css'
 
 export const metadata = {
   title: "Women's Fellowship | Church of Christ Union Church Bhubaneswar",
@@ -43,34 +44,20 @@ export default function WomensFellowshipPage() {
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Meeting Info Banner */}
-          <div
-            style={{
-              background:
-                'linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
-              color: '#fff',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1.5rem 2rem',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: '1.5rem',
-              marginBottom: '3rem',
-              boxShadow: '0 8px 24px rgba(128,0,0,0.2)',
-            }}
-          >
+          <div className={styles.infoBanner}>
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Meeting Day</p>
               <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Saturday</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.infoDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Time</p>
               <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>4:30 PM</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.infoDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Venue</p>
               <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>Amenity Hall (Ground Floor), Union Church</p>
@@ -78,38 +65,12 @@ export default function WomensFellowshipPage() {
           </div>
 
           {/* Winter Note */}
-          <div
-            style={{
-              background: 'rgba(128,0,0,0.04)',
-              border: '1px solid rgba(128,0,0,0.12)',
-              borderRadius: 'var(--radius-md)',
-              padding: '1rem 1.5rem',
-              color: 'var(--color-primary-dark)',
-              fontSize: '0.95rem',
-              fontWeight: 500,
-              marginBottom: '3rem',
-            }}
-          >
+          <div className={styles.noticeCard}>
             ⏰ <strong>Winter Season Notice:</strong> The fellowship is preponed to <strong>4:00 PM</strong> during the winter season.
           </div>
 
           {/* About Section */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.aboutCard}>
             <p>
               The <strong style={{ color: 'var(--color-text)' }}>Mahila Sabha (Women&rsquo;s Fellowship)</strong> of the Church of Christ (Union Church), Bhubaneswar, is a prayerful ministry dedicated to the spiritual growth, fellowship, and service of the women of the Church.
             </p>
@@ -140,19 +101,7 @@ export default function WomensFellowshipPage() {
           >
             Services &amp; Activities
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: '2rem 2.5rem',
-              border: '1px solid rgba(0,0,0,0.05)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.9rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.servicesCard}>
             {services.map((s, i) => (
               <div
                 key={i}
@@ -203,28 +152,11 @@ export default function WomensFellowshipPage() {
             Elected on <strong>6th September 2023</strong>
           </p>
 
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.committeeCard}>
             {committee.map((c, i) => (
               <div
                 key={i}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '1.25rem 2rem',
-                  borderBottom:
-                    i < committee.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
-                }}
+                className={`${styles.committeeRow} ${i % 2 !== 0 ? styles.committeeRowAlt : ''}`}
               >
                 <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{c.name}</span>
                 <span
@@ -266,25 +198,9 @@ export default function WomensFellowshipPage() {
             To ensure that every woman can actively participate in fellowship, prayer, and spiritual growth without being hindered by distance and travel time, the Mahila Sabha conducts fellowship meetings in three satellite churches at <strong style={{ color: 'var(--color-text)' }}>4:30 PM on every 1st, 2nd, 4th and 5th Saturday</strong>.
           </p>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '1.25rem',
-              marginBottom: '2.5rem',
-            }}
-          >
+          <div className={styles.satelliteGrid}>
             {satelliteCentres.map((c, i) => (
-              <div
-                key={i}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.1)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '1.5rem 1.5rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
+              <div key={i} className={styles.satelliteCard}>
                 <p
                   style={{
                     fontWeight: 700,
@@ -304,16 +220,7 @@ export default function WomensFellowshipPage() {
           </div>
 
           {/* 3rd Saturday Combined Meeting */}
-          <div
-            style={{
-              background:
-                'linear-gradient(135deg, rgba(128,0,0,0.05) 0%, rgba(128,0,0,0.02) 100%)',
-              border: '1px solid rgba(128,0,0,0.12)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem 2.5rem',
-              marginBottom: '1rem',
-            }}
-          >
+          <div className={styles.monthlyGatheringCard}>
             <p
               style={{
                 fontSize: '0.75rem',

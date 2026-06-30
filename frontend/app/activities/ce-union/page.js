@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './ce-union.module.css'
 
 export const metadata = {
   title: 'C.E Union | Church of Christ Union Church Bhubaneswar',
@@ -77,57 +78,23 @@ export default function CEUnionPage() {
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '880px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Meeting info banner */}
-          <div
-            style={{
-              background:
-                'linear-gradient(90deg, #3d0055 0%, var(--color-primary-dark) 100%)',
-              color: '#fff',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1.5rem 2rem',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: '1.5rem',
-              marginBottom: '3rem',
-              boxShadow: '0 8px 24px rgba(61,0,85,0.3)',
-            }}
-          >
+          <div className={styles.infoBanner}>
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Established</p>
               <p style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>28 May 1972</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.infoDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Weekly Meeting</p>
               <p style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Tuesday @ 7 PM</p>
             </div>
-
-            <div>
-              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}></p>
-              <p style={{ fontSize: '1.05rem', fontWeight: 600 }}></p>
-            </div>
           </div>
 
           {/* About */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.aboutCard}>
             <p>
               The Christian endeavour (CE) union was established on  <strong style={{ color: 'var(--color-text)' }}>28th Of May, 1972</strong> at <strong style={{ color: 'var(--color-text)' }}>Church of Christ (Union Church), Bhubaneswar</strong>.
               For over five decades we have gathered in fellowship, prayer and service to
@@ -216,28 +183,11 @@ export default function CEUnionPage() {
           >
             Founder Members of CE Union Bhubaneswar
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.foundersCard}>
             {founders.map((f, i) => (
               <div
                 key={i}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '1rem 2rem',
-                  borderBottom:
-                    i < founders.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(61,0,85,0.018)',
-                }}
+                className={`${styles.foundersRow} ${i % 2 !== 0 ? styles.foundersRowAlt : ''}`}
               >
                 <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{f.name}</span>
                 {f.note && (
@@ -259,24 +209,9 @@ export default function CEUnionPage() {
           </div>
 
           {/* Cardinal Principles & Essentials side by side */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.principlesGrid}>
             {/* Cardinal Principles */}
-            <div
-              style={{
-                background: 'var(--color-white)',
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: 'var(--shadow-sm)',
-                border: '1px solid rgba(0,0,0,0.05)',
-                padding: '2rem',
-              }}
-            >
+            <div className={styles.principleCard}>
               <h2
                 style={{
                   fontSize: '1.2rem',
@@ -316,15 +251,7 @@ export default function CEUnionPage() {
             </div>
 
             {/* Four Essentials */}
-            <div
-              style={{
-                background: 'var(--color-white)',
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: 'var(--shadow-sm)',
-                border: '1px solid rgba(0,0,0,0.05)',
-                padding: '2rem',
-              }}
-            >
+            <div className={styles.principleCard}>
               <h2
                 style={{
                   fontSize: '1.2rem',
@@ -376,25 +303,9 @@ export default function CEUnionPage() {
           >
             Regular Meetings &amp; Services
           </h2>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.1rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.meetingsContainer}>
             {meetings.map((m, i) => (
-              <div
-                key={i}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '1.5rem 2rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
+              <div key={i} className={styles.meetingCard}>
                 <p
                   style={{
                     fontSize: '0.75rem',
@@ -437,19 +348,7 @@ export default function CEUnionPage() {
           >
             Service &amp; Outreach
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              padding: '2rem 2.5rem',
-              marginBottom: '3.5rem',
-              fontSize: '1rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.8,
-            }}
-          >
+          <div className={styles.outreachCard}>
             <p>
               CE members are ready to help those in need — physically, mentally, and financially — whenever possible. We actively participate in:
             </p>
@@ -484,19 +383,7 @@ export default function CEUnionPage() {
           >
             Governance
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              padding: '2rem 2.5rem',
-              fontSize: '1rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.8,
-              marginBottom: '1rem',
-            }}
-          >
+          <div className={styles.governanceCard}>
             The office bearers and executive members are elected or appointed for the tenure of two years in the General Body Meeting, held in the presence of the Chief Advisor and other Pastors.
           </div>
 

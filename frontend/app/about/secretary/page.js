@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './secretary.module.css'
 
 export const metadata = {
   title: "Secretary's Corner | Church of Christ Union Church Bhubaneswar",
@@ -43,16 +44,8 @@ export default function SecretarysCornerPage() {
       />
 
       {/* ── Letter Section ── */}
-      <section className="section container">
-        <div
-          style={{
-            maxWidth: '820px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2.5rem',
-          }}
-        >
+      <section className="section">
+        <div className={`container ${styles.letterWrapper}`}>
 
           {/* ── Church Header Card ── */}
           <div
@@ -68,17 +61,7 @@ export default function SecretarysCornerPage() {
             }}
           >
             {/* Top accent bar */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '3rem',
-                right: '3rem',
-                height: '3px',
-                background: 'linear-gradient(90deg, transparent, var(--color-primary), transparent)',
-                borderRadius: '0 0 3px 3px',
-              }}
-            />
+            <div className={styles.headerAccentBar} />
 
             <p
               style={{
@@ -119,17 +102,7 @@ export default function SecretarysCornerPage() {
             }}
           >
             {/* Top accent bar */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '3rem',
-                right: '3rem',
-                height: '3px',
-                background: 'linear-gradient(90deg, transparent, var(--color-primary), transparent)',
-                borderRadius: '0 0 3px 3px',
-              }}
-            />
+            <div className={styles.letterAccentBar} />
 
             {/* Salutation */}
             <p
@@ -154,16 +127,7 @@ export default function SecretarysCornerPage() {
               'This GOD-given premises/Church has been a blessing since year 1964, to many & believe will continue to be so for all the generations to come, for his own glory.',
               'If you have been staying in Bhubaneswar or visiting Bhubaneswar, please don\'t hesitate to come over to visit this "house of prayer" and be blessed! For any details please contact me or any of the Pastors!',
             ].map((para, i) => (
-              <p
-                key={i}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '1.05rem',
-                  lineHeight: 1.85,
-                  color: '#3a2a2a',
-                  marginBottom: '1.4rem',
-                }}
-              >
+              <p key={i} className={styles.paraText}>
                 {para}
               </p>
             ))}
@@ -258,26 +222,11 @@ export default function SecretarysCornerPage() {
 
           {/* ── Key Pillars Cards ── */}
           <div>
-            <h2
-              style={{
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '1.85rem',
-                fontWeight: 700,
-                color: 'var(--color-primary)',
-                marginBottom: '1.5rem',
-                textAlign: 'center',
-              }}
-            >
+            <h2 className={styles.pillarsTitle}>
               Our Core Identity
             </h2>
 
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '1.25rem',
-              }}
-            >
+            <div className={styles.pillarsGrid}>
               {[
                 { icon: '📖', title: 'Bible Centered', desc: 'Grounded in the unchanging truth of Scripture.' },
                 { icon: '✝', title: 'Christ Centered', desc: 'Jesus Christ at the heart of all we do.' },
@@ -367,16 +316,7 @@ export default function SecretarysCornerPage() {
             >
               Since 1964
             </p>
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.95rem',
-                opacity: 0.82,
-                maxWidth: '480px',
-                margin: '0 auto',
-                lineHeight: 1.7,
-              }}
-            >
+            <p className={styles.bannerDesc}>
               A GOD-given house of prayer — a blessing to generations past, present, and those yet to come.
             </p>
           </div>

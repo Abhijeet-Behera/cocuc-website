@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './what-we-believe.module.css'
 
 export default function WhatWeBelievePage() {
   const beliefs = [
@@ -54,15 +55,15 @@ export default function WhatWeBelievePage() {
 
 
       <section className="section container">
-        <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+        <div className={styles.cardContainer}>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div className={styles.beliefsList}>
             {beliefs.map((belief, index) => (
-              <div key={index} style={{ borderBottom: index < beliefs.length - 1 ? '1px solid #eee' : 'none', paddingBottom: index < beliefs.length - 1 ? '2rem' : '0' }}>
-                <p style={{ fontSize: '1.15rem', color: 'var(--color-text)', lineHeight: 1.6, fontWeight: 500, marginBottom: '0.5rem' }}>
+              <div key={index} className={styles.beliefRow}>
+                <p className={styles.beliefText}>
                   {belief.statement}
                 </p>
-                <p style={{ fontSize: '0.95rem', color: 'var(--color-primary)', fontStyle: 'italic' }}>
+                <p className={styles.beliefScripture}>
                   {belief.scriptures}
                 </p>
               </div>

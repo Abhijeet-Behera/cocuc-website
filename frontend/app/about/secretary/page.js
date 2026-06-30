@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './secretary.module.css'
 
 export const metadata = {
   title: "Secretary's Corner | Church of Christ Union Church Bhubaneswar",
@@ -38,41 +39,13 @@ export default function SecretarysCornerPage() {
       />
 
       {/* ── Letter Section ── */}
-      <section className="section container">
-        <div
-          style={{
-            maxWidth: '820px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2.5rem',
-          }}
-        >
+      <section className="section">
+        <div className={`container ${styles.letterWrapper}`}>
 
           {/* ── Church Header Card ── */}
-          <div
-            style={{
-              background: 'linear-gradient(160deg, #fffdf9 0%, #fdf6ee 100%)',
-              border: '1px solid rgba(128,0,0,0.10)',
-              borderRadius: '20px',
-              padding: '2.5rem 3rem',
-              textAlign: 'center',
-              boxShadow: '0 4px 20px rgba(128,0,0,0.06)',
-              position: 'relative',
-            }}
-          >
+          <div className={styles.headerCard}>
             {/* Top accent bar */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '3rem',
-                right: '3rem',
-                height: '3px',
-                background: 'linear-gradient(90deg, transparent, var(--color-primary), transparent)',
-                borderRadius: '0 0 3px 3px',
-              }}
-            />
+            <div className={styles.headerAccentBar} />
 
             <p
               style={{
@@ -101,28 +74,9 @@ export default function SecretarysCornerPage() {
           </div>
 
           {/* ── Main Letter Card ── */}
-          <div
-            style={{
-              background: 'linear-gradient(160deg, #ffffff 0%, #fffaf5 100%)',
-              border: '1px solid rgba(128,0,0,0.09)',
-              borderRadius: '20px',
-              padding: '3rem 3.5rem',
-              boxShadow: '0 6px 30px rgba(128,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)',
-              position: 'relative',
-            }}
-          >
+          <div className={styles.letterCard}>
             {/* Top accent bar */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '3rem',
-                right: '3rem',
-                height: '3px',
-                background: 'linear-gradient(90deg, transparent, var(--color-primary), transparent)',
-                borderRadius: '0 0 3px 3px',
-              }}
-            />
+            <div className={styles.letterAccentBar} />
 
             {/* Salutation */}
             <p
@@ -147,16 +101,7 @@ export default function SecretarysCornerPage() {
               'This GOD-given premises/Church has been a blessing since year 1964, to many & believe will continue to be so for all the generations to come, for his own glory.',
               'If you have been staying in Bhubaneswar or visiting Bhubaneswar, please don\'t hesitate to come over to visit this "house of prayer" and be blessed! For any details please contact me or any of the Pastors!',
             ].map((para, i) => (
-              <p
-                key={i}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '1.05rem',
-                  lineHeight: 1.85,
-                  color: '#3a2a2a',
-                  marginBottom: '1.4rem',
-                }}
-              >
+              <p key={i} className={styles.paraText}>
                 {para}
               </p>
             ))}
@@ -251,26 +196,11 @@ export default function SecretarysCornerPage() {
 
           {/* ── Key Pillars Cards ── */}
           <div>
-            <h2
-              style={{
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '1.85rem',
-                fontWeight: 700,
-                color: 'var(--color-primary)',
-                marginBottom: '1.5rem',
-                textAlign: 'center',
-              }}
-            >
+            <h2 className={styles.pillarsTitle}>
               Our Core Identity
             </h2>
 
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '1.25rem',
-              }}
-            >
+            <div className={styles.pillarsGrid}>
               {[
                 { icon: '📖', title: 'Bible Centered', desc: 'Grounded in the unchanging truth of Scripture.' },
                 { icon: '✝', title: 'Christ Centered', desc: 'Jesus Christ at the heart of all we do.' },
@@ -279,22 +209,8 @@ export default function SecretarysCornerPage() {
                 { icon: '🙏', title: 'Prayer & Counsel', desc: 'Available for spiritual help to anyone who seeks.' },
                 { icon: '🇮🇳', title: 'Nation Building', desc: "Fulfilling God\u2019s divine will for our community." },
               ].map((item, i) => (
-                <div
-                  key={i}
-                  style={{
-                    background: 'linear-gradient(160deg, #fffdf9 0%, #fdf6ee 100%)',
-                    border: '1px solid rgba(128,0,0,0.08)',
-                    borderRadius: '16px',
-                    padding: '1.5rem 1.25rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                    boxShadow: '0 2px 12px rgba(128,0,0,0.04)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <div style={{ position: 'absolute', top: 0, left: '1.25rem', right: '1.25rem', height: '2px', background: 'linear-gradient(90deg, transparent, rgba(128,0,0,0.22), transparent)', borderRadius: '0 0 2px 2px' }} />
+                <div key={i} className={styles.pillarCard}>
+                  <div className={styles.pillarAccentBar} />
                   <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>{item.icon}</span>
                   <p
                     style={{
@@ -322,53 +238,14 @@ export default function SecretarysCornerPage() {
           </div>
 
           {/* ── Since 1964 Banner ── */}
-          <div
-            style={{
-              background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)',
-              borderRadius: '20px',
-              padding: '2.5rem 3rem',
-              textAlign: 'center',
-              color: '#fff',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                right: '-1.5rem',
-                bottom: '-2rem',
-                fontSize: '12rem',
-                color: 'rgba(255,255,255,0.05)',
-                fontFamily: 'serif',
-                lineHeight: 1,
-                userSelect: 'none',
-              }}
-            >
+          <div className={styles.bannerCard}>
+            <div aria-hidden="true" className={styles.bannerCross}>
               ✝
             </div>
-            <p
-              style={{
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '3rem',
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-                marginBottom: '0.5rem',
-              }}
-            >
+            <p className={styles.bannerTitle}>
               Since 1964
             </p>
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.95rem',
-                opacity: 0.82,
-                maxWidth: '480px',
-                margin: '0 auto',
-                lineHeight: 1.7,
-              }}
-            >
+            <p className={styles.bannerDesc}>
               A GOD-given house of prayer — a blessing to generations past, present, and those yet to come.
             </p>
           </div>

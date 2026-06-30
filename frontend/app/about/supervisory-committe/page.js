@@ -5,6 +5,7 @@ export const metadata = {
 }
 
 import PageHeader from '@/components/PageHeader'
+import styles from './supervisory-committee.module.css'
 
 export default function SupervisoryCommitteePage() {
   const members = [
@@ -34,25 +35,10 @@ export default function SupervisoryCommitteePage() {
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Constitutional Background */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.aboutCard}>
             <p>
               The <strong style={{ color: 'var(--color-text)' }}>Supervisory Committee</strong> of the Church of Christ (Union Church), Bhubaneswar, was conceived during the amendment of the Church constitution which was adopted by the <strong style={{ color: 'var(--color-text)' }}>General Body of the Church on November 8, 2025</strong>.
             </p>
@@ -86,19 +72,7 @@ export default function SupervisoryCommitteePage() {
           >
             Roles &amp; Responsibilities
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              padding: '2rem 2.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.responsibilitiesCard}>
             {responsibilities.map((r, i) => (
               <div
                 key={i}
@@ -139,29 +113,11 @@ export default function SupervisoryCommitteePage() {
           >
             Committee Members
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '3rem',
-            }}
-          >
+          <div className={styles.committeeCard}>
             {members.map((m, i) => (
               <div
                 key={i}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  padding: '1.15rem 2rem',
-                  borderBottom: i < members.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
-                }}
+                className={`${styles.committeeRow} ${i % 2 !== 0 ? styles.committeeRowAlt : ''}`}
               >
                 <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '1rem' }}>
                   {m.name}
@@ -184,16 +140,7 @@ export default function SupervisoryCommitteePage() {
           </div>
 
           {/* Constitutional Note */}
-          <div
-            style={{
-              background:
-                'linear-gradient(135deg, rgba(128,0,0,0.05) 0%, rgba(128,0,0,0.02) 100%)',
-              border: '1px solid rgba(128,0,0,0.12)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem 2.5rem',
-              textAlign: 'center',
-            }}
-          >
+          <div className={styles.authorityCard}>
             <p
               style={{
                 fontSize: '0.75rem',

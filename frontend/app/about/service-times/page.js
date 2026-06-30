@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './service-times.module.css'
 
 export default function ServiceTimesPage() {
   return (
@@ -11,13 +12,13 @@ export default function ServiceTimesPage() {
 
 
       <section className="section container">
-        <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+        <div className={styles.cardContainer}>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
             
             {/* Sunday Services */}
             <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+              <h2 className={styles.categoryHeader}>
                 Sunday Services
               </h2>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
@@ -33,9 +34,9 @@ export default function ServiceTimesPage() {
             </div>
 
             {/* Prayer Times & Sunday School */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+            <div className={styles.gridBlock}>
               <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+                <h2 className={styles.categoryHeader}>
                   Prayer Times
                 </h2>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
@@ -49,7 +50,7 @@ export default function ServiceTimesPage() {
               </div>
 
               <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+                <h2 className={styles.categoryHeader}>
                   Sunday School
                 </h2>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
@@ -61,7 +62,7 @@ export default function ServiceTimesPage() {
 
             {/* Fellowships */}
             <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+              <h2 className={styles.categoryHeader}>
                 Ladies Fellowship
               </h2>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
@@ -72,7 +73,7 @@ export default function ServiceTimesPage() {
             </div>
 
             <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+              <h2 className={styles.categoryHeader}>
                 Youth Speaks
               </h2>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
@@ -82,9 +83,9 @@ export default function ServiceTimesPage() {
             </div>
 
             {/* Other Meetings */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+            <div className={styles.gridBlock}>
               <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+                <h2 className={styles.categoryHeader}>
                   Choir Practice
                 </h2>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
@@ -94,7 +95,7 @@ export default function ServiceTimesPage() {
               </div>
 
               <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+                <h2 className={styles.categoryHeader}>
                   Baptism & Counselling
                 </h2>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>

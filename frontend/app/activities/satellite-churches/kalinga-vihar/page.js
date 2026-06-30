@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Kalinga Vihar Worship Center | Church of Christ Union Church Bhubaneswar',
-  description: 'Odia Worship Service held every Sunday morning at 9:30 AM in Kalinga Vihar, Bhubaneswar.',
+  description: 'Odia Worship Service held every Sunday morning at 10:00 AM in Kalinga Vihar, Bhubaneswar.',
 }
 
 import PageHeader from '@/components/PageHeader'
@@ -19,7 +19,7 @@ export default function KalingaViharPage() {
       {/* ── Content ── */}
       <section className="section">
         <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
-          
+
           {/* Quick Schedule Banner */}
           <div
             style={{
@@ -37,7 +37,7 @@ export default function KalingaViharPage() {
           >
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Worship Timing</p>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 9:30 AM</p>
+              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 10:00 AM</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
@@ -64,7 +64,7 @@ export default function KalingaViharPage() {
             }}
           >
             <p>
-              We have an Odia Worship Service held here <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 9:30 AM</strong>. This worship center was started in <strong style={{ color: 'var(--color-text)' }}>HIG-219, K5, Kalinga Vihar</strong> on 12th July, 2015.
+              We have an Odia Worship Service held here <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 10:00 AM</strong>. This worship center was started  <strong style={{ color: 'var(--color-text)' }}></strong> on 12th July, 2015.
             </p>
 
             <p>

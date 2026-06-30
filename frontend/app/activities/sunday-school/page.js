@@ -10,23 +10,23 @@ export default function SundaySchoolPage() {
   const advisors = [
     { name: 'Rev. Songram Keshari Singh', phone: '9437226415' },
     { name: 'Rev. Dr. Ayub Chinchani', phone: '9437418423' },
-    { name: 'Rev. Satish Pani', phone: '9438518776' },
-    { name: 'Smt. Ellen Pramanik', phone: '9437519609' },
+    { name: 'Rev. Satish Kumar Pani', phone: '9438518776' },
+    { name: 'Mrs. Ellen Pramanik', phone: '9437519609' },
   ]
 
   const programs = [
-    'Sunday School Annual Picnic',
-    'Sunday School Annual Retreat',
-    'World Sunday School Day Celebration',
-    'Sunday School Prize-Giving Distribution and Christmas Celebrations',
+    'Sunday School Annual Picnic.',
+    'Sunday School Annual Retreat.',
+    'World Sunday School Day Celebration.',
+    'Sunday School Prize-Giving Distribution and Christmas Celebrations.',
   ]
 
   const classDistribution = [
-    { age: '3–5 years',   sciClass: 'UKG – Class 1',    ssClass: 'Beginner'     },
-    { age: '6–9 years',   sciClass: 'Class 2–4',         ssClass: 'Primary'      },
-    { age: '10–13 years', ssClass: 'Junior',             sciClass: 'Class 5–7'   },
-    { age: '14–16 years', ssClass: 'Intermediate',       sciClass: 'Class 8–9'   },
-    { age: '17+ years',   ssClass: 'Senior',             sciClass: 'Class 10 onwards' },
+    { age: '3–5 years', sciClass: 'UKG – Class 1', ssClass: 'Beginner' },
+    { age: '6–9 years', sciClass: 'Class 2–4', ssClass: 'Primary' },
+    { age: '10–13 years', ssClass: 'Junior', sciClass: 'Class 5–7' },
+    { age: '14–16 years', ssClass: 'Intermediate', sciClass: 'Class 8–9' },
+    { age: '17+ years', ssClass: 'Senior', sciClass: 'Class 10 onwards' },
   ]
 
   return (
@@ -386,7 +386,7 @@ export default function SundaySchoolPage() {
               }}
             >
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-primary)', fontWeight: 700, marginBottom: '0.4rem' }}>Superintendent</p>
-              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Sri Ashim Kumar Das</p>
+              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Mr. Ashim Kumar Das</p>
               <a href="tel:9437805935" style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none' }}>📞 9437805935</a>
             </div>
             <div
@@ -399,7 +399,7 @@ export default function SundaySchoolPage() {
               }}
             >
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-primary)', fontWeight: 700, marginBottom: '0.4rem' }}>Accountant</p>
-              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Smt. Prem Lata Franklin</p>
+              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Mrs. Prem Lata Franklin</p>
               <a href="tel:9178253901" style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none' }}>📞 9178253901</a>
             </div>
           </div>

@@ -8,14 +8,14 @@ export const metadata = {
 
 export default function CEUnionPage() {
   const founders = [
-    { name: 'Bro. Daniel Das', note: '' },
-    { name: 'Bro. Bidyut Kumar Pramanick', note: '' },
-    { name: 'Bro. Alin Kumar Rout', note: '1st President' },
-    { name: 'Bro. Pareh Kumar Das', note: '' },
-    { name: 'Bro. Binoy Muduli', note: '' },
-    { name: 'Bro. Devid Kamal Pradhan', note: '' },
-    { name: 'Bro. Jayant Das', note: '1st Secretary' },
-    { name: 'Smt. Sudhamati Pradhan', note: '' },
+    { name: 'Mr. Daniel Das', note: '' },
+    { name: 'Mr. Bidyut Kumar Pramanik', note: '' },
+    { name: 'Mr. Elin Kumar Rout', note: '1st President' },
+    { name: 'Mr. Paresh Kumar Das', note: '' },
+    { name: 'Late Mr. Binoy Kumar Muduli', note: '' },
+    { name: 'Mr. David Kamal Pradhan', note: '' },
+    { name: 'Mr. Jayanta Das', note: '1st Secretary' },
+    { name: 'Mrs. Sudhamati Pradhan', note: '' },
   ]
 
   const cardinalPrinciples = [
@@ -61,7 +61,7 @@ export default function CEUnionPage() {
     {
       freq: 'Annual — 28th May',
       title: 'Local CE Day',
-      desc: 'Celebrated on 28th May with a three-day programme: two days of revival meetings featuring invited resource persons, concluding in a love feast with a cultural programme on the 3rd day. Brothers and sisters who have served are honoured with mementos.',
+      desc: 'Celebrated on 28th May with a three-day programme: two days of revival meetings featuring invited resource persons, concluding in a love feast with a cultural programme on the 3rd day. Brothers and sisters who have served are honoured with momentos.',
     },
   ]
 
@@ -104,10 +104,10 @@ export default function CEUnionPage() {
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Weekly Meeting</p>
               <p style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Tuesday @ 7 PM</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+
             <div>
-              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Venue</p>
-              <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>COCUC, Unit-4, Bhubaneswar</p>
+              <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}></p>
+              <p style={{ fontSize: '1.05rem', fontWeight: 600 }}></p>
             </div>
           </div>
 
@@ -129,11 +129,7 @@ export default function CEUnionPage() {
             }}
           >
             <p>
-              Since <strong style={{ color: 'var(--color-text)' }}>28 May 1972</strong>, the
-              Christian Endeavour (CE) Union has been established at{' '}
-              <strong style={{ color: 'var(--color-text)' }}>
-                Church of Christ Union Church (COCUC), Unit-4, Sachivalaya Marg, Bhubaneswar-751001.
-              </strong>{' '}
+              The Christian endeavour (CE) union was established on  <strong style={{ color: 'var(--color-text)' }}>28th Of May, 1972</strong> at <strong style={{ color: 'var(--color-text)' }}>Church of Christ (Union Church), Bhubaneswar</strong>.
               For over five decades we have gathered in fellowship, prayer and service to
               strengthen young believers for Christ and His Church.
             </p>
@@ -449,11 +445,11 @@ export default function CEUnionPage() {
               marginBottom: '1rem',
             }}
           >
-            Every two years, office-bearers and executive members are elected or appointed during the General Body Meeting, held in the presence of the Chief Advisor and other Pastors.
+            The office bearers and executive members are elected or appointed for the tenure of two years in the General Body Meeting, held in the presence of the Chief Advisor and other Pastors.
           </div>
 
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   )
 }

@@ -8,25 +8,25 @@ export const metadata = {
 
 export default function WorshipTeamPage() {
   const odiaChoir = [
-    { name: 'Mr. Asit Kumar Mohanty',   role: 'Convenor'            },
-    { name: 'Mr. Pradeep Kumar Roul',   role: 'Co-Convenor'         },
-    { name: 'Mrs. Swarnamoyee Patra',   role: 'Member'              },
-    { name: 'Mrs. Jharana Pradhan',     role: 'Member'              },
-    { name: 'Mr. Gokula Pradhan',       role: 'Member'              },
-    { name: 'Mr. Obed Ranjan Singh',    role: 'Member'              },
-    { name: 'Mr. Benjamin Peter',       role: 'Member'              },
-    { name: 'Mrs. Dheerarani Supakar',  role: 'Member'              },
-    { name: 'Mr. Michael Rajesh Behera',role: 'Secretary, Church'   },
+    { name: 'Mr. Asit Kumar Mohanty', role: 'Convenor' },
+    { name: 'Mr. Pradeep Kumar Roul', role: 'Co-Convenor' },
+    { name: 'Mrs. Swarnamayee Patra', role: 'Member' },
+    { name: 'Mrs. Jharana Pradhan', role: 'Member' },
+    { name: 'Mr. Gokula Chandra Pradhan', role: 'Member' },
+    { name: 'Mr. Obed Ranjan Singh', role: 'Member' },
+    { name: 'Mr. Benjamin Peter', role: 'Member' },
+    { name: 'Mrs. Dheera Rani Supakar', role: 'Member' },
+    { name: 'Er. Michael Rajesh Behera', role: 'Secretary' },
   ]
 
   const englishChoir = [
-    { name: 'Mr. Santanu Kumar Mohanty',role: 'Convenor'            },
-    { name: 'Miss. Indira Patra',       role: 'Co-Convenor'         },
-    { name: 'Mr. Adarsh Vasa',          role: 'Member'              },
-    { name: 'Mrs. K. T. Mary',          role: 'Member'              },
-    { name: 'Mr. Amlan Nag',            role: 'Member'              },
-    { name: 'Mr. Vinod Mohanty',        role: 'Member'              },
-    { name: 'Mr. Michael Rajesh Behera',role: 'Secretary, Church'   },
+    { name: 'Mr. Santanu Kumar Mohanty', role: 'Convenor' },
+    { name: 'Miss. Indira Patra', role: 'Co-Convenor' },
+    { name: 'Mr. Adarsh Vasa', role: 'Member' },
+    { name: 'Mrs. K. T. Mary', role: 'Member' },
+    { name: 'Mr. Amlan Nag', role: 'Member' },
+    { name: 'Mr. Vinod Mohanty', role: 'Member' },
+    { name: 'Er. Michael Rajesh Behera', role: 'Secretary' },
   ]
 
   const MemberList = ({ members }) => (
@@ -65,8 +65,8 @@ export default function WorshipTeamPage() {
                 m.role === 'Convenor' || m.role === 'Co-Convenor'
                   ? 'rgba(128,0,0,0.1)'
                   : m.role === 'Secretary, Church'
-                  ? 'rgba(128,0,0,0.06)'
-                  : 'rgba(0,0,0,0.04)',
+                    ? 'rgba(128,0,0,0.06)'
+                    : 'rgba(0,0,0,0.04)',
               fontSize: '0.85rem',
               color: 'var(--color-primary)',
               fontWeight: 700,

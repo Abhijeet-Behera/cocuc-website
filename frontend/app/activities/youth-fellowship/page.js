@@ -47,7 +47,7 @@ export default function YouthFellowshipPage() {
     {
       icon: '🎄',
       title: 'Youth Christmas Celebration',
-      when: 'First Saturday of December',
+      when: 'First Saturday of December, Every Year',
       desc: 'Held every year, the celebration includes Christmas carols worship/Kirtan, Bible games, fellowship, gift exchange, and special performances by the youth.',
     },
   ]
@@ -68,15 +68,15 @@ export default function YouthFellowshipPage() {
   ]
 
   const committee = [
-    { name: 'Mr. Smruti Ranjan Naik',  role: 'Joint Secretary & Convenor'       },
-    { name: 'Mr. Michael Rajesh Behera',role: 'Secretary'                        },
-    { name: 'Mr. Manna Whitson',        role: 'Co-Convenor'                      },
-    { name: 'Mr. Paresh Das',           role: 'Committee Member'                 },
-    { name: 'Rev. Sangram Singh',       role: 'Committee Member & Pastor'        },
-    { name: 'Rev. Satish Pani',         role: 'Committee Member & Pastor'        },
-    { name: 'Rev. Satya Ranjan Singh',  role: 'Committee Member & Pastor'        },
-    { name: 'Mr. Prafulla Dash',        role: 'Committee Member'                 },
-    { name: 'Mrs. Aniva Chand',         role: 'Committee Member'                 },
+    { name: 'Mr. Smruti Ranjan Nayak', role: 'Joint Secretary & Convenor' },
+    { name: 'Mr. JM Manna Whitson', role: 'Co-Convenor' },
+    { name: 'Er. Michael Rajesh Behera', role: 'Secretary' },
+    { name: 'Mr. Paresh Kumar Das', role: 'Committee Member' },
+    { name: 'Rev. Songram Keshari Singh', role: 'Committee Member & Pastor' },
+    { name: 'Rev. Satish Kumar Pani', role: 'Committee Member & Pastor' },
+    { name: 'Rev. Satya Ranjan Singh', role: 'Committee Member & Pastor' },
+    { name: 'Mr. Prafulla Kumar Dash', role: 'Committee Member' },
+    { name: 'Mrs. Aniva Chand', role: 'Committee Member' },
   ]
 
   const leaderRoles = ['Joint Secretary & Convenor', 'Secretary', 'Co-Convenor']

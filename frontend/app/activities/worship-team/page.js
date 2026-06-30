@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './worship-team.module.css'
 
 export const metadata = {
   title: 'Worship Team | Church of Christ Union Church Bhubaneswar',
@@ -30,28 +31,13 @@ export default function WorshipTeamPage() {
   ]
 
   const MemberList = ({ members }) => (
-    <div
-      style={{
-        background: 'var(--color-white)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-sm)',
-        border: '1px solid rgba(0,0,0,0.05)',
-        overflow: 'hidden',
-        marginBottom: '0',
-      }}
-    >
+    <div className={styles.membersCard}>
       {members.map((m, i) => (
         <div
           key={i}
+          className={`${styles.membersRow} ${i % 2 !== 0 ? styles.membersRowAlt : ''}`}
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-            padding: '1rem 2rem',
             borderBottom: i < members.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-            background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
           }}
         >
           <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.98rem' }}>
@@ -90,21 +76,10 @@ export default function WorshipTeamPage() {
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Scripture Quote */}
-          <div
-            style={{
-              background:
-                'linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
-              color: '#fff',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem 2.5rem',
-              marginBottom: '3.5rem',
-              boxShadow: '0 8px 24px rgba(128,0,0,0.2)',
-              textAlign: 'center',
-            }}
-          >
+          <div className={styles.quoteBanner}>
             <p style={{ fontSize: '1.2rem', fontStyle: 'italic', lineHeight: 1.75, marginBottom: '0.75rem' }}>
               &ldquo;Let everything that has breath praise the Lord. Praise the Lord!&rdquo;
             </p>
@@ -114,19 +89,7 @@ export default function WorshipTeamPage() {
           </div>
 
           {/* Intro */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.introCard}>
             The Church of Christ (Union Church), Bhubaneswar is blessed with{' '}
             <strong style={{ color: 'var(--color-text)' }}>two vibrant worship ministries</strong>{' '}
             that lead the congregation in praising and glorifying God through music and worship.
@@ -138,23 +101,8 @@ export default function WorshipTeamPage() {
               marginBottom: '3.5rem',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                marginBottom: '1rem',
-              }}
-            >
-              <div
-                style={{
-                  width: '4px',
-                  height: '2.5rem',
-                  borderRadius: '2px',
-                  background: 'var(--color-primary)',
-                  flexShrink: 0,
-                }}
-              />
+            <div className={styles.choirHeader}>
+              <div className={styles.headerAccent} />
               <div>
                 <h2
                   style={{
@@ -174,27 +122,12 @@ export default function WorshipTeamPage() {
             </div>
 
             {/* Schedule strip */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                marginBottom: '1.25rem',
-              }}
-            >
+            <div className={styles.scheduleContainer}>
               {[
                 { label: 'Leads Worship', value: 'During the Odia Service' },
                 { label: 'Choir Practice', value: 'Every Saturday @ 7:00 PM' },
               ].map((s) => (
-                <div
-                  key={s.label}
-                  style={{
-                    background: 'rgba(128,0,0,0.05)',
-                    border: '1px solid rgba(128,0,0,0.1)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '0.7rem 1.25rem',
-                  }}
-                >
+                <div key={s.label} className={styles.scheduleCard}>
                   <p style={{ fontSize: '0.7rem', letterSpacing: '0.13em', textTransform: 'uppercase', color: 'var(--color-primary)', fontWeight: 700, marginBottom: '0.2rem' }}>
                     {s.label}
                   </p>
@@ -226,23 +159,8 @@ export default function WorshipTeamPage() {
               marginBottom: '3.5rem',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                marginBottom: '1rem',
-              }}
-            >
-              <div
-                style={{
-                  width: '4px',
-                  height: '2.5rem',
-                  borderRadius: '2px',
-                  background: 'var(--color-primary)',
-                  flexShrink: 0,
-                }}
-              />
+            <div className={styles.choirHeader}>
+              <div className={styles.headerAccent} />
               <div>
                 <h2
                   style={{
@@ -262,27 +180,12 @@ export default function WorshipTeamPage() {
             </div>
 
             {/* Schedule strip */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                marginBottom: '1.25rem',
-              }}
-            >
+            <div className={styles.scheduleContainer}>
               {[
                 { label: 'Leads Worship', value: 'During the English Service' },
                 { label: 'Choir Practice', value: 'Every Friday @ 7:00 PM' },
               ].map((s) => (
-                <div
-                  key={s.label}
-                  style={{
-                    background: 'rgba(128,0,0,0.05)',
-                    border: '1px solid rgba(128,0,0,0.1)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '0.7rem 1.25rem',
-                  }}
-                >
+                <div key={s.label} className={styles.scheduleCard}>
                   <p style={{ fontSize: '0.7rem', letterSpacing: '0.13em', textTransform: 'uppercase', color: 'var(--color-primary)', fontWeight: 700, marginBottom: '0.2rem' }}>
                     {s.label}
                   </p>
@@ -309,16 +212,7 @@ export default function WorshipTeamPage() {
           </div>
 
           {/* Purpose */}
-          <div
-            style={{
-              background:
-                'linear-gradient(135deg, rgba(128,0,0,0.06) 0%, rgba(128,0,0,0.02) 100%)',
-              border: '1px solid rgba(128,0,0,0.12)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem 2.5rem',
-              marginBottom: '2.5rem',
-            }}
-          >
+          <div className={styles.purposeCard}>
             <p
               style={{
                 fontSize: '0.75rem',
@@ -343,18 +237,7 @@ export default function WorshipTeamPage() {
           </div>
 
           {/* Join CTA */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              padding: '2rem 2.5rem',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '1rem',
-            }}
-          >
+          <div className={styles.ctaCard}>
             <span style={{ fontSize: '2rem', lineHeight: 1 }}>🎵</span>
             <div>
               <p

@@ -1,0 +1,195 @@
+.contentContainer {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.timingBanner {
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 8px 24px rgba(128, 0, 0, 0.2);
+}
+
+.timingDivider {
+  width: 1px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.aboutCard {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  line-height: 1.85;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.gatheringGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 3.5rem;
+}
+
+.gatheringCard {
+  background: var(--color-white);
+  border: 1px solid rgba(128, 0, 0, 0.1);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.topicsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 3.5rem;
+}
+
+.topicTag {
+  display: inline-block;
+  padding: 0.45rem 1.1rem;
+  border-radius: 50px;
+  background: rgba(128, 0, 0, 0.06);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: 1px solid rgba(128, 0, 0, 0.13);
+}
+
+.annualActivitiesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 3.5rem;
+}
+
+.annualActivityCard {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.75rem 2rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.scripturesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 3.5rem;
+}
+
+.scriptureCard {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 2rem 2.5rem;
+}
+
+.committeeContainer {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.committeeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.1rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.committeeRow:last-child {
+  border-bottom: none;
+}
+
+.committeeRowAlt {
+  background: rgba(128, 0, 0, 0.015);
+}
+
+/* Responsiveness overrides */
+@media (max-width: 768px) {
+  .timingBanner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+  .timingDivider {
+    display: none;
+  }
+  .annualActivityCard {
+    padding: 1.5rem;
+  }
+  .scriptureCard {
+    padding: 1.75rem 1.5rem;
+  }
+  .committeeRow {
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .annualActivityCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1.25rem;
+  }
+  .gatheringCard {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .timingBanner {
+    padding: 1.25rem 1rem;
+    gap: 1rem;
+  }
+  .gatheringGrid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .topicsContainer {
+    gap: 0.5rem;
+  }
+  .topicTag {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.82rem;
+  }
+  .scriptureCard {
+    padding: 1.5rem 1rem;
+  }
+  .committeeRow {
+    padding: 0.9rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+}

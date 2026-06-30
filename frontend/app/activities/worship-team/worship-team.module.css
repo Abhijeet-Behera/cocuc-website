@@ -1,0 +1,149 @@
+.contentContainer {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.quoteBanner {
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  marginBottom: 3.5rem;
+  box-shadow: 0 8px 24px rgba(128, 0, 0, 0.2);
+  text-align: center;
+}
+
+.introCard {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(2rem, 5vw, 3rem);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  line-height: 1.85;
+  margin-bottom: 3.5rem;
+}
+
+.choirHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.headerAccent {
+  width: 4px;
+  height: 2.5rem;
+  border-radius: 2px;
+  background: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.scheduleContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.scheduleCard {
+  background: rgba(128, 0, 0, 0.05);
+  border: 1px solid rgba(128, 0, 0, 0.1);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1.25rem;
+}
+
+.membersCard {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.membersRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.membersRow:last-child {
+  border-bottom: none;
+}
+
+.membersRowAlt {
+  background: rgba(128, 0, 0, 0.015);
+}
+
+.purposeCard {
+  background: linear-gradient(135deg, rgba(128, 0, 0, 0.06) 0%, rgba(128, 0, 0, 0.02) 100%);
+  border: 1px solid rgba(128, 0, 0, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.ctaCard {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 2rem 2.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .quoteBanner {
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .membersRow {
+    padding: 1rem 1.5rem;
+  }
+  .purposeCard {
+    padding: 1.75rem 1.5rem;
+  }
+  .ctaCard {
+    padding: 1.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .quoteBanner {
+    padding: 1.25rem 1rem;
+  }
+  .membersRow {
+    padding: 0.9rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+  .purposeCard {
+    padding: 1.5rem 1rem;
+  }
+  .ctaCard {
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .scheduleContainer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .choirHeader {
+    gap: 0.75rem;
+  }
+  .headerAccent {
+    height: 3rem;
+  }
+}

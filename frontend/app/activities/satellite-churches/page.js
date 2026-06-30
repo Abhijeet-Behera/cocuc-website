@@ -7,6 +7,7 @@ export const metadata = {
 }
 
 import PageHeader from '@/components/PageHeader'
+import styles from './satellite-churches.module.css'
 
 export default function SatelliteChurchesPage() {
   const churches = [
@@ -48,104 +49,31 @@ export default function SatelliteChurchesPage() {
       {/* ── Cards Section ── */}
       <section className="section">
         <div className="container">
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '1.75rem',
-            }}
-          >
+          <div className={styles.churchGrid}>
             {churches.map((church) => (
               <Link
                 key={church.id}
                 href={`/activities/satellite-churches/${church.id}`}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.1)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '2rem',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  boxShadow: 'var(--shadow-sm)',
-                  transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
-                }}
-                className="sat-card"
+                className={styles.satCard}
               >
                 {/* Timing badge */}
-                <span
-                  style={{
-                    display: 'inline-block',
-                    padding: '0.25rem 0.85rem',
-                    borderRadius: '50px',
-                    background: 'rgba(128,0,0,0.07)',
-                    color: 'var(--color-primary)',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    marginBottom: '1.1rem',
-                    width: 'fit-content',
-                  }}
-                >
+                <span className={styles.timingBadge}>
                   {church.timing}
                 </span>
 
-                <h2
-                  style={{
-                    fontSize: '1.3rem',
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    color: 'var(--color-text)',
-                    marginBottom: '0.75rem',
-                    lineHeight: 1.3,
-                  }}
-                >
+                <h2 className={styles.cardTitle}>
                   {church.name}
                 </h2>
 
-                <p
-                  style={{
-                    fontSize: '0.96rem',
-                    color: 'var(--color-text-muted)',
-                    lineHeight: 1.7,
-                    flexGrow: 1,
-                    marginBottom: '1.5rem',
-                  }}
-                >
+                <p className={styles.cardDesc}>
                   {church.brief}
                 </p>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderTop: '1px solid rgba(0,0,0,0.06)',
-                    paddingTop: '1.1rem',
-                    marginTop: 'auto',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '0.82rem',
-                      color: 'var(--color-text-muted)',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      maxWidth: '65%',
-                    }}
-                  >
+                <div className={styles.bottomBar}>
+                  <span className={styles.locationSpan}>
                     📍 {church.location}
                   </span>
-                  <span
-                    style={{
-                      fontSize: '0.88rem',
-                      fontWeight: 700,
-                      color: 'var(--color-primary)',
-                    }}
-                  >
+                  <span className={styles.actionSpan}>
                     View Details →
                   </span>
                 </div>
@@ -155,13 +83,6 @@ export default function SatelliteChurchesPage() {
         </div>
       </section>
 
-      <style>{`
-        .sat-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 32px rgba(128, 0, 0, 0.12);
-          border-color: rgba(128, 0, 0, 0.2);
-        }
-      `}</style>
     </div>
   )
 }

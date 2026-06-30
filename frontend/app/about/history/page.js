@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './history.module.css'
 
 export default function HistoryPage() {
   return (
@@ -11,7 +12,7 @@ export default function HistoryPage() {
 
 
       <section className="section container">
-        <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+        <div className={styles.cardContainer}>
           
           <div style={{ fontSize: '1.1rem', color: 'var(--color-text-muted)', lineHeight: 1.8, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <p>

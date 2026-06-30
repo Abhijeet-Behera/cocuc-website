@@ -5,6 +5,7 @@ export const metadata = {
 }
 
 import PageHeader from '@/components/PageHeader'
+import styles from './sunday-worship.module.css'
 
 export default function SundayWorshipPage() {
   return (
@@ -18,35 +19,15 @@ export default function SundayWorshipPage() {
 
       {/* ── Content ── */}
       <section className="section">
-        <div
-          className="container"
-          style={{ maxWidth: '860px', margin: '0 auto' }}
-        >
+        <div className={`container ${styles.contentContainer}`}>
           {/* Service Times Card Row */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1.25rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.timesGrid}>
             {[
               { label: 'English Service', time: '10:00 AM', loc: 'Union Church' },
               { label: 'Odia Service', time: '4:30 PM', loc: 'Union Church' },
               { label: 'Satellite Centres', time: '10:00 AM', loc: 'C.S. Pur · Kalinga Vihar · Sundarpada' },
             ].map((s) => (
-              <div
-                key={s.label}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.12)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '1.5rem 1.25rem',
-                  textAlign: 'center',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
+              <div key={s.label} className={styles.timeCard}>
                 <p
                   style={{
                     fontSize: '0.75rem',
@@ -76,21 +57,7 @@ export default function SundayWorshipPage() {
           </div>
 
           {/* Main text */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-            }}
-          >
+          <div className={styles.infoCard}>
             <p>
               Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
             </p>

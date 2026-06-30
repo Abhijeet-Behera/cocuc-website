@@ -1,4 +1,5 @@
 import PageHeader from '@/components/PageHeader'
+import styles from './baptism-classes.module.css'
 
 export const metadata = {
   title: 'Baptism Classes | Church of Christ Union Church Bhubaneswar',
@@ -54,34 +55,20 @@ export default function BaptismClassesPage() {
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Schedule Banner */}
-          <div
-            style={{
-              background:
-                'linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
-              color: '#fff',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1.5rem 2rem',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: '1.5rem',
-              marginBottom: '3rem',
-              boxShadow: '0 8px 24px rgba(128,0,0,0.2)',
-            }}
-          >
+          <div className={styles.scheduleBanner}>
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Class Day</p>
               <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Saturday</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.timingDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Time</p>
               <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>4:00 PM</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.timingDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Venue</p>
               <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>First Floor, Amenity Hall</p>
@@ -89,22 +76,7 @@ export default function BaptismClassesPage() {
           </div>
 
           {/* About */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.aboutCard}>
             <p>
               The <strong style={{ color: 'var(--color-text)' }}>Baptism Committee</strong> of the Church of Christ (Union Church), Bhubaneswar, is committed to guiding believers in their spiritual journey towards Christian baptism. The committee conducts Baptism Classes every Saturday at 4:00 PM in the First Floor of the Amenity Hall, providing a structured and Bible-based understanding of the Christian faith.
             </p>
@@ -138,28 +110,9 @@ export default function BaptismClassesPage() {
           >
             Topics Covered
           </h2>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.75rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.topicsList}>
             {topics.map((t) => (
-              <span
-                key={t}
-                style={{
-                  display: 'inline-block',
-                  padding: '0.5rem 1.25rem',
-                  borderRadius: '50px',
-                  background: 'rgba(128,0,0,0.07)',
-                  color: 'var(--color-primary)',
-                  fontWeight: 600,
-                  fontSize: '0.95rem',
-                  border: '1px solid rgba(128,0,0,0.15)',
-                }}
-              >
+              <span key={t} className={styles.topicTag}>
                 {t}
               </span>
             ))}
@@ -177,27 +130,11 @@ export default function BaptismClassesPage() {
           >
             Classes Led By
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.leadersCard}>
             {leaders.map((l, i) => (
               <div
                 key={i}
-                style={{
-                  padding: '1rem 2rem',
-                  borderBottom: i < leaders.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
-                  fontWeight: 600,
-                  color: 'var(--color-text)',
-                  fontSize: '1rem',
-                }}
+                className={`${styles.leadersRow} ${i % 2 !== 0 ? styles.leadersRowAlt : ''}`}
               >
                 {l}
               </div>
@@ -205,15 +142,7 @@ export default function BaptismClassesPage() {
           </div>
 
           {/* Enrolment */}
-          <div
-            style={{
-              background: 'rgba(128,0,0,0.04)',
-              border: '1px solid rgba(128,0,0,0.12)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem 2.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.contactCard}>
             <p
               style={{
                 fontSize: '0.75rem',
@@ -276,29 +205,11 @@ export default function BaptismClassesPage() {
           >
             Baptism Committee Members
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '1rem',
-            }}
-          >
+          <div className={styles.committeeCard}>
             {committee.map((c, i) => (
               <div
                 key={i}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  padding: '1.1rem 2rem',
-                  borderBottom: i < committee.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
-                }}
+                className={`${styles.committeeRow} ${i % 2 !== 0 ? styles.committeeRowAlt : ''}`}
               >
                 <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{c.name}</span>
                 <span
@@ -331,14 +242,7 @@ export default function BaptismClassesPage() {
           >
             What Scripture Says About Baptism
           </h2>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.25rem',
-              marginBottom: '1rem',
-            }}
-          >
+          <div className={styles.scripturesContainer}>
             {[
               {
                 ref: 'Matthew 28:19 (NIV)',
@@ -353,16 +257,7 @@ export default function BaptismClassesPage() {
                 text: '\u201cWe were therefore buried with Him through baptism into death in order that, just as Christ was raised from the dead through the glory of the Father, we too may live a new life.\u201d',
               },
             ].map((v, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
-                  boxShadow: 'var(--shadow-sm)',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  padding: '2rem 2.5rem',
-                }}
-              >
+              <div key={idx} className={styles.scriptureCard}>
                 <p
                   style={{
                     fontStyle: 'italic',

@@ -154,7 +154,7 @@ export default function MemoryVerses() {
         }
 
         const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Verses!A2:E?key=${apiKey}`;
-        const res = await fetch(url);
+        const res = await fetch(url, { cache: 'no-store' });
         
         if (!res.ok) throw new Error("Failed to fetch from Google");
 
@@ -163,9 +163,7 @@ export default function MemoryVerses() {
 
         // Today's date in IST for comparison (format: YYYY-MM-DD)
         const now = new Date();
-        const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
-        const istDate = new Date(utcMs + 330 * 60000);
-        const todayStr = istDate.toISOString().split('T')[0];
+        const todayStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
         let daily = null;
         let weekly = null;

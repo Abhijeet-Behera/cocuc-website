@@ -74,7 +74,8 @@ button {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .section {
@@ -187,14 +188,14 @@ button {
   .section { padding: 5rem 0; }
   .section-title { font-size: 2.4rem; margin-bottom: 2.5rem; }
   .section-title-elegant { font-size: 2.5rem; margin-bottom: 2.5rem; }
-  .container { padding: 0 1.5rem; }
+  .container { padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 
 @media (max-width: 480px) {
   .section { padding: 4rem 0; }
   .section-title { font-size: 1.8rem; margin-bottom: 2rem; }
   .section-title-elegant { font-size: 2rem; margin-bottom: 2rem; }
-  .container { padding: 0 1rem; }
+  .container { padding-left: 1rem; padding-right: 1rem; }
 }
 
 /* Jumping Dots Loader */
@@ -464,4 +465,11 @@ button {
   border: 1.5px dashed rgba(0, 0, 0, 0.08);
   color: var(--color-text-muted);
   font-size: 1.1rem;
+}
+
+/* Global hover effect for contact links on PC */
+@media (hover: hover) and (pointer: fine) {
+  a[href^="tel:"]:hover, a[href^="mailto:"]:hover {
+    text-decoration: underline !important;
+  }
 }

@@ -1,9 +1,17 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import styles from './Testimonies.module.css'
+
+const getPaginationIndices = (active, total) => {
+  if (total <= 7) return Array.from({length: total}, (_, i) => i);
+  if (active <= 3) return [0, 1, 2, 3, 4, -2, total - 1];
+  if (active >= total - 4) return [0, -1, total - 5, total - 4, total - 3, total - 2, total - 1];
+  return [0, -1, active - 1, active, active + 1, -2, total - 1];
+};
 
 export default function Testimonies() {
   const [testimonies, setTestimonies] = useState([])
@@ -12,6 +20,11 @@ export default function Testimonies() {
   const [activeIndex, setActiveIndex] = useState(0) // Start at index 0 (most recent in center)
   const [activePage, setActivePage] = useState(0)
   const [isDraggingState, setIsDraggingState] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const [formTitle, setFormTitle] = useState('')
   const [formBody, setFormBody] = useState('')
@@ -173,7 +186,7 @@ export default function Testimonies() {
     const currVertProg = verticalScrollProgress.current
     const N = 5
 
-    const targetActivePage = ((Math.round(currPageProg) % M) + M) % M
+    const targetActivePage = ((Math.round(pageTarget.current) % M) + M) % M
     if (activePage !== targetActivePage) {
       setActivePage(targetActivePage)
     }
@@ -239,11 +252,11 @@ export default function Testimonies() {
           card.style.zIndex = Math.round(10 - absDiff * 4)
 
           // Mark active card
-          const targetActivePage = ((Math.round(currPageProg) % M) + M) % M
-          if (p === targetActivePage) {
+          const currentTargetPage = ((Math.round(pageTarget.current) % M) + M) % M
+          if (p === currentTargetPage) {
             if (absDiff < 0.15) {
               card.classList.add(styles.activeCard)
-              const roundedVert = ((Math.round(currVertProg) % N) + N) % N
+              const roundedVert = ((Math.round(verticalScrollTarget.current) % N) + N) % N
               if (activeIndex !== roundedVert) setActiveIndex(roundedVert)
             } else {
               card.classList.remove(styles.activeCard)
@@ -638,10 +651,7 @@ export default function Testimonies() {
               }} />
             </div>
             
-            {/* Header row */}
-            <div className={styles.sliderHeader}>
-              <span className={styles.sliderSubtitle}>Swipe horizontally for pages, vertically for cards</span>
-            </div>
+            {/* Header row removed per user request */}
           </div>
 
           {/* 3D Viewport View */}
@@ -694,16 +704,25 @@ export default function Testimonies() {
                           <p className={styles.excerpt} draggable="false">{displayText}</p>
 
                           <div className={styles.readMoreContainer} draggable="false">
-                            <span
+                            <button
+                              type="button"
                               className={styles.readMore}
                               onClick={(e) => {
+                                e.preventDefault()
                                 e.stopPropagation()
                                 setActiveTestimonyModal(t)
                               }}
-                              style={{ cursor: 'pointer' }}
+                              style={{ 
+                                cursor: 'pointer', 
+                                background: 'transparent', 
+                                border: 'none', 
+                                padding: '12px 0 12px 12px',
+                                margin: '-12px 0 -12px -12px',
+                                outline: 'none'
+                              }}
                             >
                               Read full testimony <span style={{ fontFamily: 'sans-serif' }}>→</span>
-                            </span>
+                            </button>
                           </div>
                         </article>
                       )
@@ -717,30 +736,55 @@ export default function Testimonies() {
           {/* Page Number Pagination */}
           {pages.length > 1 && (
             <div className={styles.paginationRow} aria-label="Pagination">
-              {pages.map((_, i) => {
-                const isActive = i === activePage
+              <button
+                className={styles.pageButton}
+                onClick={handlePrevPage}
+                aria-label="Previous page"
+                style={{ border: 'none', background: 'transparent' }}
+              >
+                &larr;
+              </button>
+
+              {getPaginationIndices(activePage, pages.length).map((pageIdx, idx) => {
+                if (pageIdx < 0) {
+                  return (
+                    <span key={`ellipsis-${idx}`} style={{ color: 'var(--color-primary)', opacity: 0.5, display: 'flex', alignItems: 'flex-end', paddingBottom: '0.2rem', justifyContent: 'center', width: '1.2rem' }}>
+                      ...
+                    </span>
+                  )
+                }
+                const isActive = pageIdx === activePage
                 return (
                   <button
-                    key={i}
+                    key={pageIdx}
                     className={`${styles.pageButton} ${isActive ? styles.activePageButton : ''}`}
                     onClick={() => {
                       const M = pages.length
-                      let diff = i - pageProgress.current
+                      let diff = pageIdx - pageProgress.current
                       diff = diff - M * Math.round(diff / M)
                       pageTarget.current = pageProgress.current + diff
                     }}
-                    aria-label={`Go to page ${i + 1}`}
+                    aria-label={`Go to page ${pageIdx + 1}`}
                   >
-                    {i + 1}
+                    {pageIdx + 1}
                   </button>
                 )
               })}
+
+              <button
+                className={styles.pageButton}
+                onClick={handleNextPage}
+                aria-label="Next page"
+                style={{ border: 'none', background: 'transparent' }}
+              >
+                &rarr;
+              </button>
             </div>
           )}
         </div>
 
         {/* Modal Overlay for Full Testimony */}
-        {activeTestimonyModal && (
+        {mounted && activeTestimonyModal && createPortal(
           <div className={styles.modalOverlay} onClick={() => setActiveTestimonyModal(null)}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
               <button className={styles.modalClose} onClick={() => setActiveTestimonyModal(null)} aria-label="Close modal">×</button>
@@ -755,7 +799,8 @@ export default function Testimonies() {
                 {activeTestimonyModal.body}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       {/* ── Right Column: Submit Form ── */}
       <div

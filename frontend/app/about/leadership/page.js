@@ -76,11 +76,12 @@ export default function LeadershipPage() {
       {/* Main Content Section */}
       <section className="section" style={{ backgroundColor: 'var(--color-surface)' }}>
         <div className="container" style={{ maxWidth: '1200px' }}>
-
+          
           {/* Pastoral Team */}
           <div style={{ marginBottom: '6rem' }}>
             <h2 className="section-title-elegant" style={{ marginBottom: '3rem' }}>
-              Pastoral <span className="title-italic">Team</span>
+              <span className="title-normal">Pastoral </span>
+              <em className="title-italic">Team</em>
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
               {[
@@ -93,6 +94,9 @@ export default function LeadershipPage() {
                     <img
                       src={pastor.image}
                       alt={pastor.name}
+                    <img 
+                      src={pastor.image} 
+                      alt={pastor.name} 
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                     />
                     <div style={{ position: 'absolute', top: '1rem', right: '1rem', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: '0.35rem 0.85rem', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -102,7 +106,7 @@ export default function LeadershipPage() {
                   <div style={{ padding: '1.75rem', textAlign: 'center' }}>
                     <h3 style={{ fontSize: '1.3rem', color: 'var(--color-text)', marginBottom: '0.5rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>{pastor.name}</h3>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                      <span>📞</span> {pastor.phone}
+                      <span>📞</span> <a href={`tel:+91${pastor.phone}`} style={{ color: 'inherit', textDecoration: 'none' }}>{pastor.phone}</a>
                     </p>
                   </div>
                 </div>
@@ -120,6 +124,12 @@ export default function LeadershipPage() {
               Meet the <span className="title-italic">leadership team</span>
             </h2>
 
+            
+            <h2 className="section-title-elegant" style={{ marginBottom: '1rem' }}>
+              <span className="title-normal">Meet the </span>
+              <em className="title-italic">leadership team</em>
+            </h2>
+            
             <p className="deacon-section-desc">
               The selection was held on 21st & 23rd January, 2026, by the five-member Supervisory Committee of the Church.
             </p>
@@ -129,6 +139,9 @@ export default function LeadershipPage() {
               <input
                 type="text"
                 placeholder="Search deacons by name or designation..."
+              <input 
+                type="text" 
+                placeholder="Search deacons by name or designation..." 
                 className="deacon-search-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -185,6 +198,10 @@ export default function LeadershipPage() {
                           ? '/images/deacon-female-placeholder.png'
                           : '/images/deacon-male-placeholder.png');
 
+                        const imageSrc = deacon.image || (deacon.gender === 'female' 
+                          ? '/images/deacon-female-placeholder.png' 
+                          : '/images/deacon-male-placeholder.png');
+                        
                         return (
                           <div key={deacon.id} className="deacon-card">
                             {deacon.category === 'Elder' && (
@@ -215,6 +232,15 @@ export default function LeadershipPage() {
                               />
                             </div>
 
+                            
+                            <div className="deacon-img-container">
+                              <img 
+                                src={imageSrc} 
+                                alt={deacon.name} 
+                                className="deacon-img"
+                              />
+                            </div>
+                            
                             <div className="deacon-info-overlay">
                               <span className="deacon-name">{deacon.name}</span>
                               <span className="deacon-role">{deacon.role}</span>
@@ -295,6 +321,9 @@ export default function LeadershipPage() {
                       <img
                         src={imageSrc}
                         alt={evg.name}
+                      <img 
+                        src={imageSrc} 
+                        alt={evg.name} 
                         className="deacon-img"
                       />
                     </div>
@@ -347,6 +376,9 @@ export default function LeadershipPage() {
                       <img
                         src={imageSrc}
                         alt={staff.name}
+                      <img 
+                        src={imageSrc} 
+                        alt={staff.name} 
                         className="deacon-img"
                       />
                     </div>

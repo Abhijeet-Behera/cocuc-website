@@ -11,6 +11,11 @@ export default function SecretarysCornerPage() {
   return (
     <div>
       <style>{`
+        @media (max-width: 768px) {
+          .responsive-card { padding: 1.5rem !important; }
+          .responsive-banner { padding: 2rem 1.5rem !important; }
+          .responsive-title { font-size: 2.2rem !important; }
+        }
         .secretary-phone-link {
           display: inline-flex;
           align-items: center;
@@ -43,7 +48,18 @@ export default function SecretarysCornerPage() {
         <div className={`container ${styles.letterWrapper}`}>
 
           {/* ── Church Header Card ── */}
-          <div className={styles.headerCard}>
+          <div
+            className="responsive-card"
+            style={{
+              background: 'linear-gradient(160deg, #fffdf9 0%, #fdf6ee 100%)',
+              border: '1px solid rgba(128,0,0,0.10)',
+              borderRadius: '20px',
+              padding: '2.5rem 3rem',
+              textAlign: 'center',
+              boxShadow: '0 4px 20px rgba(128,0,0,0.06)',
+              position: 'relative',
+            }}
+          >
             {/* Top accent bar */}
             <div className={styles.headerAccentBar} />
 
@@ -74,7 +90,17 @@ export default function SecretarysCornerPage() {
           </div>
 
           {/* ── Main Letter Card ── */}
-          <div className={styles.letterCard}>
+          <div
+            className="responsive-card"
+            style={{
+              background: 'linear-gradient(160deg, #ffffff 0%, #fffaf5 100%)',
+              border: '1px solid rgba(128,0,0,0.09)',
+              borderRadius: '20px',
+              padding: '3rem 3.5rem',
+              boxShadow: '0 6px 30px rgba(128,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)',
+              position: 'relative',
+            }}
+          >
             {/* Top accent bar */}
             <div className={styles.letterAccentBar} />
 
@@ -209,9 +235,22 @@ export default function SecretarysCornerPage() {
                 { icon: '🙏', title: 'Prayer & Counsel', desc: 'Available for spiritual help to anyone who seeks.' },
                 { icon: '🇮🇳', title: 'Nation Building', desc: "Fulfilling God\u2019s divine will for our community." },
               ].map((item, i) => (
-                <div key={i} className={styles.pillarCard}>
-                  <div className={styles.pillarAccentBar} />
-                  <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>{item.icon}</span>
+                <div
+                  key={i}
+                  style={{
+                    background: 'linear-gradient(160deg, #fffdf9 0%, #fdf6ee 100%)',
+                    border: '1px solid rgba(128,0,0,0.08)',
+                    borderRadius: '16px',
+                    padding: '1.5rem 1.25rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                    boxShadow: '0 2px 12px rgba(128,0,0,0.04)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div style={{ position: 'absolute', top: 0, left: '1.25rem', right: '1.25rem', height: '2px', background: 'linear-gradient(90deg, transparent, rgba(128,0,0,0.22), transparent)', borderRadius: '0 0 2px 2px' }} />
                   <p
                     style={{
                       fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -238,11 +277,43 @@ export default function SecretarysCornerPage() {
           </div>
 
           {/* ── Since 1964 Banner ── */}
-          <div className={styles.bannerCard}>
-            <div aria-hidden="true" className={styles.bannerCross}>
+          <div
+            className="responsive-banner"
+            style={{
+              background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)',
+              borderRadius: '20px',
+              padding: '2.5rem 3rem',
+              textAlign: 'center',
+              color: '#fff',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                right: '-1.5rem',
+                bottom: '-2rem',
+                fontSize: '12rem',
+                color: 'rgba(255,255,255,0.05)',
+                fontFamily: 'serif',
+                lineHeight: 1,
+                userSelect: 'none',
+              }}
+            >
               ✝
             </div>
-            <p className={styles.bannerTitle}>
+            <p
+              className="responsive-title"
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: '3rem',
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+                marginBottom: '0.5rem',
+              }}
+            >
               Since 1964
             </p>
             <p className={styles.bannerDesc}>

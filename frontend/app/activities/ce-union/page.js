@@ -119,6 +119,58 @@ export default function CEUnionPage() {
             </p>
           </div>
 
+          {/* CE Union */}
+          <div style={{ background: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid rgba(0,0,0,0.04)', marginBottom: '3.5rem' }}>
+            <h2 className="section-title-elegant" style={{ marginBottom: '1rem', textAlign: 'center' }}>
+              <span className="title-normal">Christian Endeavour </span>
+              <em className="title-italic">Union (CE)</em>
+            </h2>
+            <p style={{ fontStyle: 'italic', color: 'var(--color-text-muted)', marginBottom: '2rem', textAlign: 'center' }}>
+              Newly elected CE board members for the year 2026 to 2028
+            </p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+              {[
+                { label: "President", name: "Dr Purnananda Pradhan" },
+                { label: "Vice President", name: "Santanu Kumar Rout" },
+                { label: "Secretary", name: "Rev Amos Pradhan" },
+                { label: "Asst Secy", name: "Samuel K Pradhan" },
+                { label: "Treasurer", name: "Benjamin Chouhan" },
+                { label: "Lookout Com Secy", name: "Smrutirekha Pradhan" },
+                { label: "Lookout Asst Secy", name: "Kalpita Pradhan" },
+                { label: "Social Com Secy", name: "Kabita Das" },
+                { label: "Social Com Secy", name: "Sudipta Pradhan" },
+                { label: "Boithak Secy", name: "John Augustin Nayak" },
+                { label: "Programme Com Secy", name: "Sujoy kumar" },
+                { label: "Auditor", name: "Ratan Dash" }
+              ].map((item, idx) => (
+                <div key={idx} style={{ background: 'linear-gradient(135deg, rgba(128,0,0,0.01) 0%, rgba(128,0,0,0.03) 100%)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(128,0,0,0.04)' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--color-primary)', textTransform: 'uppercase', display: 'block', fontWeight: 600 }}>{item.label}</span>
+                  <span style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--color-text)' }}>{item.name}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: '2.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', color: 'var(--color-text)', marginBottom: '1.25rem', fontFamily: 'var(--font-heading)', textAlign: 'center', fontWeight: 700 }}>CE Union Advisers</h3>
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
+                {[
+                  "Rev Songram K. Singh",
+                  "Rev. Dr. Ayub Chhinchani",
+                  "Rev. Satish Kumar Pani",
+                  "Joachim Manas Ranjan",
+                  "Asit Kumar Mohanty",
+                  "Asish Das",
+                  "Ranjan Kumar Nayak"
+                ].map((adviser, idx) => (
+                  <span key={idx} style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.5rem 1.25rem', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 500, color: 'var(--color-text)' }}>
+                    🎓 {adviser}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Founder Members */}
           <h2
             style={{

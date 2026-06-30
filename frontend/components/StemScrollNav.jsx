@@ -285,97 +285,14 @@ function DesktopStemNav({ activeIndex, inBounds, isIdle, mouseXRef, mouseYRef, v
   );
 }
 
-// ── Mobile Implementation (Radial Wheel) ─────────────────────────────────────
-function RadialItem({ index, section, wheelTheta, isActive, onClick, N, R, THETA_STEP }) {
-  const baseAlpha = (index - (N - 1) / 2) * THETA_STEP;
-  
-  const alpha = useTransform(wheelTheta, t => t + baseAlpha);
-  const rad = useTransform(alpha, a => a * Math.PI / 180);
-  
-  const x = useTransform(rad, r => Math.cos(r) * R);
-  const y = useTransform(rad, r => Math.sin(r) * R);
+// ── Mobile Implementation (OnePlus Style Sidebar) ─────────────────────────────
+function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered, setIsHovered }) {
+  const [pendingIndex, setPendingIndex] = useState(null);
+  const isOpen = !isIdle && inBounds;
 
-  // Fade out items smoothly only at extreme edges, keeping all 8 items visible in normal view
-  const opacity = useTransform(alpha, [-35, -25, 25, 35], [0, 1, 1, 0]);
-  const scale = useTransform(alpha, [-30, 0, 30], [0.85, 1, 0.85]);
-  const pointerEvents = useTransform(opacity, o => o < 0.2 ? 'none' : 'auto');
-
-  return (
-    <motion.div
-      style={{
-        position: 'absolute',
-        x, y,
-        opacity,
-        scale,
-        pointerEvents,
-        marginTop: -10, // Center dot vertically
-        marginLeft: -10, // Center dot horizontally on arc
-        display: 'flex',
-        alignItems: 'center',
-        zIndex: isActive ? 10 : 5,
-        touchAction: 'none', // Prevent scroll when interacting with items
-      }}
-    >
-      <div 
-        onClick={onClick}
-        style={{
-          width: isActive ? 14 : 8,
-          height: isActive ? 14 : 8,
-          borderRadius: '50%',
-          backgroundColor: isActive ? 'rgba(128,0,0,1)' : 'rgba(128,0,0,0.4)',
-          boxShadow: isActive ? '0 0 10px rgba(128,0,0,0.5)' : 'none',
-          transition: 'all 0.3s ease',
-          flexShrink: 0,
-          cursor: 'pointer',
-        }}
-      />
-      <div 
-        onClick={onClick}
-        style={{
-           marginLeft: 8,
-           padding: '4px 10px',
-           background: isActive ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.7)',
-           backdropFilter: 'blur(8px)',
-           WebkitBackdropFilter: 'blur(8px)',
-           border: isActive ? '1.5px solid rgba(128,0,0,0.3)' : '1px solid rgba(128,0,0,0.1)',
-           borderRadius: '16px',
-           color: isActive ? 'rgba(128,0,0,1)' : 'rgba(128,0,0,0.7)',
-           fontWeight: isActive ? 700 : 500,
-           fontSize: '0.65rem',
-           whiteSpace: 'normal',
-           maxWidth: '120px',
-           lineHeight: '1.2',
-           textAlign: 'left',
-           boxShadow: isActive ? '0 4px 12px rgba(128,0,0,0.15)' : 'none',
-           transition: 'all 0.3s ease',
-           cursor: 'pointer',
-           fontFamily: 'var(--font-heading, inherit)',
-        }}
-      >
-        {section.mobileLabel || section.label}
-      </div>
-    </motion.div>
-  );
-}
-
-function MobileRadialNav({ activeIndex, inBounds, isIdle, setIsIdle, setIsHovered }) {
-  const N = SECTIONS.length;
-  const R = 800; // Increased radius for even flatter curve
-  const THETA_STEP = 7; // Increased to cover the arc uniformly
-  const BULGE = 45; // Reduced so it utilizes less screen space
-  
-  const wheelTheta = useMotionValue(0);
-  const isDragging = useRef(false);
-  const [localActiveIndex, setLocalActiveIndex] = useState(activeIndex);
-
-  // Sync with page scroll when not dragging
   useEffect(() => {
-    if (!isDragging.current) {
-      setLocalActiveIndex(activeIndex);
-      const targetTheta = -(activeIndex - (N - 1) / 2) * THETA_STEP;
-      animate(wheelTheta, targetTheta, { type: 'spring', stiffness: 200, damping: 25 });
-    }
-  }, [activeIndex, wheelTheta, N, THETA_STEP]);
+    if (!isOpen) setPendingIndex(null);
+  }, [isOpen]);
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
@@ -385,104 +302,169 @@ function MobileRadialNav({ activeIndex, inBounds, isIdle, setIsIdle, setIsHovere
     }
   };
 
-  const handlePanStart = () => {
-    isDragging.current = true;
-    setIsIdle(false);
-  };
-
-  const handlePan = (e, info) => {
-    setIsIdle(false);
-    const rotationFactor = 0.15; // Adjusted for THETA_STEP=7
-    let newTheta = wheelTheta.get() + info.delta.y * rotationFactor;
-    
-    // Clamp the rotation so user cannot scroll into blank space
-    const maxTheta = (N - 1) / 2 * THETA_STEP;
-    const minTheta = -maxTheta;
-    newTheta = Math.max(minTheta - 5, Math.min(maxTheta + 5, newTheta)); // 5 deg soft overscroll
-
-    wheelTheta.set(newTheta);
-
-    const currentTheta = wheelTheta.get();
-    let closestIndex = Math.round(-currentTheta / THETA_STEP + (N - 1) / 2);
-    closestIndex = Math.max(0, Math.min(N - 1, closestIndex));
-    
-    if (closestIndex !== localActiveIndex) {
-      setLocalActiveIndex(closestIndex);
-    }
-  };
-
-  const handlePanEnd = () => {
-    isDragging.current = false;
-    const currentTheta = wheelTheta.get();
-    let closestIndex = Math.round(-currentTheta / THETA_STEP + (N - 1) / 2);
-    closestIndex = Math.max(0, Math.min(N - 1, closestIndex));
-    
-    const targetTheta = -(closestIndex - (N - 1) / 2) * THETA_STEP;
-    animate(wheelTheta, targetTheta, { type: 'spring', stiffness: 300, damping: 25 });
-    
-    if (closestIndex !== activeIndex) {
-      scrollToSection(SECTIONS[closestIndex].id);
-    }
-  };
-
   const handleItemClick = (index) => {
-    setIsIdle(false);
+    setPendingIndex(index);
     scrollToSection(SECTIONS[index].id);
+    setTimeout(() => setIsIdle(true), 100); // Very small delay for instant feedback but faster closing
   };
 
-  const isOpen = !isIdle;
+  const openSidebar = () => setIsIdle(false);
 
   return (
-    <AnimatePresence>
-      {inBounds && !isIdle && (
-        <motion.div
-          key="mobile-radial-nav"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          initial={{ opacity: 0, x: -R }}
-          animate={{ opacity: 1, x: -R + BULGE }} 
-          exit={{ opacity: 0, x: -R }}
-          transition={{ type: 'spring', stiffness: 260, damping: 25 }}
-          style={{ position: 'fixed', top: '50vh', left: 0, zIndex: 9000 }}
-          onPanStart={handlePanStart}
-          onPan={handlePan}
-          onPanEnd={handlePanEnd}
-        >
-          {/* Invisible background to catch drag events in empty spaces */}
-          <div
+    <>
+      <AnimatePresence>
+        {inBounds && isIdle && (
+          <motion.div
+            key="mobile-sidebar-handle"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.3 }}
             style={{
-              position: 'absolute',
-              top: -500,
-              left: R - BULGE,
-              width: 200,
-              height: 1000,
-              touchAction: 'none', // Prevents page scroll while spinning wheel
-              zIndex: 1, // Stay behind items so items can be clicked
+              position: 'fixed',
+              top: '30%',
+              left: 0,
+              width: 8,
+              height: 80,
+              background: 'rgba(128, 0, 0, 0.45)',
+              borderTopRightRadius: 8,
+              borderBottomRightRadius: 8,
+              zIndex: 9000,
+              cursor: 'grab',
+              touchAction: 'none',
+              boxShadow: '2px 0 8px rgba(0,0,0,0.1)'
+            }}
+            onClick={openSidebar}
+            onPanEnd={(e, info) => {
+              if (info.offset.x > 10) openSidebar();
             }}
           />
+        )}
+      </AnimatePresence>
 
-          {/* Wheel Arc Line */}
-          <svg style={{ position: 'absolute', top: -R, left: -R, width: R*2, height: R*2, pointerEvents: 'none', zIndex: 0 }}>
-            <circle cx={R} cy={R} r={R} fill="none" stroke="rgba(128,0,0,0.18)" strokeWidth="2.5" />
-          </svg>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="mobile-sidebar-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 9000,
+              background: 'transparent',
+              touchAction: 'none'
+            }}
+            onClick={() => setIsIdle(true)}
+            onTouchStart={() => setIsIdle(true)}
+          />
+        )}
+      </AnimatePresence>
 
-          {/* Wheel Items */}
-          {SECTIONS.map((sec, i) => (
-            <RadialItem
-              key={sec.id}
-              index={i}
-              section={sec}
-              wheelTheta={wheelTheta}
-              isActive={localActiveIndex === i}
-              onClick={() => handleItemClick(i)}
-              N={N}
-              R={R}
-              THETA_STEP={THETA_STEP}
-            />
-          ))}
-        </motion.div>
-      )}
-    </AnimatePresence>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="mobile-sidebar-expanded"
+            initial={{ x: '-100%', opacity: 0.5 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '-100%', opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: 170,
+              height: '100dvh',
+              background: 'linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.4) 100%)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              zIndex: 9001,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              paddingLeft: 4
+            }}
+            onPanEnd={(e, info) => {
+              if (info.offset.x < -20) setIsIdle(true);
+            }}
+          >
+            {/* The vertical stem line */}
+            <div style={{
+              position: 'absolute',
+              left: 12,
+              top: '15%',
+              bottom: '15%',
+              width: 2,
+              background: 'rgba(128,0,0,0.12)',
+              borderRadius: 2
+            }} />
+            
+            <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '4.5vh' }}>
+              {SECTIONS.map((sec, i) => {
+                const isActive = (pendingIndex !== null) ? (pendingIndex === i) : (activeIndex === i);
+                return (
+                  <motion.div 
+                    key={sec.id} 
+                    style={{ position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer', zIndex: 10 }}
+                    whileTap={{ scale: 0.9, opacity: 0.7 }}
+                    onClick={(e) => { e.stopPropagation(); handleItemClick(i); }}
+                    onPointerDown={(e) => { e.stopPropagation(); handleItemClick(i); }}
+                  >
+                    {/* The node on the stem */}
+                    <div style={{
+                      position: 'absolute',
+                      left: 8 - (isActive ? 4 : 3),
+                      width: isActive ? 10 : 8,
+                      height: isActive ? 10 : 8,
+                      borderRadius: '50%',
+                      background: isActive ? 'var(--color-primary)' : 'rgba(128,0,0,0.3)',
+                      transition: 'all 0.3s ease',
+                      zIndex: 2,
+                      boxShadow: isActive ? '0 0 8px rgba(128,0,0,0.4)' : 'none'
+                    }} />
+
+                    {/* The branch (stair) */}
+                    <div style={{
+                      position: 'absolute',
+                      left: 8,
+                      width: 16,
+                      height: isActive ? 2 : 1,
+                      background: isActive ? 'var(--color-primary)' : 'rgba(128,0,0,0.15)',
+                      transition: 'all 0.3s ease',
+                      zIndex: 1
+                    }} />
+
+                    {/* The label */}
+                    <div style={{
+                      marginLeft: 32,
+                      padding: '8px 14px',
+                      background: isActive ? 'rgba(255,255,255,0.95)' : 'transparent',
+                      border: isActive ? '1.5px solid rgba(128,0,0,0.2)' : '1px solid transparent',
+                      borderRadius: 20,
+                      color: isActive ? 'var(--color-primary)' : 'rgba(128,0,0,0.5)',
+                      fontWeight: isActive ? 700 : 500,
+                      fontSize: '0.75rem',
+                      fontFamily: 'var(--font-heading)',
+                      boxShadow: isActive ? '0 4px 12px rgba(128,0,0,0.08)' : 'none',
+                      transition: 'all 0.3s ease',
+                      whiteSpace: 'normal',
+                      lineHeight: 1.2,
+                      maxWidth: '140px'
+                    }}>
+                      {sec.mobileLabel || sec.label}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -569,7 +551,6 @@ export default function StemScrollNav() {
     const onMove = (e) => {
       mouseXRef.current = e.clientX;
       mouseYRef.current = e.clientY;
-      // Mouse move updates physics but does NOT wake up or keep the nav alive
     };
 
     const onScroll = () => {
@@ -579,32 +560,41 @@ export default function StemScrollNav() {
       velRef.current   = (dy / dt) * 1000;
       prevSY.current   = window.scrollY;
       prevST.current   = now;
-      resetIdle();
+      
+      // On mobile, scrolling the page should NOT open the sidebar
+      if (!isMobile) {
+        resetIdle();
+      }
     };
 
     window.addEventListener('mousemove',  onMove,   { passive: true });
     window.addEventListener('scroll',     onScroll, { passive: true });
     
     // Initial start
-    resetIdle();
+    if (!isMobile) {
+      resetIdle();
+    } else {
+      setIsIdle(true); // Ensure it starts collapsed on mobile
+    }
 
     return () => {
       window.removeEventListener('mousemove',  onMove);
       window.removeEventListener('scroll',     onScroll);
       clearTimeout(idleTmo.current);
     };
-  }, [isHovered]);
+  }, [isHovered, isMobile]);
 
   if (!mounted) return null;
 
   return createPortal(
     <>
       {isMobile ? (
-        <MobileRadialNav 
+        <MobileSidebarNav 
           activeIndex={activeIndex} 
           inBounds={inBounds} 
           isIdle={isIdle} 
           setIsIdle={setIsIdle}
+          isHovered={isHovered}
           setIsHovered={setIsHovered}
         />
       ) : (

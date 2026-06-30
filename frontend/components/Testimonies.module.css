@@ -230,12 +230,14 @@
   align-items: center;
   gap: 0.25rem;
   opacity: 0;
+  pointer-events: none;
   transform: translateX(4px);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .article.activeCard .readMore {
   opacity: 0.85;
+  pointer-events: auto;
   transform: translateX(4px);
 }
 
@@ -295,7 +297,7 @@
   bottom: 0;
   background: rgba(30, 18, 18, 0.45);
   backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: 999999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -315,6 +317,7 @@
     0 8px 24px rgba(0, 0, 0, 0.08);
   padding: 2.5rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
   animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   scrollbar-width: thin;
   scrollbar-color: rgba(128, 0, 0, 0.2) transparent;

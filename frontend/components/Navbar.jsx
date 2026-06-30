@@ -105,7 +105,7 @@ export default function Navbar() {
     { name: 'Pastor’s Note', href: '/pastors-note' },
     { name: 'Celebrations', href: '#' },
     { name: 'Service Timing', href: '/about/service-times' },
-    { name: 'Contact Us', href: '#' },
+    { name: 'Contact Us', href: '/contact-us' },
   ]
 
   const activitiesMenu = [

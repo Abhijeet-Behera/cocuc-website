@@ -103,7 +103,7 @@ export default function LeadershipPage() {
                   <div style={{ padding: '1.75rem', textAlign: 'center' }}>
                     <h3 style={{ fontSize: '1.3rem', color: 'var(--color-text)', marginBottom: '0.5rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>{pastor.name}</h3>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                      <span>📞</span> {pastor.phone}
+                      <span>📞</span> <a href={`tel:+91${pastor.phone}`} style={{ color: 'inherit', textDecoration: 'none' }}>{pastor.phone}</a>
                     </p>
                   </div>
                 </div>

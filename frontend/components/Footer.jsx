@@ -93,7 +93,7 @@ export default function Footer() {
             
             <li><Link href="/timings" className={styles.footerLink}>Timings</Link></li>
 
-            <li><Link href="#contact" className={styles.footerLink}>Contact Us</Link></li>
+            <li><Link href="/contact-us" className={styles.footerLink}>Contact Us</Link></li>
           </ul>
         </div>
 
@@ -104,18 +104,18 @@ export default function Footer() {
             <li className={styles.contactItem}>
               <Phone size={18} className={styles.contactIcon} />
               <div>
-                <span>General:<br/>(+91) 9437400283</span><br/>
+                <span>General:<br/><a href="tel:+919437400283" style={{color: 'inherit', textDecoration: 'none'}}>(+91) 9437400283</a></span><br/>
                 <span style={{ display: 'block', marginTop: '0.3rem' }}>
-                  Prayer:<br/>(+91) 9437418423<br/>(+91) 9437284415
+                  Prayer:<br/><a href="tel:+919437418423" style={{color: 'inherit', textDecoration: 'none'}}>(+91) 9437418423</a><br/><a href="tel:+919437284415" style={{color: 'inherit', textDecoration: 'none'}}>(+91) 9437284415</a>
                 </span>
               </div>
             </li>
             <li className={styles.contactItem} style={{ marginTop: '0.5rem' }}>
               <Mail size={18} className={styles.contactIcon} />
               <div>
-                <span>pastor@unionchurch.in</span><br/>
+                <span><a href="mailto:pastor@unionchurch.in" style={{color: 'inherit', textDecoration: 'none'}}>pastor@unionchurch.in</a></span><br/>
                 <span style={{ display: 'block', marginTop: '0.3rem', wordBreak: 'break-word' }}>
-                  secretary@unionchurch.in
+                  <a href="mailto:secretary@unionchurch.org.in" style={{color: 'inherit', textDecoration: 'none'}}>secretary@unionchurch.org.in</a>
                 </span>
               </div>
             </li>

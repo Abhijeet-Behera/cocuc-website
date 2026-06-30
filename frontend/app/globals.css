@@ -466,3 +466,10 @@ button {
   color: var(--color-text-muted);
   font-size: 1.1rem;
 }
+
+/* Global hover effect for contact links on PC */
+@media (hover: hover) and (pointer: fine) {
+  a[href^="tel:"]:hover, a[href^="mailto:"]:hover {
+    text-decoration: underline !important;
+  }
+}

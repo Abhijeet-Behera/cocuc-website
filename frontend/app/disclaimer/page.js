@@ -38,7 +38,7 @@ export default function Disclaimer() {
 
           <h2 style={{ fontSize: '1.5rem', color: 'var(--color-primary)', marginTop: '1rem' }}>Contact Us</h2>
           <p>
-            If you have any questions about this Disclaimer, please contact us at: pastor@unionchurch.in or secretary@unionchurch.in
+            If you have any questions about this Disclaimer, please contact us at: <a href="mailto:pastor@unionchurch.in" style={{ color: 'var(--color-primary)' }}>pastor@unionchurch.in</a> or <a href="mailto:secretary@unionchurch.org.in" style={{ color: 'var(--color-primary)' }}>secretary@unionchurch.org.in</a>
           </p>
         </div>
       </div>

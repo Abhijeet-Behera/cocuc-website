@@ -104,10 +104,7 @@ export default function Footer() {
             <li className={styles.contactItem}>
               <Phone size={18} className={styles.contactIcon} />
               <div>
-                <span>General:<br/><a href="tel:+919437400283" style={{color: 'inherit', textDecoration: 'none'}}>(+91) 9437400283</a></span><br/>
-                <span style={{ display: 'block', marginTop: '0.3rem' }}>
-                  Prayer:<br/><a href="tel:+919437418423" style={{color: 'inherit', textDecoration: 'none'}}>(+91) 9437418423</a><br/><a href="tel:+919437284415" style={{color: 'inherit', textDecoration: 'none'}}>(+91) 9437284415</a>
-                </span>
+                <a href="tel:+917656852269" style={{color: 'inherit', textDecoration: 'none'}}>+91 7656852269</a>
               </div>
             </li>
             <li className={styles.contactItem} style={{ marginTop: '0.5rem' }}>
@@ -115,7 +112,7 @@ export default function Footer() {
               <div>
                 <span><a href="mailto:pastor@unionchurch.in" style={{color: 'inherit', textDecoration: 'none'}}>pastor@unionchurch.in</a></span><br/>
                 <span style={{ display: 'block', marginTop: '0.3rem', wordBreak: 'break-word' }}>
-                  <a href="mailto:secretary@unionchurch.org.in" style={{color: 'inherit', textDecoration: 'none'}}>secretary@unionchurch.org.in</a>
+                  <a href="mailto:secretary@unionchurch.in" style={{color: 'inherit', textDecoration: 'none'}}>secretary@unionchurch.in</a>
                 </span>
               </div>
             </li>

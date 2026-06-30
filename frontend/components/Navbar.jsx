@@ -170,7 +170,7 @@ export default function Navbar() {
             <NavDropdown title="Activities" items={activitiesMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavLink href="#" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Prayer Wings</NavLink>
             <NavDropdown title="Events" items={eventsMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
-            <NavLink href="/blog" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Blog</NavLink>
+            <NavLink href="/#blog" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Blog</NavLink>
           </div>
 
           {/* ── Socials + Admin ── */}

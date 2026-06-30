@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 
-function LoginLogic({ setSuccess }) {
+function LoginLogic({ setSuccess, setError }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -13,8 +13,14 @@ function LoginLogic({ setSuccess }) {
     if (searchParams.get('logout') === 'success') {
       setSuccess('Successfully logged out.');
       router.replace('/admin/login');
+    } else if (searchParams.get('logout') === 'expired') {
+      setError('Session expired due to inactivity. Please log in again.');
+      router.replace('/admin/login');
+    } else if (typeof window !== 'undefined' && localStorage.getItem('session_expired') === 'true') {
+      setError('Session expired due to inactivity. Please log in again.');
+      localStorage.removeItem('session_expired');
     }
-  }, [searchParams, router, setSuccess]);
+  }, [searchParams, router, setSuccess, setError]);
 
   return null;
 }
@@ -203,7 +209,7 @@ export default function LoginRegister() {
       boxSizing: 'border-box'
     }}>
       <Suspense fallback={null}>
-        <LoginLogic setSuccess={setSuccess} />
+        <LoginLogic setSuccess={setSuccess} setError={setError} />
       </Suspense>
 
       <motion.div 

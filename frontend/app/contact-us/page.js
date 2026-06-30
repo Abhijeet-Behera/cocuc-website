@@ -66,9 +66,8 @@ export default function ContactUsPage() {
               <div className={styles.contactList}>
                 <div className={styles.contactItem}>
                   <span className={styles.contactLabel}>Er. Michael Rajesh Behera</span>
-                  <div className={styles.contactValue}>
-                    <a href="tel:+919439919188" className={styles.link}>+91 9439919188</a> 
-                    {/* <span style={{ color: 'var(--color-text-muted)' }}>/</span> */}
+                  <div className={styles.contactValue} style={{ flexDirection: 'column', gap: '0.25rem' }}>
+                    <a href="tel:+919439919188" className={styles.link}>+91 9439919188</a>
                     <a href="tel:+917337377288" className={styles.link}>+91 7337377288</a>
                   </div>
                 </div>

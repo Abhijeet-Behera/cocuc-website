@@ -114,9 +114,9 @@
   text-align: center;
   gap: 0.75rem;
   padding: 2rem 1rem;
-  background: var(--color-surface);
+  background: linear-gradient(135deg, rgba(128, 0, 0, 0.01) 0%, rgba(128, 0, 0, 0.03) 100%);
   border-radius: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(128, 0, 0, 0.04);
   text-decoration: none;
   color: var(--color-text);
   transition: all 0.3s ease;
@@ -193,3 +193,4 @@
     grid-template-columns: 1fr;
   }
 }
+

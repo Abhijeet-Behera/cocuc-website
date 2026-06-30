@@ -36,6 +36,11 @@
   margin: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px; /* Accounts for the fixed navbar height */
+}
+
 html, body {
   overflow-x: hidden;
 }

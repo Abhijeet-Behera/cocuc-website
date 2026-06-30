@@ -66,7 +66,7 @@ export default function WomensFellowshipPage() {
 
           {/* Winter Note */}
           <div className={styles.noticeCard}>
-            ⏰ <strong>Winter Season Notice:</strong> The fellowship is preponed to <strong>4:00 PM</strong> during the winter season.
+            <strong>Winter Season Notice:</strong> The fellowship is preponed to <strong>4:00 PM</strong> during the winter season.
           </div>
 
           {/* About Section */}

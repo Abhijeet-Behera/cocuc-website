@@ -34,19 +34,19 @@ export default function YouthFellowshipPage() {
 
   const annualActivities = [
     {
-      icon: '⛺',
+      icon: '',
       title: 'Church Youth Retreat',
       when: 'Every year — 15th August',
       desc: 'The Youth Fellowship conducts a special Youth Retreat for all young people of the Church every year on 15th August, and all youth from the city are invited.',
     },
     {
-      icon: '🏕️',
+      icon: '',
       title: 'Youth Summer Camp',
       when: 'Annually in June (School & College Vacations)',
       desc: 'One of the major annual activities — a three-day residential outing camp aimed at spiritual formation. In 2024 & 2025, held at St. Vincent Retreat Center, Gopalpur. In 2026, held at Ishopanti Ashram, Puri (15–17 June), featuring live worship, interactive sessions, indoor & outdoor fun activities, group discussions, and united prayer.',
     },
     {
-      icon: '🎄',
+      icon: '',
       title: 'Youth Christmas Celebration',
       when: 'First Saturday of December, Every Year',
       desc: 'Held every year, the celebration includes Christmas carols worship/Kirtan, Bible games, fellowship, gift exchange, and special performances by the youth.',

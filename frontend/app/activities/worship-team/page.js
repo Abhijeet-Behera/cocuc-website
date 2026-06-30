@@ -238,7 +238,6 @@ export default function WorshipTeamPage() {
 
           {/* Join CTA */}
           <div className={styles.ctaCard}>
-            <span style={{ fontSize: '2rem', lineHeight: 1 }}>🎵</span>
             <div>
               <p
                 style={{

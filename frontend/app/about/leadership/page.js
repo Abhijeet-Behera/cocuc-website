@@ -91,9 +91,6 @@ export default function LeadershipPage() {
               ].map((pastor, index) => (
                 <div key={index} className="card" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-sm)' }}>
                   <div style={{ height: '260px', overflow: 'hidden', position: 'relative', backgroundColor: '#e2e8f0' }}>
-                    <img
-                      src={pastor.image}
-                      alt={pastor.name}
                     <img 
                       src={pastor.image} 
                       alt={pastor.name} 
@@ -121,11 +118,6 @@ export default function LeadershipPage() {
             </div>
 
             <h2 className="section-title-elegant" style={{ marginBottom: '1rem' }}>
-              Meet the <span className="title-italic">leadership team</span>
-            </h2>
-
-            
-            <h2 className="section-title-elegant" style={{ marginBottom: '1rem' }}>
               <span className="title-normal">Meet the </span>
               <em className="title-italic">leadership team</em>
             </h2>
@@ -136,9 +128,6 @@ export default function LeadershipPage() {
 
             {/* Interactive Filters Panel */}
             <div className="deacon-search-wrapper">
-              <input
-                type="text"
-                placeholder="Search deacons by name or designation..."
               <input 
                 type="text" 
                 placeholder="Search deacons by name or designation..." 
@@ -194,10 +183,6 @@ export default function LeadershipPage() {
 
                     <div className="deacon-grid">
                       {section.members.map((deacon) => {
-                        const imageSrc = deacon.image || (deacon.gender === 'female'
-                          ? '/images/deacon-female-placeholder.png'
-                          : '/images/deacon-male-placeholder.png');
-
                         const imageSrc = deacon.image || (deacon.gender === 'female' 
                           ? '/images/deacon-female-placeholder.png' 
                           : '/images/deacon-male-placeholder.png');
@@ -224,15 +209,6 @@ export default function LeadershipPage() {
                               </div>
                             )}
 
-                            <div className="deacon-img-container">
-                              <img
-                                src={imageSrc}
-                                alt={deacon.name}
-                                className="deacon-img"
-                              />
-                            </div>
-
-                            
                             <div className="deacon-img-container">
                               <img 
                                 src={imageSrc} 
@@ -318,9 +294,6 @@ export default function LeadershipPage() {
                 return (
                   <div key={idx} className="deacon-card">
                     <div className="deacon-img-container">
-                      <img
-                        src={imageSrc}
-                        alt={evg.name}
                       <img 
                         src={imageSrc} 
                         alt={evg.name} 
@@ -373,9 +346,6 @@ export default function LeadershipPage() {
                 return (
                   <div key={idx} className="deacon-card">
                     <div className="deacon-img-container">
-                      <img
-                        src={imageSrc}
-                        alt={staff.name}
                       <img 
                         src={imageSrc} 
                         alt={staff.name} 

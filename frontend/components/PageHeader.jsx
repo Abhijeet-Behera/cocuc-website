@@ -25,16 +25,28 @@ export default function PageHeader({ category, title, description }) {
   }, [])
 
   return (
-    <section
-      style={{
-        position: 'relative',
-        color: 'var(--color-white)',
-        padding: '160px 0 110px 0',
-        textAlign: 'center',
-        overflow: 'hidden',
-        backgroundColor: '#1a0000',
-      }}
-    >
+    <section className="page-header-section">
+      <style dangerouslySetInnerHTML={{ __html: `
+        .page-header-section {
+          position: relative;
+          color: var(--color-white);
+          padding: 160px 0 110px 0;
+          text-align: center;
+          overflow: hidden;
+          background-color: #1a0000;
+          width: 100%;
+        }
+        @media (max-width: 768px) {
+          .page-header-section {
+            padding: 120px 1.25rem 80px 1.25rem;
+          }
+        }
+        @media (max-width: 480px) {
+          .page-header-section {
+            padding: 100px 1rem 60px 1rem;
+          }
+        }
+      `}} />
       {/* Background Image Container */}
       {bgImage && (
         <div
@@ -73,37 +85,6 @@ export default function PageHeader({ category, title, description }) {
 
       {/* Content Container */}
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-        {/* Transparent Cross Watermark */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '20rem',
-            height: '30rem',
-            opacity: 0.04,
-            pointerEvents: 'none',
-            userSelect: 'none',
-            zIndex: -1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <svg
-            viewBox="0 0 24 36"
-            style={{
-              width: '100%',
-              height: '100%',
-              fill: 'currentColor',
-            }}
-          >
-            <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-          </svg>
-        </div>
-
         {category && (
           <p
             style={{

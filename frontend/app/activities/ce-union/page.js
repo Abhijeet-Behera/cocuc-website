@@ -112,11 +112,20 @@ export default function CEUnionPage() {
               service in Christ and in the Church. There is no age bar for members in CE Union
               Bhubaneswar.
             </div>
-            <p>
-              Annual membership fee: Non-earning members &mdash; <strong style={{ color: 'var(--color-text)' }}>₹100</strong> &nbsp;|&nbsp;
-              Earning members &mdash; <strong style={{ color: 'var(--color-text)' }}>₹200</strong> &nbsp;|&nbsp;
-              Lifetime membership &mdash; <strong style={{ color: 'var(--color-text)' }}>₹1,000</strong>
-            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1rem' }}>
+              <span style={{ fontWeight: 600, color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>Annual membership fee:</span>
+              <div className={styles.membershipContainer}>
+                <span className={styles.membershipBox}>
+                  Non-earning members — <strong style={{ color: 'var(--color-primary)' }}>₹100</strong>
+                </span>
+                <span className={styles.membershipBox}>
+                  Earning members — <strong style={{ color: 'var(--color-primary)' }}>₹200</strong>
+                </span>
+                <span className={styles.membershipBox}>
+                  Lifetime membership — <strong style={{ color: 'var(--color-primary)' }}>₹1,000</strong>
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* CE Union */}
@@ -164,7 +173,7 @@ export default function CEUnionPage() {
                   "Ranjan Kumar Nayak"
                 ].map((adviser, idx) => (
                   <span key={idx} style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.5rem 1.25rem', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 500, color: 'var(--color-text)' }}>
-                    🎓 {adviser}
+                    {adviser}
                   </span>
                 ))}
               </div>
@@ -274,7 +283,7 @@ export default function CEUnionPage() {
                         width: '22px',
                         height: '22px',
                         borderRadius: '50%',
-                        background: 'rgba(61,0,85,0.8)',
+                        background: 'var(--color-primary)',
                         color: '#fff',
                         fontSize: '0.7rem',
                         fontWeight: 700,

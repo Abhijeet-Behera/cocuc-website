@@ -66,16 +66,16 @@ export default function Footer() {
   return (
     <footer className={styles.footer} ref={footerRef}>
       <div className={styles.footerContainer}>
-        
+
         {/* Column 1: Brand & About */}
         <div className={`${styles.footerCol} gsap-footer-col`}>
           <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
-            <Image 
-              src="/church-logo.png" 
-              alt="Church Logo" 
-              width={42} 
-              height={42} 
-              style={{ borderRadius: '50%', objectFit: 'contain', backgroundColor: 'white', padding: '2px' }} 
+            <Image
+              src="/church-logo.png"
+              alt="Church Logo"
+              width={42}
+              height={42}
+              style={{ borderRadius: '50%', objectFit: 'contain', backgroundColor: 'white', padding: '2px' }}
             />
             <h2 className={styles.footerBrand} style={{ marginBottom: 0 }}>Church of Christ</h2>
           </Link>
@@ -90,8 +90,8 @@ export default function Footer() {
           <ul className={styles.footerList}>
             <li><Link href="/" className={styles.footerLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</Link></li>
             <li><Link href="/about" className={styles.footerLink}>About Us</Link></li>
-            
-            <li><Link href="/timings" className={styles.footerLink}>Timings</Link></li>
+
+            <li><Link href="/about/service-times" className={styles.footerLink}>Timings</Link></li>
 
             <li><Link href="/contact-us" className={styles.footerLink}>Contact Us</Link></li>
           </ul>
@@ -133,14 +133,14 @@ export default function Footer() {
                 <span>PO Box 751001</span><br />
                 <span>Bhubaneswar, Odisha, India</span>
                 <div>
-                  <a 
-                    href="https://www.google.com/maps/place/Union+Church,+Unit+4+Main+St,+Unit+4,+Bhouma+Nagar,+Bhubaneswar,+Odisha+751001/@20.2761087,85.8342424,18z/data=!4m6!3m5!1s0x3a19a7594579150b:0x23298f0ac9cae304!8m2!3d20.2764338!4d85.833986!16s%2Fg%2F11b8tb49mb?entry=ttu&g_ep=EgoyMDI2MDUzMS4wIKXMDSoASAFQAw%3D%3D" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href="https://www.google.com/maps/place/Union+Church,+Unit+4+Main+St,+Unit+4,+Bhouma+Nagar,+Bhubaneswar,+Odisha+751001/@20.2761087,85.8342424,18z/data=!4m6!3m5!1s0x3a19a7594579150b:0x23298f0ac9cae304!8m2!3d20.2764338!4d85.833986!16s%2Fg%2F11b8tb49mb?entry=ttu&g_ep=EgoyMDI2MDUzMS4wIKXMDSoASAFQAw%3D%3D"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={styles.mapLink}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                     <span>Locate on map</span>
                   </a>

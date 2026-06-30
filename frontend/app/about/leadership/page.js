@@ -91,6 +91,9 @@ export default function LeadershipPage() {
               ].map((pastor, index) => (
                 <div key={index} className="card" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-sm)' }}>
                   <div style={{ height: '260px', overflow: 'hidden', position: 'relative', backgroundColor: '#e2e8f0' }}>
+                    <img
+                      src={pastor.image}
+                      alt={pastor.name}
                     <img 
                       src={pastor.image} 
                       alt={pastor.name} 
@@ -116,6 +119,11 @@ export default function LeadershipPage() {
             <div className="deacon-badge-container">
               <span className="deacon-badge">Church Board (2026-29)</span>
             </div>
+
+            <h2 className="section-title-elegant" style={{ marginBottom: '1rem' }}>
+              Meet the <span className="title-italic">leadership team</span>
+            </h2>
+
             
             <h2 className="section-title-elegant" style={{ marginBottom: '1rem' }}>
               <span className="title-normal">Meet the </span>
@@ -128,6 +136,9 @@ export default function LeadershipPage() {
 
             {/* Interactive Filters Panel */}
             <div className="deacon-search-wrapper">
+              <input
+                type="text"
+                placeholder="Search deacons by name or designation..."
               <input 
                 type="text" 
                 placeholder="Search deacons by name or designation..." 
@@ -183,6 +194,10 @@ export default function LeadershipPage() {
 
                     <div className="deacon-grid">
                       {section.members.map((deacon) => {
+                        const imageSrc = deacon.image || (deacon.gender === 'female'
+                          ? '/images/deacon-female-placeholder.png'
+                          : '/images/deacon-male-placeholder.png');
+
                         const imageSrc = deacon.image || (deacon.gender === 'female' 
                           ? '/images/deacon-female-placeholder.png' 
                           : '/images/deacon-male-placeholder.png');
@@ -208,6 +223,15 @@ export default function LeadershipPage() {
                                 Elder
                               </div>
                             )}
+
+                            <div className="deacon-img-container">
+                              <img
+                                src={imageSrc}
+                                alt={deacon.name}
+                                className="deacon-img"
+                              />
+                            </div>
+
                             
                             <div className="deacon-img-container">
                               <img 
@@ -237,14 +261,14 @@ export default function LeadershipPage() {
 
             {/* Stand-by Members */}
             <div style={{ marginTop: '4.5rem', borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '3rem', textAlign: 'center' }}>
-              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '1.5rem' }}>
+              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 700, color: 'var(--color-primary)', marginBottom: '1.5rem' }}>
                 Stand-by Members
               </h4>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
                 {[
-                  { name: "Mr. Samir Kumar Patro", role: "Stand-by" },
-                  { name: "Prof. Anup Kumar Samantaray", role: "Stand-by" },
-                  { name: "Ms. Madhusmita Rout", role: "Stand-by Deaconess" }
+                  { name: "Mr. Samir Kumar Patro" },
+                  { name: "Prof. Anup Kumar Samantaray" },
+                  { name: "Ms. Madhusmita Rout", }
                 ].map((member, index) => (
                   <div key={index} style={{ background: 'var(--color-white)', padding: '0.85rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)' }}></div>
@@ -294,6 +318,9 @@ export default function LeadershipPage() {
                 return (
                   <div key={idx} className="deacon-card">
                     <div className="deacon-img-container">
+                      <img
+                        src={imageSrc}
+                        alt={evg.name}
                       <img 
                         src={imageSrc} 
                         alt={evg.name} 
@@ -346,6 +373,9 @@ export default function LeadershipPage() {
                 return (
                   <div key={idx} className="deacon-card">
                     <div className="deacon-img-container">
+                      <img
+                        src={imageSrc}
+                        alt={staff.name}
                       <img 
                         src={imageSrc} 
                         alt={staff.name} 

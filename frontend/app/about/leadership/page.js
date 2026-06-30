@@ -67,7 +67,8 @@ export default function LeadershipPage() {
           {/* Pastoral Team */}
           <div style={{ marginBottom: '6rem' }}>
             <h2 className="section-title-elegant" style={{ marginBottom: '3rem' }}>
-              Pastoral <span className="title-italic">Team</span>
+              <span className="title-normal">Pastoral </span>
+              <em className="title-italic">Team</em>
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
               {[
@@ -104,7 +105,8 @@ export default function LeadershipPage() {
             </div>
             
             <h2 className="section-title-elegant" style={{ marginBottom: '1rem' }}>
-              Meet the <span className="title-italic">leadership team</span>
+              <span className="title-normal">Meet the </span>
+              <em className="title-italic">leadership team</em>
             </h2>
             
             <p className="deacon-section-desc">
@@ -210,94 +212,7 @@ export default function LeadershipPage() {
             </div>
           </div>
 
-          {/* Sunday School & Mahila Samiti */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem', marginBottom: '6rem' }}>
-            {/* Sunday School Card */}
-            <div style={{ background: 'var(--color-white)', padding: '2.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid rgba(0,0,0,0.04)' }}>
-              <h2 style={{ fontSize: '1.75rem', color: 'var(--color-primary)', borderBottom: '2px solid rgba(128, 0, 0, 0.08)', paddingBottom: '0.75rem', marginBottom: '1.5rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
-                Sunday School
-              </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <p style={{ fontSize: '1.1rem', color: 'var(--color-text)' }}>
-                  <strong>Superintendent:</strong>
-                </p>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(128,0,0,0.03)', padding: '0.75rem 1.25rem', borderRadius: '12px', border: '1px solid rgba(128,0,0,0.05)', fontWeight: 600, color: 'var(--color-primary-dark)', width: 'fit-content' }}>
-                  👤 Mr. Asim Das
-                </div>
-              </div>
-            </div>
 
-            {/* Mahila Samiti Card */}
-            <div style={{ background: 'var(--color-white)', padding: '2.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid rgba(0,0,0,0.04)' }}>
-              <h2 style={{ fontSize: '1.75rem', color: 'var(--color-primary)', borderBottom: '2px solid rgba(128, 0, 0, 0.08)', paddingBottom: '0.75rem', marginBottom: '1.5rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
-                Mahila Samiti (Maa Sabha)
-              </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                {[
-                  { label: "President", name: "Mrs. Manoharini Muduli" },
-                  { label: "Secretary", name: "Mrs. Tarangini Pradhan" },
-                  { label: "Asst. Secretary", name: "Mrs. Itishree Das" },
-                  { label: "Treasurer", name: "Mrs. Elizabeth Moharana" }
-                ].map((item, idx) => (
-                  <div key={idx} style={{ background: 'var(--color-surface)', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.03)' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', display: 'block', fontWeight: 600 }}>{item.label}</span>
-                    <span style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--color-text)' }}>{item.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* CE Union */}
-          <div style={{ background: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid rgba(0,0,0,0.04)', marginBottom: '6rem' }}>
-            <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid rgba(128, 0, 0, 0.08)', paddingBottom: '0.75rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)', textAlign: 'center', fontWeight: 700 }}>
-              Christian Endeavour Union (CE)
-            </h2>
-            <p style={{ fontStyle: 'italic', color: 'var(--color-text-muted)', marginBottom: '2rem', textAlign: 'center' }}>
-              Newly elected CE board members for the year 2026 to 2028
-            </p>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
-              {[
-                { label: "President", name: "Dr Purnananda Pradhan" },
-                { label: "Vice President", name: "Santanu Kumar Rout" },
-                { label: "Secretary", name: "Rev Amos Pradhan" },
-                { label: "Asst Secy", name: "Samuel K Pradhan" },
-                { label: "Treasurer", name: "Benjamin Chouhan" },
-                { label: "Lookout Com Secy", name: "Smrutirekha Pradhan" },
-                { label: "Lookout Asst Secy", name: "Kalpita Pradhan" },
-                { label: "Social Com Secy", name: "Kabita Das" },
-                { label: "Social Com Secy", name: "Sudipta Pradhan" },
-                { label: "Boithak Secy", name: "John Augustin Nayak" },
-                { label: "Programme Com Secy", name: "Sujoy kumar" },
-                { label: "Auditor", name: "Ratan Dash" }
-              ].map((item, idx) => (
-                <div key={idx} style={{ background: 'linear-gradient(135deg, rgba(128,0,0,0.01) 0%, rgba(128,0,0,0.03) 100%)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(128,0,0,0.04)' }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--color-primary)', textTransform: 'uppercase', display: 'block', fontWeight: 600 }}>{item.label}</span>
-                  <span style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--color-text)' }}>{item.name}</span>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ marginTop: '2.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '2rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: 'var(--color-text)', marginBottom: '1.25rem', fontFamily: 'var(--font-heading)', textAlign: 'center', fontWeight: 700 }}>CE Union Advisers</h3>
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
-                {[
-                  "Rev Songram K. Singh",
-                  "Rev. Dr. Ayub Chhinchani",
-                  "Rev. Satish Kumar Pani",
-                  "Joachim Manas Ranjan",
-                  "Asit Kumar Mohanty",
-                  "Asish Das",
-                  "Ranjan Kumar Nayak"
-                ].map((adviser, idx) => (
-                  <span key={idx} style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.5rem 1.25rem', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 500, color: 'var(--color-text)' }}>
-                    🎓 {adviser}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
 
           {/* Evangelists & Support Staff */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem' }}>
@@ -306,16 +221,17 @@ export default function LeadershipPage() {
               <h2 style={{ fontSize: '1.75rem', color: 'var(--color-primary)', borderBottom: '2px solid rgba(128, 0, 0, 0.08)', paddingBottom: '0.75rem', marginBottom: '1.5rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
                 Evangelists
               </h2>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {[
-                  "Evg. Pratap Kumar Sahoo",
-                  "Evg. Ranjit Singh",
-                  "Evg. Gobinda Sahoo",
-                  "Evg. Sujit Bishoi",
-                  "Evg. Christopher Surya"
+                  { label: "Evangelist", name: "Pratap Kumar Sahoo" },
+                  { label: "Evangelist", name: "Ranjit Singh" },
+                  { label: "Evangelist", name: "Gobinda Sahoo" },
+                  { label: "Evangelist", name: "Sujit Bishoi" },
+                  { label: "Evangelist", name: "Christopher Surya" }
                 ].map((evg, idx) => (
-                  <li key={idx} style={{ padding: '0.75rem 1rem', background: 'var(--color-surface)', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.02)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    📖 {evg}
+                  <li key={idx} style={{ padding: '1rem', background: 'linear-gradient(135deg, rgba(128,0,0,0.01) 0%, rgba(128,0,0,0.03) 100%)', borderRadius: '12px', border: '1px solid rgba(128,0,0,0.04)' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--color-primary)', textTransform: 'uppercase', display: 'block', fontWeight: 600 }}>{evg.label}</span>
+                    <span style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--color-text)' }}>{evg.name}</span>
                   </li>
                 ))}
               </ul>

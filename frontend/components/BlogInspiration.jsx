@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import styles from './BlogInspiration.module.css'
@@ -11,6 +12,11 @@ export default function BlogInspiration() {
   const [activeBlogModal, setActiveBlogModal] = useState(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [isDraggingState, setIsDraggingState] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Refs for tracking position and gestures
   const scrollTarget = useRef(0)
@@ -306,6 +312,7 @@ export default function BlogInspiration() {
 
     if (Math.abs(diff) < 0.15) {
       setActiveBlogModal(blog)
+      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     } else {
       e.preventDefault()
       scrollTarget.current = Math.round(scrollTarget.current + diff)
@@ -416,7 +423,17 @@ export default function BlogInspiration() {
 
               {/* Card Footer Read Post */}
               <div className={styles.readMoreContainer} draggable="false">
-                <span className={styles.readMore}>
+                <span 
+                  className={styles.readMore}
+                  onClick={(e) => {
+                    if (!hasDragged.current) {
+                      e.stopPropagation()
+                      setActiveBlogModal(blog)
+                      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
                   Read post <span className={styles.arrow}>→</span>
                 </span>
               </div>
@@ -438,7 +455,7 @@ export default function BlogInspiration() {
       )}
 
       {/* Editorial Reading Modal Overlay */}
-      {activeBlogModal && (
+      {mounted && activeBlogModal && createPortal(
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <button className={styles.modalClose} onClick={closeModal} aria-label="Close modal">×</button>
@@ -483,7 +500,8 @@ export default function BlogInspiration() {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

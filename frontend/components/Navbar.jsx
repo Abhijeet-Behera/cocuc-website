@@ -84,6 +84,18 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, [mobileMenuOpen]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    }
+  }, [mobileMenuOpen]);
+
   const aboutMenu = [
     { name: 'History', href: '/about/history' },
     { name: 'What We Believe', href: '/about/what-we-believe' },

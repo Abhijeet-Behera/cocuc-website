@@ -398,7 +398,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
   animation: fadeIn 0.3s ease-out forwards;
 }
 
@@ -414,6 +414,7 @@
   padding: 3rem;
   overflow-y: auto;
   position: relative;
+  overscroll-behavior: contain;
   animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   scrollbar-width: thin;
   scrollbar-color: rgba(128,0,0,0.15) transparent;

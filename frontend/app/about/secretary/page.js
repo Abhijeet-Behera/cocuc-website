@@ -10,6 +10,11 @@ export default function SecretarysCornerPage() {
   return (
     <div>
       <style>{`
+        @media (max-width: 768px) {
+          .responsive-card { padding: 1.5rem !important; }
+          .responsive-banner { padding: 2rem 1.5rem !important; }
+          .responsive-title { font-size: 2.2rem !important; }
+        }
         .secretary-phone-link {
           display: inline-flex;
           align-items: center;
@@ -51,6 +56,7 @@ export default function SecretarysCornerPage() {
 
           {/* ── Church Header Card ── */}
           <div
+            className="responsive-card"
             style={{
               background: 'linear-gradient(160deg, #fffdf9 0%, #fdf6ee 100%)',
               border: '1px solid rgba(128,0,0,0.10)',
@@ -102,6 +108,7 @@ export default function SecretarysCornerPage() {
 
           {/* ── Main Letter Card ── */}
           <div
+            className="responsive-card"
             style={{
               background: 'linear-gradient(160deg, #ffffff 0%, #fffaf5 100%)',
               border: '1px solid rgba(128,0,0,0.09)',
@@ -295,7 +302,6 @@ export default function SecretarysCornerPage() {
                   }}
                 >
                   <div style={{ position: 'absolute', top: 0, left: '1.25rem', right: '1.25rem', height: '2px', background: 'linear-gradient(90deg, transparent, rgba(128,0,0,0.22), transparent)', borderRadius: '0 0 2px 2px' }} />
-                  <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>{item.icon}</span>
                   <p
                     style={{
                       fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -323,6 +329,7 @@ export default function SecretarysCornerPage() {
 
           {/* ── Since 1964 Banner ── */}
           <div
+            className="responsive-banner"
             style={{
               background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)',
               borderRadius: '20px',
@@ -349,6 +356,7 @@ export default function SecretarysCornerPage() {
               ✝
             </div>
             <p
+              className="responsive-title"
               style={{
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
                 fontSize: '3rem',

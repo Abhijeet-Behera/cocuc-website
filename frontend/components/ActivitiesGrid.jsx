@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react';//changed  import { useEffect, useRef } from 'react';
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import Link from 'next/link'
@@ -270,7 +270,7 @@ export default function ActivitiesGrid() {
         setActiveCard(null)
       }
     }
-    
+
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
   }, [])
@@ -304,8 +304,8 @@ export default function ActivitiesGrid() {
     <div className={styles.gridContainer} ref={containerRef}>
       <div className={styles.grid}>
         {activities.map((item, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className={`${styles.gridItem} ${activeCard === index ? styles.active : ''}`}
             tabIndex={0}
             role="button"
@@ -322,7 +322,7 @@ export default function ActivitiesGrid() {
             }}
             onClick={(e) => {
               if (e.target.closest('a')) return; // Allow Read More link to navigate
-              
+
               if (window.matchMedia('(hover: none)').matches) {
                 // Mobile/Touch: Toggle to close if clicked again
                 setActiveCard(activeCard === index ? null : index);

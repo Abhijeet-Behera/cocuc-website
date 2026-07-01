@@ -10,6 +10,7 @@ import ChurchesMapSection from '@/components/ChurchesMapSection'
 import PrayerZonesMapSection from '@/components/PrayerZonesMapSection'
 import ChatBotWidget from '@/components/ChatBotWidget'
 import SecretaryAnnouncements from '@/components/SecretaryAnnouncements'
+import DonationSection from '@/components/DonationSection'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -62,6 +63,9 @@ export default function Home() {
 
       {/* Testimonies */}
       <Testimonies />
+      
+      {/* Tithe, Offering & Donation */}
+      <DonationSection />
       
       <ChatBotWidget />
     </div>

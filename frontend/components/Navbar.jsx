@@ -219,7 +219,11 @@ function NavLink({ href, children, scrolled, onClick }) {
       whileHover={{ scale: 1.05, y: -2 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      <Link href={href} className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent}`} onClick={onClick}>
+      <Link 
+        href={href} 
+        className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent} ${usePathname() === href ? styles.active : ''}`} 
+        onClick={onClick}
+      >
         {children}
       </Link>
     </motion.div>

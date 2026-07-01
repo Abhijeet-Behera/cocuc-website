@@ -187,9 +187,10 @@ export default function Testimonies() {
     const N = 5
 
     const targetActivePage = ((Math.round(pageTarget.current) % M) + M) % M
-    if (activePage !== targetActivePage) {
-      setActivePage(targetActivePage)
-    }
+    setActivePage(prev => {
+      if (prev !== targetActivePage) return targetActivePage
+      return prev
+    })
 
     const params = getCarouselParams()
     const spacingY = params.spacingY
@@ -257,7 +258,10 @@ export default function Testimonies() {
             if (absDiff < 0.15) {
               card.classList.add(styles.activeCard)
               const roundedVert = ((Math.round(verticalScrollTarget.current) % N) + N) % N
-              if (activeIndex !== roundedVert) setActiveIndex(roundedVert)
+              setActiveIndex(prev => {
+                if (prev !== roundedVert) return roundedVert
+                return prev
+              })
             } else {
               card.classList.remove(styles.activeCard)
             }
@@ -341,7 +345,7 @@ export default function Testimonies() {
 
     animationFrameId = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(animationFrameId)
-  }, [loading, testimonies, activeIndex])
+  }, [loading, testimonies])
 
   // Mouse Drag / Swipe Handlers
   const handleMouseDown = (e) => {

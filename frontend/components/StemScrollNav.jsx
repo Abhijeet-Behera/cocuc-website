@@ -316,19 +316,19 @@ function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered,
         {inBounds && isIdle && (
           <motion.div
             key="mobile-sidebar-handle"
-            initial={{ opacity: 0, x: -10 }}
+            initial={{ opacity: 0, x: -15 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
+            exit={{ opacity: 0, x: -15 }}
             transition={{ duration: 0.3 }}
             style={{
               position: 'fixed',
               top: '30%',
               left: 0,
-              width: 8,
+              width: 12,
               height: 80,
               background: 'rgba(128, 0, 0, 0.45)',
-              borderTopRightRadius: 8,
-              borderBottomRightRadius: 8,
+              borderTopRightRadius: 15,
+              borderBottomRightRadius: 15,
               zIndex: 9000,
               cursor: 'grab',
               touchAction: 'none',
@@ -377,7 +377,7 @@ function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered,
               position: 'fixed',
               top: 0,
               left: 0,
-              width: 170,
+              width: 210,
               height: '100dvh',
               background: 'linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.4) 100%)',
               backdropFilter: 'blur(8px)',
@@ -453,7 +453,7 @@ function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered,
                       transition: 'all 0.3s ease',
                       whiteSpace: 'normal',
                       lineHeight: 1.2,
-                      maxWidth: '140px'
+                      maxWidth: '180px'
                     }}>
                       {sec.mobileLabel || sec.label}
                     </div>

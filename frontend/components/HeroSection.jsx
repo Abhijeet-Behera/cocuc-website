@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
 import MemoryVerses from './MemoryVerses'
+import BroadcastMarquee from './BroadcastMarquee'
 import styles from './HeroSection.module.css'
 
 /* ─── IST time helpers ─────────────────────────────────────── */
@@ -162,6 +163,8 @@ export default function HeroSection() {
         <div className={styles.vignette} />
         <div className={styles.bottomFade} />
       </div>
+
+      <BroadcastMarquee />
 
       {/* ── Foreground content ── */}
       <div className={styles.heroFg}>

@@ -84,27 +84,39 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, [mobileMenuOpen]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    }
+  }, [mobileMenuOpen]);
+
   const aboutMenu = [
     { name: 'History', href: '/about/history' },
     { name: 'What We Believe', href: '/about/what-we-believe' },
     { name: 'Supervisory Committee', href: '/about/supervisory-committe' },
     { name: 'Leadership Team', href: '/about/leadership' },
-    { name: 'Secretary’s Corner', href: '#' },
+    { name: 'Secretary’s Corner', href: '/about/secretary' },
     { name: 'Pastor’s Note', href: '/pastors-note' },
     { name: 'Celebrations', href: '#' },
     { name: 'Service Timing', href: '/about/service-times' },
-    { name: 'Contact Us', href: '#' },
+    { name: 'Contact Us', href: '/contact-us' },
   ]
 
   const activitiesMenu = [
-    { name: 'Satellite Churches', href: '/activities/satellite-churches' },
-    { name: 'Sunday Worship', href: '/activities/sunday-worship' },
-    { name: 'Worship Team', href: '/activities/worship-team' },
     { name: 'Sunday School', href: '/activities/sunday-school' },
-    { name: 'C.E Union', href: '/activities/ce-union' },
-    { name: 'Baptism Classes', href: '/activities/baptism-classes' },
+    { name: 'Sunday Worship', href: '/activities/sunday-worship' },
+    { name: 'Satellite Churches', href: '/activities/satellite-churches' },
+    { name: 'Christian Endeavour Union', href: '/activities/ce-union' },
     { name: 'Women’s Fellowship', href: '/activities/womens-fellowship' },
+    { name: 'Baptism Classes', href: '/activities/baptism-classes' },
     { name: 'Youth Fellowship', href: '/activities/youth-fellowship' },
+    { name: 'Worship Team', href: '/activities/worship-team' },
   ]
 
 
@@ -158,7 +170,7 @@ export default function Navbar() {
             <NavDropdown title="Activities" items={activitiesMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavLink href="#" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Prayer Wings</NavLink>
             <NavDropdown title="Events" items={eventsMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
-            <NavLink href="/blog" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Blog</NavLink>
+            <NavLink href="/#blog" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Blog</NavLink>
           </div>
 
           {/* ── Socials + Admin ── */}

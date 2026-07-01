@@ -4,140 +4,57 @@ export const metadata = {
     'The Sunday School Ministry of the Church of Christ (Union Church), Bhubaneswar — imparting biblical values and Christian teachings to children every Sunday morning.',
 }
 
+import PageHeader from '@/components/PageHeader'
+import styles from './sunday-school.module.css'
+
 export default function SundaySchoolPage() {
   const advisors = [
     { name: 'Rev. Songram Keshari Singh', phone: '9437226415' },
     { name: 'Rev. Dr. Ayub Chinchani', phone: '9437418423' },
-    { name: 'Rev. Satish Pani', phone: '9438518776' },
-    { name: 'Smt. Ellen Pramanik', phone: '9437519609' },
+    { name: 'Rev. Satish Kumar Pani', phone: '9438518776' },
+    { name: 'Mrs. Ellen Pramanik', phone: '9437519609' },
   ]
 
   const programs = [
-    'Sunday School Annual Picnic',
-    'Sunday School Annual Retreat',
-    'World Sunday School Day Celebration',
-    'Sunday School Prize-Giving Distribution and Christmas Celebrations',
+    'Sunday School Annual Picnic.',
+    'Sunday School Annual Retreat.',
+    'World Sunday School Day Celebration.',
+    'Sunday School Prize-Giving Distribution and Christmas Celebrations.',
   ]
 
   const classDistribution = [
-    { age: '3–5 years',   sciClass: 'UKG – Class 1',    ssClass: 'Beginner'     },
-    { age: '6–9 years',   sciClass: 'Class 2–4',         ssClass: 'Primary'      },
-    { age: '10–13 years', sciClass: 'Class 5–7',         ssClass: 'Junior'       },
-    { age: '14–16 years', sciClass: 'Class 8–9',         ssClass: 'Intermediate' },
-    { age: '17+ years',   sciClass: 'Class 10 onwards',  ssClass: 'Senior'       },
+    { age: '3–5 years', sciClass: 'UKG – Class 1', ssClass: 'Beginner' },
+    { age: '6–9 years', sciClass: 'Class 2–4', ssClass: 'Primary' },
+    { age: '10–13 years', ssClass: 'Junior', sciClass: 'Class 5–7' },
+    { age: '14–16 years', ssClass: 'Intermediate', sciClass: 'Class 8–9' },
+    { age: '17+ years', ssClass: 'Senior', sciClass: 'Class 10 onwards' },
   ]
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background:
-            'linear-gradient(135deg, #1a0000 0%, var(--color-primary-dark) 50%, #7a2000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20rem',
-              height: '30rem',
-              opacity: 0.04,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              zIndex: -1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              viewBox="0 0 24 36"
-              style={{
-                width: '100%',
-                height: '100%',
-                fill: 'currentColor',
-              }}
-            >
-              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Activities
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Sunday School
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Rooting our children in the Word of God from their very first years.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="Activities"
+        title="Sunday School"
+        description="Rooting our children in the Word of God from their very first years."
+      />
+
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Timing Banner */}
-          <div
-            style={{
-              background:
-                'linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
-              color: '#fff',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1.5rem 2rem',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: '1.5rem',
-              marginBottom: '3rem',
-              boxShadow: '0 8px 24px rgba(128,0,0,0.2)',
-            }}
-          >
+          <div className={styles.timingBanner}>
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Regular Sunday School</p>
               <p style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>8:00 AM – 9:45 AM</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.timingDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Extended English Sunday School</p>
               <p style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>10:00 AM onwards</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.timingDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Schedule</p>
               <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>Every Sunday Morning</p>
@@ -145,22 +62,7 @@ export default function SundaySchoolPage() {
           </div>
 
           {/* About */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.aboutCard}>
             <p>
               The <strong style={{ color: 'var(--color-text)' }}>Sunday School Ministry</strong> of the Church of Christ (Union Church), Bhubaneswar, is a vibrant and nurturing ministry dedicated to imparting biblical values and Christian teachings to children from an early age. The ministry aims to help children know God personally, understand His Word, develop Christian character, and grow into faithful followers of Jesus Christ.
             </p>
@@ -197,37 +99,11 @@ export default function SundaySchoolPage() {
           >
             Sunday School Class Distribution
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.tableContainer}>
             {/* Header Row */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1.4fr 1.4fr',
-                background: 'rgba(128,0,0,0.06)',
-                padding: '0.85rem 2rem',
-                borderBottom: '2px solid rgba(128,0,0,0.12)',
-              }}
-            >
+            <div className={styles.tableHeader}>
               {['Age', 'School Class', 'Sunday School Class'].map((h) => (
-                <span
-                  key={h}
-                  style={{
-                    fontSize: '0.72rem',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    fontWeight: 800,
-                    color: 'var(--color-primary-dark)',
-                  }}
-                >
+                <span key={h} className={styles.tableHeaderSpan}>
                   {h}
                 </span>
               ))}
@@ -236,45 +112,17 @@ export default function SundaySchoolPage() {
             {classDistribution.map((row, i) => (
               <div
                 key={i}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1.4fr 1.4fr',
-                  padding: '1rem 2rem',
-                  borderBottom: i < classDistribution.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
-                  alignItems: 'center',
-                }}
+                className={`${styles.tableRow} ${i % 2 !== 0 ? styles.tableRowAlt : ''}`}
               >
-                <span
-                  style={{
-                    display: 'inline-block',
-                    padding: '0.25rem 0.75rem',
-                    borderRadius: '50px',
-                    background: 'rgba(128,0,0,0.07)',
-                    color: 'var(--color-primary)',
-                    fontWeight: 700,
-                    fontSize: '0.85rem',
-                    border: '1px solid rgba(128,0,0,0.12)',
-                    width: 'fit-content',
-                  }}
-                >
+                <span className={styles.ageTag}>
                   {row.age}
                 </span>
-                <span style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
+                <span className={styles.schoolClass}>
+                  <span className={styles.mobileLabel}>School Class: </span>
                   {row.sciClass}
                 </span>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    padding: '0.3rem 1rem',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'rgba(128,0,0,0.06)',
-                    color: 'var(--color-primary-dark)',
-                    fontWeight: 700,
-                    fontSize: '0.92rem',
-                    width: 'fit-content',
-                  }}
-                >
+                <span className={styles.ssClass}>
+                  <span className={styles.mobileLabel}>Sunday School: </span>
                   {row.ssClass}
                 </span>
               </div>
@@ -293,19 +141,7 @@ export default function SundaySchoolPage() {
           >
             Examinations
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: '2rem 2.5rem',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.8,
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.examinationsCard}>
             <p>
               To encourage regular learning and spiritual growth, the Sunday School conducts examinations <strong style={{ color: 'var(--color-text)' }}>twice a year</strong>. Students appear for both <strong style={{ color: 'var(--color-text)' }}>Half-Yearly</strong> and <strong style={{ color: 'var(--color-text)' }}>Annual</strong> Sunday School Examinations, which assess their understanding of Bible lessons, memory verses, and biblical knowledge taught throughout the year.
             </p>
@@ -326,19 +162,7 @@ export default function SundaySchoolPage() {
           >
             Annual Programs for Children
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: '2rem',
-              border: '1px solid rgba(0,0,0,0.05)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.8rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.programsCard}>
             {programs.map((p) => (
               <div
                 key={p}
@@ -392,30 +216,11 @@ export default function SundaySchoolPage() {
           >
             Advisors of Sunday School — BBSR
           </p>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '1.5rem',
-            }}
-          >
+          <div className={styles.advisorsCard}>
             {advisors.map((a, i) => (
               <div
                 key={i}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  padding: '1.1rem 2rem',
-                  borderBottom:
-                    i < advisors.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
-                }}
+                className={`${styles.advisorsRow} ${i % 2 !== 0 ? styles.advisorsRowAlt : ''}`}
               >
                 <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{a.name}</span>
                 <a
@@ -438,53 +243,21 @@ export default function SundaySchoolPage() {
           </div>
 
           {/* Superintendent & Accountant */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: '1.25rem',
-              marginBottom: '3.5rem',
-            }}
-          >
-            <div
-              style={{
-                background: 'var(--color-white)',
-                border: '1px solid rgba(128,0,0,0.1)',
-                borderRadius: 'var(--radius-md)',
-                padding: '1.5rem',
-                boxShadow: 'var(--shadow-sm)',
-              }}
-            >
+          <div className={styles.superintendentGrid}>
+            <div className={styles.superintendentCard}>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-primary)', fontWeight: 700, marginBottom: '0.4rem' }}>Superintendent</p>
-              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Sri Ashim Kumar Das</p>
+              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Mr. Ashim Kumar Das</p>
               <a href="tel:9437805935" style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none' }}>📞 9437805935</a>
             </div>
-            <div
-              style={{
-                background: 'var(--color-white)',
-                border: '1px solid rgba(128,0,0,0.1)',
-                borderRadius: 'var(--radius-md)',
-                padding: '1.5rem',
-                boxShadow: 'var(--shadow-sm)',
-              }}
-            >
+            <div className={styles.superintendentCard}>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-primary)', fontWeight: 700, marginBottom: '0.4rem' }}>Accountant</p>
-              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Smt. Prem Lata Franklin</p>
+              <p style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.3rem' }}>Mrs. Prem Lata Franklin</p>
               <a href="tel:9178253901" style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none' }}>📞 9178253901</a>
             </div>
           </div>
 
           {/* Vision */}
-          <div
-            style={{
-              background:
-                'linear-gradient(135deg, rgba(128,0,0,0.06) 0%, rgba(128,0,0,0.02) 100%)',
-              border: '1px solid rgba(128,0,0,0.12)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem 2.5rem',
-              textAlign: 'center',
-            }}
-          >
+          <div className={styles.visionCard}>
             <p
               style={{
                 fontSize: '0.75rem',

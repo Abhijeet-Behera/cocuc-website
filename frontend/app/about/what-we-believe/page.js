@@ -1,3 +1,6 @@
+import PageHeader from '@/components/PageHeader'
+import styles from './what-we-believe.module.css'
+
 export default function WhatWeBelievePage() {
   const beliefs = [
     {
@@ -44,25 +47,23 @@ export default function WhatWeBelievePage() {
 
   return (
     <div>
-      <section style={{ backgroundColor: 'var(--color-primary-dark)', color: 'var(--color-white)', padding: '150px 0 100px 0', textAlign: 'center' }}>
-        <div className="container">
-          <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>What We Believe</h1>
-          <p style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
-            The core tenets of our faith and foundational doctrines.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="About"
+        title="What We Believe"
+        description="The core tenets of our faith and foundational doctrines."
+      />
+
 
       <section className="section container">
-        <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+        <div className={styles.cardContainer}>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div className={styles.beliefsList}>
             {beliefs.map((belief, index) => (
-              <div key={index} style={{ borderBottom: index < beliefs.length - 1 ? '1px solid #eee' : 'none', paddingBottom: index < beliefs.length - 1 ? '2rem' : '0' }}>
-                <p style={{ fontSize: '1.15rem', color: 'var(--color-text)', lineHeight: 1.6, fontWeight: 500, marginBottom: '0.5rem' }}>
+              <div key={index} className={styles.beliefRow}>
+                <p className={styles.beliefText}>
                   {belief.statement}
                 </p>
-                <p style={{ fontSize: '0.95rem', color: 'var(--color-primary)', fontStyle: 'italic' }}>
+                <p className={styles.beliefScripture}>
                   {belief.scriptures}
                 </p>
               </div>

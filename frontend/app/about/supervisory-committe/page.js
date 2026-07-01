@@ -4,13 +4,16 @@ export const metadata = {
     'The Supervisory Committee of Church of Christ (Union Church), Bhubaneswar — established through the constitutional amendment of November 8, 2025 to oversee the functioning of the Church and its wings.',
 }
 
+import PageHeader from '@/components/PageHeader'
+import styles from './supervisory-committee.module.css'
+
 export default function SupervisoryCommitteePage() {
   const members = [
-    { name: 'Mr. Paresh K. Das',       role: 'Convenor' },
-    { name: 'Mr. Ranjan Pati',         role: 'Member'   },
-    { name: 'Mr. Rajballabh Supakar',  role: 'Member'   },
-    { name: 'Mr. Ranjan Rout',         role: 'Member'   },
-    { name: 'Mr. Tapas Dey',           role: 'Member'   },
+    { name: 'Mr. Paresh Kumar Das', role: 'Convenor' },
+    { name: 'Mr. Ranjan Pati', role: 'Member' },
+    { name: 'Mr. Rajballabh Supakar', role: 'Member' },
+    { name: 'Mr. Ranjan Rout', role: 'Member' },
+    { name: 'Mr. Tapas Dey', role: 'Member' },
   ]
 
   const responsibilities = [
@@ -18,108 +21,24 @@ export default function SupervisoryCommitteePage() {
     'Supervise the functioning of different Church wings including the Mahila Sabha, Sunday School, Christian Endeavour Union, and others.',
     'Function as the Disciplinary Committee of the Church — introduced for the first time through the new amendment.',
     'Take all decisions pertaining to maintenance of discipline in the Church covering all members, associate members, Pastors, Evangelists and employees.',
-    'All decisions are final, binding on all stakeholders and supersede any other decision.',
+
   ]
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background:
-            'linear-gradient(135deg, var(--color-primary-dark) 0%, #3a0000 60%, #110000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20rem',
-              height: '30rem',
-              opacity: 0.04,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              zIndex: -1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              viewBox="0 0 24 36"
-              style={{ width: '100%', height: '100%', fill: 'currentColor' }}
-            >
-              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            About
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 3.6rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Supervisory Committee
-          </h1>
-          <p
-            style={{
-              fontSize: '1.1rem',
-              opacity: 0.85,
-              maxWidth: '600px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Established through the constitutional amendment adopted on{' '}
-            <strong style={{ opacity: 1 }}>November 8, 2025</strong>.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="About"
+        title="Supervisory Committee"
+        description="Established through the constitutional amendment adopted on November 8, 2025."
+      />
+
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Constitutional Background */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.aboutCard}>
             <p>
               The <strong style={{ color: 'var(--color-text)' }}>Supervisory Committee</strong> of the Church of Christ (Union Church), Bhubaneswar, was conceived during the amendment of the Church constitution which was adopted by the <strong style={{ color: 'var(--color-text)' }}>General Body of the Church on November 8, 2025</strong>.
             </p>
@@ -137,7 +56,7 @@ export default function SupervisoryCommitteePage() {
                 color: 'var(--color-text)',
               }}
             >
-              All decisions taken by the Supervisory Committee shall be final and supersede any other decision and shall be binding on all stakeholders in the Church. The decisions of the Supervisory Committee cannot be challenged.
+
             </div>
           </div>
 
@@ -153,19 +72,7 @@ export default function SupervisoryCommitteePage() {
           >
             Roles &amp; Responsibilities
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              padding: '2rem 2.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.responsibilitiesCard}>
             {responsibilities.map((r, i) => (
               <div
                 key={i}
@@ -206,29 +113,11 @@ export default function SupervisoryCommitteePage() {
           >
             Committee Members
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '3rem',
-            }}
-          >
+          <div className={styles.committeeCard}>
             {members.map((m, i) => (
               <div
                 key={i}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  padding: '1.15rem 2rem',
-                  borderBottom: i < members.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
-                }}
+                className={`${styles.committeeRow} ${i % 2 !== 0 ? styles.committeeRowAlt : ''}`}
               >
                 <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '1rem' }}>
                   {m.name}
@@ -251,16 +140,7 @@ export default function SupervisoryCommitteePage() {
           </div>
 
           {/* Constitutional Note */}
-          <div
-            style={{
-              background:
-                'linear-gradient(135deg, rgba(128,0,0,0.05) 0%, rgba(128,0,0,0.02) 100%)',
-              border: '1px solid rgba(128,0,0,0.12)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem 2.5rem',
-              textAlign: 'center',
-            }}
-          >
+          <div className={styles.authorityCard}>
             <p
               style={{
                 fontSize: '0.75rem',

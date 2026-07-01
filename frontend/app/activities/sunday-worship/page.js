@@ -4,118 +4,30 @@ export const metadata = {
     'Join us every Sunday for our English and Odia worship services at Union Church, Bhubaneswar, and our satellite worship centres.',
 }
 
+import PageHeader from '@/components/PageHeader'
+import styles from './sunday-worship.module.css'
+
 export default function SundayWorshipPage() {
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20rem',
-              height: '30rem',
-              opacity: 0.04,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              zIndex: -1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              viewBox="0 0 24 36"
-              style={{
-                width: '100%',
-                height: '100%',
-                fill: 'currentColor',
-              }}
-            >
-              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Activities
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Sunday Worship
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Gathering together in the name of Christ — every Sunday, across all our centres.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="Activities"
+        title="Sunday Worship"
+        description="Gathering together in the name of Christ — every Sunday, across all our centres."
+      />
+
 
       {/* ── Content ── */}
       <section className="section">
-        <div
-          className="container"
-          style={{ maxWidth: '860px', margin: '0 auto' }}
-        >
+        <div className={`container ${styles.contentContainer}`}>
           {/* Service Times Card Row */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1.25rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.timesGrid}>
             {[
               { label: 'English Service', time: '10:00 AM', loc: 'Union Church' },
               { label: 'Odia Service', time: '4:30 PM', loc: 'Union Church' },
-              { label: 'Satellite Centres', time: '9:30 AM', loc: 'C.S. Pur · Kalinga Vihar · Sundarpada' },
+              { label: 'Satellite Centres', time: '10:00 AM', loc: 'C.S. Pur · Kalinga Vihar · Sundarpada' },
             ].map((s) => (
-              <div
-                key={s.label}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.12)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '1.5rem 1.25rem',
-                  textAlign: 'center',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
+              <div key={s.label} className={styles.timeCard}>
                 <p
                   style={{
                     fontSize: '0.75rem',
@@ -145,23 +57,9 @@ export default function SundayWorshipPage() {
           </div>
 
           {/* Main text */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-            }}
-          >
+          <div className={styles.infoCard}>
             <p>
-              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>9:30 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
+              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
             </p>
 
             <div
@@ -172,11 +70,11 @@ export default function SundayWorshipPage() {
                 color: 'var(--color-text)',
               }}
             >
-              Lord&rsquo;s Supper is observed in the 1st week here in Union Church. It is observed in the 2nd week in C.S. Pur, 3rd week in Kalinga Vihar Worship centre and 4th week in the Sundarpada Worship centre. Both our Associate Pastors conduct the Holy Communion on an alternate basis every month.
+              Lord&rsquo;s Supper is observed in the 1st week here in Union Church. It is observed in the 2nd week in C.S. Pur, 3rd week in Kalinga Vihar Worship centre and 4th week in the Sundarpada Worship centre. Our Pastors conduct the Holy Communion on an alternate basis every month.
             </div>
 
             <p>
-              Besides Pastors, <strong style={{ color: 'var(--color-text)' }}>Rev. Songram K Singh</strong> , <strong style={{ color: 'var(--color-text)' }}>Rev. Dr. Ayub Chhinchani</strong> and <strong style={{ color: 'var(--color-text)' }}>Rev. Satish Kumar Pani</strong> , preachers from within and outside the city and state are invited to share God&rsquo;s Word on Sundays.
+              Besides Pastors <strong style={{ color: 'var(--color-text)' }}>(Rev. Songram Keshari Singh</strong> , <strong style={{ color: 'var(--color-text)' }}>Rev. Dr. Ayub Chhinchani</strong> and <strong style={{ color: 'var(--color-text)' }}>Rev. Satish Kumar Pani)</strong> , preachers from within and outside the city and state are invited to share God&rsquo;s Word on Sundays.
             </p>
 
             <p>

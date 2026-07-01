@@ -1,94 +1,25 @@
 export const metadata = {
   title: 'Kalinga Vihar Worship Center | Church of Christ Union Church Bhubaneswar',
-  description: 'Odia Worship Service held every Sunday morning at 9:30 AM in Kalinga Vihar, Bhubaneswar.',
+  description: 'Odia Worship Service held every Sunday morning at 10:00 AM in Kalinga Vihar, Bhubaneswar.',
 }
+
+import PageHeader from '@/components/PageHeader'
 
 export default function KalingaViharPage() {
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20rem',
-              height: '30rem',
-              opacity: 0.04,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              zIndex: -1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              viewBox="0 0 24 36"
-              style={{
-                width: '100%',
-                height: '100%',
-                fill: 'currentColor',
-              }}
-            >
-              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Satellite Churches
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Kalinga Vihar Worship Center
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            A growing congregation in Kalinga Vihar, established in July 2015.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="Satellite Churches"
+        title="Kalinga Vihar Worship Center"
+        description="A growing congregation in Kalinga Vihar, established in July 2015."
+      />
+
 
       {/* ── Content ── */}
       <section className="section">
         <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
-          
+
           {/* Quick Schedule Banner */}
           <div
             style={{
@@ -106,7 +37,7 @@ export default function KalingaViharPage() {
           >
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Worship Timing</p>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 9:30 AM</p>
+              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 10:00 AM</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
@@ -133,7 +64,7 @@ export default function KalingaViharPage() {
             }}
           >
             <p>
-              We have an Odia Worship Service held here <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 9:30 AM</strong>. This worship center was started in <strong style={{ color: 'var(--color-text)' }}>HIG-219, K5, Kalinga Vihar</strong> on 12th July, 2015.
+              We have an Odia Worship Service held here <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 10:00 AM</strong>. This worship center was started  <strong style={{ color: 'var(--color-text)' }}></strong> on 12th July, 2015.
             </p>
 
             <p>

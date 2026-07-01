@@ -49,7 +49,7 @@ export default function PastorPortal() {
     if (!loading) {
       if (!user) {
         router.push('/admin/login')
-      } else if (user.designation !== 'Pastor') {
+      } else if (user.designation !== 'Pastor' && user.designation !== 'Developer') {
         router.push('/admin')
       } else {
         fetchBlogs()
@@ -116,6 +116,13 @@ export default function PastorPortal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    const hasText = title.trim() && content.trim();
+    const hasFile = !!image1 || !!image2 || !!pdf;
+    // Wait, the existing file previews should also count as having a file when editing
+    const hasExistingFile = !!image1Preview || !!image2Preview || !!pdfPreview;
+    if (!hasText && !hasFile && !hasExistingFile) return showToast('error', 'Please provide either Title & Content, or an Attachment.')
+    
     setSubmitLoading(true)
     
     try {
@@ -336,14 +343,21 @@ export default function PastorPortal() {
             Welcome back, <strong style={{color: 'var(--color-primary)'}}>{user.full_name}</strong>
           </p>
         </div>
-        <button 
-          onClick={() => setShowLogoutConfirm(true)} 
-          style={{ padding: '0.7rem 1.8rem', border: 'none', color: '#fff', backgroundColor: 'var(--color-primary)', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(139,0,0,0.2)' }}
-          onMouseOver={(e) => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 6px 20px rgba(139,0,0,0.3)'; }}
-          onMouseOut={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 15px rgba(139,0,0,0.2)'; }}
-        >
-          Sign Out
-        </button>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          {user.designation === 'Developer' && (
+            <button onClick={() => router.push('/admin')} style={{ padding: '0.7rem 1.8rem', border: '1px solid #444', color: '#444', backgroundColor: 'transparent', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', transition: 'all 0.2s ease' }} onMouseOver={(e) => { e.target.style.backgroundColor = '#f5f5f5'; }} onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; }}>
+              ← Back to Developer Portal
+            </button>
+          )}
+          <button 
+            onClick={() => setShowLogoutConfirm(true)} 
+            style={{ padding: '0.7rem 1.8rem', border: 'none', color: '#fff', backgroundColor: 'var(--color-primary)', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(139,0,0,0.2)' }}
+            onMouseOver={(e) => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 6px 20px rgba(139,0,0,0.3)'; }}
+            onMouseOut={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 15px rgba(139,0,0,0.2)'; }}
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
 
       {/* Main Card (Publish/Edit) */}
@@ -371,10 +385,9 @@ export default function PastorPortal() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative', zIndex: 1 }}>
           
           <div>
-            <label style={labelStyle}>Blog Topic / Title *</label>
+            <label style={labelStyle}>Blog Topic / Title</label>
             <input 
               type="text" 
-              required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               style={inputStyle} 
@@ -436,9 +449,8 @@ export default function PastorPortal() {
           </div>
 
           <div>
-            <label style={labelStyle}>Blog Content *</label>
+            <label style={labelStyle}>Blog Content</label>
             <textarea 
-              required
               value={content}
               onChange={(e) => setContent(e.target.value)}
               style={{ ...inputStyle, minHeight: '350px', resize: 'vertical', lineHeight: '1.7', fontSize: '1.05rem' }} 
@@ -600,21 +612,25 @@ export default function PastorPortal() {
 
       {/* Fullscreen Preview Overlay */}
       {fullscreenPreview && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', backdropFilter: 'blur(8px)' }}>
-          <button 
-            onClick={() => setFullscreenPreview(null)} 
-            style={{ position: 'absolute', top: '20px', right: '30px', background: 'transparent', border: 'none', color: '#fff', fontSize: '3rem', cursor: 'pointer', zIndex: 1101, opacity: 0.7, transition: 'opacity 0.2s' }}
-            onMouseOver={(e) => e.target.style.opacity = '1'}
-            onMouseOut={(e) => e.target.style.opacity = '0.7'}
-          >
-            &times;
-          </button>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 1100, display: 'flex', flexDirection: 'column', backdropFilter: 'blur(8px)', touchAction: 'none' }}>
+          <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '1rem', zIndex: 1102 }}>
+            <button 
+              onClick={() => setFullscreenPreview(null)} 
+              style={{ background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', fontSize: '2.5rem', cursor: 'pointer', transition: 'background 0.2s', padding: '0.2rem 1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onMouseOver={(e) => e.target.style.background = 'rgba(220,38,38,0.8)'}
+              onMouseOut={(e) => e.target.style.background = 'rgba(0,0,0,0.5)'}
+            >
+              &times;
+            </button>
+          </div>
           
-          {fullscreenPreview.type === 'image' ? (
-              <img src={fullscreenPreview.url} alt="Fullscreen Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
-          ) : (
-              <iframe src={fullscreenPreview.url} style={{ width: '100%', height: '100%', border: 'none', borderRadius: '12px', backgroundColor: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
-          )}
+          <div style={{ flex: 1, width: '100%', height: '100%', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {fullscreenPreview.type === 'image' ? (
+                <img src={fullscreenPreview.url} alt="Fullscreen Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
+            ) : (
+                <iframe src={fullscreenPreview.url} style={{ width: '90%', height: '90%', border: 'none', borderRadius: '12px', backgroundColor: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
+            )}
+          </div>
         </div>
       )}
 

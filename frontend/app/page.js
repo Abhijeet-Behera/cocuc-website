@@ -1,4 +1,3 @@
-import LatestBlogs from '@/components/LatestBlogs'
 import BlogInspiration from '@/components/BlogInspiration'
 import Testimonies from '@/components/Testimonies'
 import Reveal from '@/components/Reveal'
@@ -10,63 +9,93 @@ import ChurchesMapSection from '@/components/ChurchesMapSection'
 import PrayerZonesMapSection from '@/components/PrayerZonesMapSection'
 import ChatBotWidget from '@/components/ChatBotWidget'
 import SecretaryAnnouncements from '@/components/SecretaryAnnouncements'
+import StemScrollNav from '@/components/StemScrollNav'
 import DonationSection from '@/components/DonationSection'
 import styles from './page.module.css'
 
 export default function Home() {
   return (
     <div>
-      <HeroSection />
+      <div id="hero">
+        <HeroSection />
+      </div>
 
-      {/* Secretary Announcements Proxy */}
-      <SecretaryAnnouncements />
+      <div style={{ position: 'relative' }}>
+        <StemScrollNav />
 
-      {/* Activities Grid */}
-      <section className={`section ${styles.activitiesSection}`}>
-        <div className="container">
-          <ActivitiesGrid />
+        {/* Secretary Announcements Proxy */}
+        <div id="church-updates">
+          <SecretaryAnnouncements />
         </div>
-      </section>
 
-      {/* Prayer Zones Map */}
-      <PrayerZonesMapSection />
+        {/* Activities Grid */}
+        <section
+          id="activities"
+          className={`section ${styles.activitiesSection}`}
+        >
+          <div className="container">
+            <ActivitiesGrid />
+          </div>
+        </section>
 
-      {/* Our Satellite Churches Map */}
-      <ChurchesMapSection />
-
-      {/* Latest Videos — zig-zag three-playlist section */}
-      <section id="sermons" className={`section ${styles.sermonsSection}`}>
-        <div className="container">
-          <LatestVideos />
+        {/* Prayer Zones Map */}
+        <div id="prayer-zones">
+          <PrayerZonesMapSection />
         </div>
-      </section>
 
-      {/* Upcoming Events — YouTube premieres / scheduled broadcasts */}
-      <section className="section">
-        <div className="container">
-          <UpcomingEvents />
+        {/* Our Satellite Churches Map */}
+        <div id="churches">
+          <ChurchesMapSection />
         </div>
-      </section>
 
+        {/* Latest Videos — zig-zag three-playlist section */}
+        <section
+          id="sermons"
+          className={`section ${styles.sermonsSection}`}
+        >
+          <div className="container">
+            <LatestVideos />
+          </div>
+        </section>
 
+        {/* Upcoming Events — YouTube premieres / scheduled broadcasts */}
+        <section id="upcoming-events" className="section">
+          <div className="container">
+            <UpcomingEvents />
+          </div>
+        </section>
 
-      {/* Blog & Inspiration */}
-      <section className="section container" style={{ backgroundColor: '#fdfbfb', borderRadius: '24px', padding: '4rem 2rem', marginTop: '2rem' }}>
-        <Reveal delay={0.25}>
-          <h2 className="section-title-elegant">
-            <span className="title-normal">Blog & </span>
-            <em className="title-italic">Inspiration</em>
-          </h2>
-          <BlogInspiration />
-        </Reveal>
-      </section>
+        {/* Blog & Inspiration */}
+        <section
+          id="blog"
+          className="section container"
+          style={{
+            background: 'var(--color-surface)',
+            borderRadius: '28px',
+            padding: '4.5rem 2rem',
+            marginTop: '2rem',
+            border: '1px solid rgba(128,0,0,0.05)',
+          }}
+        >
+          <Reveal delay={0.25}>
+            <h2 className="section-title-elegant">
+              <span className="title-normal">Blog & </span>
+              <em className="title-italic">Inspiration</em>
+            </h2>
 
-      {/* Testimonies */}
-      <Testimonies />
-      
-      {/* Tithe, Offering & Donation */}
-      <DonationSection />
-      
+            <BlogInspiration />
+          </Reveal>
+        </section>
+
+        {/* Testimonies */}
+        <div id="testimonies">
+          <Testimonies />
+        </div>
+
+        {/* Tithe, Offering & Donation */}
+        <DonationSection />
+      </div>
+
       <ChatBotWidget />
     </div>
   )

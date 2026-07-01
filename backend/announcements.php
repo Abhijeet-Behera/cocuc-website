@@ -26,9 +26,9 @@ if ($method === 'GET') {
     }
 
     $payload = verifyJWT($token, JWT_SECRET);
-    if (!$payload || $payload['designation'] !== 'Secretary') {
+    if (!$payload || ($payload['designation'] !== 'Secretary' && $payload['designation'] !== 'Developer')) {
         http_response_code(403);
-        echo json_encode(["error" => "Forbidden: Only Secretary can post announcements"]);
+        echo json_encode(["error" => "Forbidden: Only Secretary or Developers can post announcements"]);
         exit;
     }
 
@@ -39,7 +39,7 @@ if ($method === 'GET') {
 
     if (isset($_FILES['media'])) {
         $target_dir = "../uploads/announcements/";
-        if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+        if (!is_dir($target_dir)) @mkdir($target_dir, 0777, true);
         
         $fileName = time() . '_' . basename($_FILES["media"]["name"]);
         $target_file = $target_dir . $fileName;
@@ -63,9 +63,19 @@ if ($method === 'GET') {
         $media_path = $data['media_path'] ?? null;
     }
 
-    $stmt = $pdo->prepare("INSERT INTO announcements (title, content, media_type, media_path, author_id) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$title, $content, $media_type, $media_path, $payload['id']]);
-    
-    echo json_encode(["message" => "Announcement created successfully", "id" => $pdo->lastInsertId()]);
+    try {
+        $stmt = $pdo->prepare("INSERT INTO announcements (title, content, media_type, media_path, author_id) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$title, $content, $media_type, $media_path, $payload['id']]);
+        
+        $new_id = $pdo->lastInsertId();
+        if ($payload['designation'] === 'Developer') {
+            logDeveloperAction($pdo, $payload['email'], 'INSERT', 'announcements', "Created new announcement ID {$new_id}");
+        }
+        
+        echo json_encode(["message" => "Announcement created successfully", "id" => $new_id]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(["error" => "Database error: " . $e->getMessage()]);
+    }
 }
 ?>

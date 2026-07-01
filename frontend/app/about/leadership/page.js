@@ -1,161 +1,369 @@
+"use client";
+
+import { useState, useMemo } from 'react';
+import { Search } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
+
+const DEACONS_DATA = [
+  { id: 101, name: "Mr. Asish Baran Parida", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/asish_baran_parida.jpg" },
+  { id: 102, name: "Mr. Biren Kumar Pradhan", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/biren_kumar_pradhan.png" },
+  { id: 103, name: "Mr. Pradip Kumar Roul", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/pradip_kumar_roul.png" },
+  { id: 104, name: "Mr. Sarat Kumar Singh", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/sarat_kumar_singh.png" },
+  { id: 105, name: "Mr. Sishir Baran Puri", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/sishir_baran_puri.jpg" },
+  { id: 1, name: "Mr. Michael Rajesh Behera", role: "Secretary", category: "Secretary", gender: "male", image: "/images/leadership/michael_rajesh_behera.png" },
+  { id: 2, name: "Mr. Smruti Ranjan Nayak", role: "Joint secretary", category: "Office Bearers", gender: "male", image: "/images/leadership/smruti_ranjan_nayak.png" },
+  { id: 3, name: "Mr. Suranjan Thomas", role: "Treasurer", category: "Office Bearers", gender: "male", image: "/images/leadership/suranjan_thomas.png" },
+  { id: 4, name: "Mr. Adit Jena", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/adit_jena.png" },
+  { id: 5, name: "Mr. Amrut Kumar Jena", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/amrut_kumar_jena.jpg" },
+  { id: 6, name: "Mr. Benjamin Peter", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/benjamin_peter.jpg" },
+  { id: 7, name: "Mr. Bipra Charan Digal", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/bipra_charan_digal.jpg" },
+  { id: 8, name: "Mr. Gokula Chandra Pradhan", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/gokula_chandra_pradhan.png" },
+  { id: 9, name: "Mr. Manas Ranjan Behera", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/manas_ranjan_behera.png" },
+  { id: 10, name: "Mr. Prafulla Kumar Dash", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/prafulla_kumar_dash.jpg" },
+  { id: 11, name: "Mr. Pravat Kumar Chand", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/pravat_chand.png" },
+  { id: 12, name: "Mr. Rajsekhar Sahu", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/rajsekhar_sahu.png" },
+  { id: 13, name: "Mr. Ranjan Gan", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/ranjan_gan.png" },
+  { id: 14, name: "Mr. Santosh Kumar Nayak", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/santosh_kumar_nayak.png" },
+  { id: 15, name: "Mr. Satya Ranjan Singh", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/satya_ranjan_singh.jpg" },
+  { id: 16, name: "Mr. Sudhir Kumar Swain", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/sudhir_kumar_swain.png" },
+  { id: 17, name: "Ms. Swarnamayee Patra", role: "Deaconess", category: "Deaconess", gender: "female", image: "/images/leadership/swarnamayee_patra.jpg" },
+  { id: 18, name: "Ms. Madhuleeta Samantaray", role: "Deaconess", category: "Deaconess", gender: "female", image: "/images/leadership/madhuleeta_samantaray.jpg" }
+];
+
+const CATEGORIES = ["All", "Secretary", "Office Bearers", "Elders", "Deacons & Deaconesses"];
+
 export default function LeadershipPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const sectionsToRender = useMemo(() => {
+    // First, filter by search query
+    const searched = DEACONS_DATA.filter((deacon) => {
+      return (
+        deacon.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        deacon.role.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+
+    const configs = [
+      { key: "Secretary", title: "Secretary", filterKey: "Secretary", categories: ["Secretary"] },
+      { key: "Office Bearers", title: "Office Bearers", filterKey: "Office Bearers", categories: ["Office Bearers"] },
+      { key: "Elder", title: "Elders", filterKey: "Elders", categories: ["Elder"] },
+      { key: "Deacons & Deaconesses", title: "Deacons & Deaconesses", filterKey: "Deacons & Deaconesses", categories: ["Deacon", "Deaconess"] }
+    ];
+
+    return configs
+      .map((config) => {
+        const members = searched.filter((d) => config.categories.includes(d.category));
+        return { ...config, members };
+      })
+      .filter((section) => {
+        if (activeCategory !== "All" && activeCategory !== section.filterKey) {
+          return false;
+        }
+        return section.members.length > 0;
+      });
+  }, [searchQuery, activeCategory]);
+
   return (
     <div>
-      <section style={{ backgroundColor: 'var(--color-primary-dark)', color: 'var(--color-white)', padding: '150px 0 100px 0', textAlign: 'center' }}>
-        <div className="container">
-          <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>Leadership Team</h1>
-          <p style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
-            Meet the dedicated individuals serving our congregation.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="About"
+        title="Leadership Team"
+        description="Meet the dedicated individuals serving our congregation."
+      />
 
-      <section className="section container">
-        <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+      {/* Main Content Section */}
+      <section className="section" style={{ backgroundColor: 'var(--color-surface)' }}>
+        <div className="container" style={{ maxWidth: '1200px' }}>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
-            
-            {/* Pastoral Team */}
-            <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                Pastoral Team
-              </h2>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
-                <li><strong>Rev. Dr. Ayub Chhinchani</strong>, Pastor <em>(9437418423)</em></li>
-                <li><strong>Rev. Songram Keshari Singh</strong>, Pastor <em>(9437284415)</em></li>
-                <li><strong>Rev. Satish Kumar Pani</strong>, Pastor <em>(9438518776)</em></li>
-              </ul>
+          {/* Pastoral Team */}
+          <div style={{ marginBottom: '6rem' }}>
+            <h2 className="section-title-elegant" style={{ marginBottom: '3rem' }}>
+              <span className="title-normal">Pastoral </span>
+              <em className="title-italic">Team</em>
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+              {[
+                { name: "Rev. Dr. Ayub Chhinchani", role: "Pastor", phone: "9437418423", image: "/images/pastors-note/pastors-note-01.jpg" },
+                { name: "Rev. Songram Keshari Singh", role: "Pastor", phone: "9437284415", image: "/images/pastors-note/pastors-note-02.jpg" },
+                { name: "Rev. Satish Kumar Pani", role: "Pastor", phone: "9438518776", image: "/images/pastors-note/pastors-note-03.jpg" }
+              ].map((pastor, index) => (
+                <div key={index} className="card" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ height: '260px', overflow: 'hidden', position: 'relative', backgroundColor: '#e2e8f0' }}>
+                    <img 
+                      src={pastor.image} 
+                      alt={pastor.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+                    />
+                    <div style={{ position: 'absolute', top: '1rem', right: '1rem', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: '0.35rem 0.85rem', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      {pastor.role}
+                    </div>
+                  </div>
+                  <div style={{ padding: '1.75rem', textAlign: 'center' }}>
+                    <h3 style={{ fontSize: '1.3rem', color: 'var(--color-text)', marginBottom: '0.5rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>{pastor.name}</h3>
+                    <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                      <span>📞</span> <a href={`tel:+91${pastor.phone}`} style={{ color: 'inherit', textDecoration: 'none' }}>{pastor.phone}</a>
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-
-            {/* Church Board */}
-            <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                Church Board (2026-29)
-              </h2>
-              <p style={{ fontStyle: 'italic', color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
-                The selection was held on 21 & 23rd January, 2026, by the five-member Supervisory Committee of the Church.
-              </p>
-              
-              <h3 style={{ fontSize: '1.4rem', color: 'var(--color-text)', marginBottom: '1rem' }}>DEACONS & DEACONESSES</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', fontSize: '1.05rem' }}>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 1.8 }}>
-                  <li>1. Mr. Michael Rajesh Behera <strong>(Secretary)</strong></li>
-                  <li>2. Mr. Smruti Ranjan Nayak <strong>(Joint secretary)</strong></li>
-                  <li>3. Mr. Suranjan Thomas <strong>(Treasurer)</strong></li>
-                  <li>4. Mr. Adit Jena</li>
-                  <li>5. Mr. Amrut Kumar Jena</li>
-                  <li>6. Mr. Benjamin Peter</li>
-                  <li>7. Mr. Bipra Charan Digal</li>
-                  <li>8. Mr. Gokula Chandra Pradhan</li>
-                  <li>9. Mr. Manas Ranjan Behera</li>
-                </ul>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 1.8 }}>
-                  <li>10. Mr. Prafulla Kumar Dash</li>
-                  <li>11. Mr. Pravat Kumar Chand</li>
-                  <li>12. Mr. Rajsekhar Sahu</li>
-                  <li>13. Mr. Ranjan Gan</li>
-                  <li>14. Mr. Santosh Kumar Nayak</li>
-                  <li>15. Mr. Satya Ranjan Singh</li>
-                  <li>16. Mr. Sudhir Kumar Swain</li>
-                  <li>17. Ms. Swarnamayee Patra <strong>(Deaconess)</strong></li>
-                  <li>18. Ms. Madhuleeta Samantaray <strong>(Deaconess)</strong></li>
-                </ul>
-              </div>
-
-              <h3 style={{ fontSize: '1.2rem', color: 'var(--color-text)', marginTop: '2rem', marginBottom: '0.5rem' }}>Stand-by</h3>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.05rem', lineHeight: 1.8 }}>
-                <li>Mr. Samir Kumar Patro</li>
-                <li>Prof. Anup Kumar Samantaray</li>
-                <li>Ms. Madhusmita Rout <strong>(Deaconess)</strong></li>
-              </ul>
-            </div>
-
-            {/* Sunday School & CE Union */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-              <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                  Sunday School
-                </h2>
-                <p style={{ fontSize: '1.1rem' }}><strong>Superintendent:</strong> Mr. Asim Das</p>
-              </div>
-
-              <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                  Mahila Samiti (Maa Sabha)
-                </h2>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
-                  <li><strong>President:</strong> Mrs. Manoharini Muduli</li>
-                  <li><strong>Secretary:</strong> Mrs. Tarangini Pradhan</li>
-                  <li><strong>Asst. Secretary:</strong> Mrs. Itishree Das</li>
-                  <li><strong>Treasurer:</strong> Mrs. Elizabeth Moharana</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* CE Union */}
-            <div>
-              <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                Christian Endeavour Union (CE)
-              </h2>
-              <p style={{ fontStyle: 'italic', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
-                Newly elected CE board members for the year 2026 to 2028:
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', fontSize: '1.05rem' }}>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 1.8 }}>
-                  <li><strong>President:</strong> Dr Purnananda Pradhan</li>
-                  <li><strong>Vice President:</strong> Santanu Kumar Rout</li>
-                  <li><strong>Secretary:</strong> Rev Amos Pradhan</li>
-                  <li><strong>Asst Secy:</strong> Samuel K Pradhan</li>
-                  <li><strong>Treasurer:</strong> Benjamin Chouhan</li>
-                  <li><strong>Lookout Com Secy:</strong> Smrutirekha Pradhan</li>
-                  <li><strong>Lookout Asst Secy:</strong> Kalpita Pradhan</li>
-                  <li><strong>Social Com Secy:</strong> Kabita Das</li>
-                  <li><strong>Social Com Secy:</strong> Sudipta Pradhan</li>
-                  <li><strong>Boithak Secy:</strong> John Augustin Nayak</li>
-                </ul>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 1.8 }}>
-                  <li><strong>Programme Com Secy:</strong> Sujoy kumar</li>
-                  <li><strong>Auditor:</strong> Ratan Dash</li>
-                  <li><strong>Adviser:</strong> Rev Songram K. Singh</li>
-                  <li><strong>Adviser:</strong> Rev. Dr. Ayub Chhinchani</li>
-                  <li><strong>Adviser:</strong> Rev. Satish Kumar Pani</li>
-                  <li><strong>Adviser:</strong> Joachim Manas Ranjan</li>
-                  <li><strong>Adviser:</strong> Asit Kumar Mohanty</li>
-                  <li><strong>Adviser:</strong> Asish Das</li>
-                  <li><strong>Adviser:</strong> Ranjan Kumar Nayak</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Other Staff */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-              <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                  Evangelists
-                </h2>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
-                  <li>Evg. Pratap Kumar Sahoo</li>
-                  <li>Evg. Ranjit Singh</li>
-                  <li>Evg. Gobinda Sahoo</li>
-                  <li>Evg. Sujit Bishoi</li>
-                  <li>Evg. Christopher Surya</li>
-                </ul>
-              </div>
-              
-              <div>
-                <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', borderBottom: '2px solid var(--color-primary-light)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                  Support Staff
-                </h2>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', lineHeight: 1.8 }}>
-                  <li><strong>Caretaker:</strong> Mr. Sobhajan Pradhan</li>
-                  <li><strong>Assistant Caretaker:</strong> Mr. Krushna Chandra Digal</li>
-                </ul>
-              </div>
-            </div>
-
           </div>
+
+          {/* Church Board (Deacons) */}
+          <div style={{ marginBottom: '6rem' }}>
+            <div className="deacon-badge-container">
+              <span className="deacon-badge">Church Board (2026-29)</span>
+            </div>
+
+            <h2 className="section-title-elegant" style={{ marginBottom: '1rem' }}>
+              <span className="title-normal">Meet the </span>
+              <em className="title-italic">leadership team</em>
+            </h2>
+            
+            <p className="deacon-section-desc">
+              The selection was held on 21st & 23rd January, 2026, by the five-member Supervisory Committee of the Church.
+            </p>
+
+            {/* Interactive Filters Panel */}
+            <div className="deacon-search-wrapper">
+              <input 
+                type="text" 
+                placeholder="Search deacons by name or designation..." 
+                className="deacon-search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search className="deacon-search-icon" size={18} />
+            </div>
+
+            <div className="deacon-filters">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  className={`deacon-filter-btn ${activeCategory === cat ? 'active' : ''}`}
+                  onClick={() => setActiveCategory(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Deacon Cards Grid grouped by section */}
+            <div>
+              {sectionsToRender.length > 0 ? (
+                sectionsToRender.map((section) => (
+                  <div key={section.key} style={{ marginBottom: '3.5rem' }}>
+                    <h3 style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '1.5rem',
+                      fontWeight: 700,
+                      color: 'var(--color-primary)',
+                      marginBottom: '1.5rem',
+                      marginTop: '3rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      borderBottom: '1px solid rgba(0,0,0,0.06)',
+                      paddingBottom: '0.5rem'
+                    }}>
+                      <span>{section.title}</span>
+                      <span style={{
+                        fontSize: '0.85rem',
+                        background: 'rgba(128, 0, 0, 0.08)',
+                        color: 'var(--color-primary)',
+                        padding: '2px 10px',
+                        borderRadius: '20px',
+                        fontWeight: 600
+                      }}>
+                        {section.members.length}
+                      </span>
+                    </h3>
+
+                    <div className="deacon-grid">
+                      {section.members.map((deacon) => {
+                        const imageSrc = deacon.image || (deacon.gender === 'female' 
+                          ? '/images/deacon-female-placeholder.png' 
+                          : '/images/deacon-male-placeholder.png');
+                        
+                        return (
+                          <div key={deacon.id} className="deacon-card">
+                            {deacon.category === 'Elder' && (
+                              <div style={{
+                                position: 'absolute',
+                                top: '1rem',
+                                right: '1rem',
+                                backgroundColor: 'var(--color-primary)',
+                                color: 'var(--color-white)',
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '50px',
+                                fontSize: '0.72rem',
+                                fontWeight: 600,
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px',
+                                zIndex: 2,
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
+                              }}>
+                                Elder
+                              </div>
+                            )}
+
+                            <div className="deacon-img-container">
+                              <img 
+                                src={imageSrc} 
+                                alt={deacon.name} 
+                                className="deacon-img"
+                              />
+                            </div>
+                            
+                            <div className="deacon-info-overlay">
+                              <span className="deacon-name">{deacon.name}</span>
+                              <span className="deacon-role">{deacon.role}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="deacon-no-results">
+                  <h3>No members found</h3>
+                  <p style={{ marginTop: '0.5rem', opacity: 0.8 }}>Try adjusting your search query or switching filters.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Stand-by Members */}
+            <div style={{ marginTop: '4.5rem', borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '3rem', textAlign: 'center' }}>
+              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 700, color: 'var(--color-primary)', marginBottom: '1.5rem' }}>
+                Stand-by Members
+              </h4>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                {[
+                  { name: "Mr. Samir Kumar Patro" },
+                  { name: "Prof. Anup Kumar Samantaray" },
+                  { name: "Ms. Madhusmita Rout", }
+                ].map((member, index) => (
+                  <div key={index} style={{ background: 'var(--color-white)', padding: '0.85rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)' }}></div>
+                    <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{member.name}</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', background: 'rgba(0,0,0,0.04)', padding: '2px 8px', borderRadius: '20px', fontWeight: 500 }}>{member.role}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Evangelists Section */}
+          <div style={{ marginBottom: '3.5rem', marginTop: '5rem' }}>
+            <h3 style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              color: 'var(--color-primary)',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              borderBottom: '1px solid rgba(0,0,0,0.06)',
+              paddingBottom: '0.5rem'
+            }}>
+              <span>Evangelists</span>
+              <span style={{
+                fontSize: '0.85rem',
+                background: 'rgba(128, 0, 0, 0.08)',
+                color: 'var(--color-primary)',
+                padding: '2px 10px',
+                borderRadius: '20px',
+                fontWeight: 600
+              }}>
+                5
+              </span>
+            </h3>
+
+            <div className="deacon-grid">
+              {[
+                { name: "Evg. Pratap Kumar Sahoo", role: "Evangelist" },
+                { name: "Evg. Ranjit Singh", role: "Evangelist" },
+                { name: "Evg. Gobinda Sahoo", role: "Evangelist" },
+                { name: "Evg. Sujit Bishoi", role: "Evangelist" },
+                { name: "Evg. Christopher Surya", role: "Evangelist" }
+              ].map((evg, idx) => {
+                const imageSrc = '/images/deacon-male-placeholder.png';
+                return (
+                  <div key={idx} className="deacon-card">
+                    <div className="deacon-img-container">
+                      <img 
+                        src={imageSrc} 
+                        alt={evg.name} 
+                        className="deacon-img"
+                      />
+                    </div>
+                    <div className="deacon-info-overlay">
+                      <span className="deacon-name">{evg.name}</span>
+                      <span className="deacon-role">{evg.role}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Support Staff Section */}
+          <div style={{ marginBottom: '3.5rem' }}>
+            <h3 style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              color: 'var(--color-primary)',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              borderBottom: '1px solid rgba(0,0,0,0.06)',
+              paddingBottom: '0.5rem'
+            }}>
+              <span>Support Staff</span>
+              <span style={{
+                fontSize: '0.85rem',
+                background: 'rgba(128, 0, 0, 0.08)',
+                color: 'var(--color-primary)',
+                padding: '2px 10px',
+                borderRadius: '20px',
+                fontWeight: 600
+              }}>
+                2
+              </span>
+            </h3>
+
+            <div className="deacon-grid">
+              {[
+                { name: "Mr. Sobhajan Pradhan", role: "Caretaker" },
+                { name: "Mr. Krushna Chandra Digal", role: "Assistant Caretaker" }
+              ].map((staff, idx) => {
+                const imageSrc = '/images/deacon-male-placeholder.png';
+                return (
+                  <div key={idx} className="deacon-card">
+                    <div className="deacon-img-container">
+                      <img 
+                        src={imageSrc} 
+                        alt={staff.name} 
+                        className="deacon-img"
+                      />
+                    </div>
+                    <div className="deacon-info-overlay">
+                      <span className="deacon-name">{staff.name}</span>
+                      <span className="deacon-role">{staff.role}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
         </div>
       </section>
     </div>
-  )
+  );
 }

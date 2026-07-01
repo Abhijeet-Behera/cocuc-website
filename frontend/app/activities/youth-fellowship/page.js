@@ -1,3 +1,6 @@
+import PageHeader from '@/components/PageHeader'
+import styles from './youth-fellowship.module.css'
+
 export const metadata = {
   title: 'Youth Fellowship | Church of Christ Union Church Bhubaneswar',
   description:
@@ -31,21 +34,21 @@ export default function YouthFellowshipPage() {
 
   const annualActivities = [
     {
-      icon: '⛺',
+      icon: '',
       title: 'Church Youth Retreat',
       when: 'Every year — 15th August',
       desc: 'The Youth Fellowship conducts a special Youth Retreat for all young people of the Church every year on 15th August, and all youth from the city are invited.',
     },
     {
-      icon: '🏕️',
+      icon: '',
       title: 'Youth Summer Camp',
       when: 'Annually in June (School & College Vacations)',
       desc: 'One of the major annual activities — a three-day residential outing camp aimed at spiritual formation. In 2024 & 2025, held at St. Vincent Retreat Center, Gopalpur. In 2026, held at Ishopanti Ashram, Puri (15–17 June), featuring live worship, interactive sessions, indoor & outdoor fun activities, group discussions, and united prayer.',
     },
     {
-      icon: '🎄',
+      icon: '',
       title: 'Youth Christmas Celebration',
-      when: 'First Saturday of December',
+      when: 'First Saturday of December, Every Year',
       desc: 'Held every year, the celebration includes Christmas carols worship/Kirtan, Bible games, fellowship, gift exchange, and special performances by the youth.',
     },
   ]
@@ -66,123 +69,43 @@ export default function YouthFellowshipPage() {
   ]
 
   const committee = [
-    { name: 'Mr. Smruti Ranjan Naik',  role: 'Joint Secretary & Convenor'       },
-    { name: 'Mr. Michael Rajesh Behera',role: 'Secretary'                        },
-    { name: 'Mr. Manna Whitson',        role: 'Co-Convenor'                      },
-    { name: 'Mr. Paresh Das',           role: 'Committee Member'                 },
-    { name: 'Rev. Sangram Singh',       role: 'Committee Member & Pastor'        },
-    { name: 'Rev. Satish Pani',         role: 'Committee Member & Pastor'        },
-    { name: 'Rev. Satya Ranjan Singh',  role: 'Committee Member & Pastor'        },
-    { name: 'Mr. Prafulla Dash',        role: 'Committee Member'                 },
-    { name: 'Mrs. Aniva Chand',         role: 'Committee Member'                 },
+    { name: 'Mr. Smruti Ranjan Nayak', role: 'Joint Secretary & Convenor' },
+    { name: 'Mr. JM Manna Whitson', role: 'Co-Convenor' },
+    { name: 'Er. Michael Rajesh Behera', role: 'Secretary' },
+    { name: 'Mr. Paresh Kumar Das', role: 'Committee Member' },
+    { name: 'Rev. Songram Keshari Singh', role: 'Committee Member & Pastor' },
+    { name: 'Rev. Satish Kumar Pani', role: 'Committee Member & Pastor' },
+    { name: 'Rev. Satya Ranjan Singh', role: 'Committee Member & Pastor' },
+    { name: 'Mr. Prafulla Kumar Dash', role: 'Committee Member' },
+    { name: 'Mrs. Aniva Chand', role: 'Committee Member' },
   ]
 
   const leaderRoles = ['Joint Secretary & Convenor', 'Secretary', 'Co-Convenor']
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background:
-            'linear-gradient(135deg, #1a0030 0%, #3a0050 50%, #0d001a 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20rem',
-              height: '30rem',
-              opacity: 0.04,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              zIndex: -1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg viewBox="0 0 24 36" style={{ width: '100%', height: '100%', fill: 'currentColor' }}>
-              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Activities
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Youth Fellowship
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '600px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Nurturing young believers in spiritual growth, leadership, and fellowship in Christ.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="Activities"
+        title="Youth Fellowship"
+        description="Nurturing young believers in spiritual growth, leadership, and fellowship in Christ."
+      />
 
       {/* ── Content ── */}
       <section className="section">
-        <div className="container" style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className={`container ${styles.contentContainer}`}>
 
           {/* Schedule Banner */}
-          <div
-            style={{
-              background:
-                'linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
-              color: '#fff',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1.5rem 2rem',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: '1.5rem',
-              marginBottom: '3rem',
-              boxShadow: '0 8px 24px rgba(128,0,0,0.2)',
-            }}
-          >
+          <div className={styles.timingBanner}>
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Meeting Day</p>
               <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Saturday</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.timingDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Time</p>
               <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>5:30 PM – 7:00 PM</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
+            <div className={styles.timingDivider} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Venue</p>
               <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>First Floor, Amenity Hall</p>
@@ -190,22 +113,7 @@ export default function YouthFellowshipPage() {
           </div>
 
           {/* About */}
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: 'clamp(2rem, 5vw, 3.5rem)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '1.05rem',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.85,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.aboutCard}>
             <p>
               The <strong style={{ color: 'var(--color-text)' }}>Youth Fellowship</strong> of Church of Christ (Union Church), Bhubaneswar is a vibrant ministry dedicated to nurturing young believers in their spiritual growth, leadership, and fellowship with one another in Christ.
             </p>
@@ -236,28 +144,9 @@ export default function YouthFellowshipPage() {
           >
             Each Gathering Consists Of
           </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '0.85rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.gatheringGrid}>
             {gatheringElements.map((g, i) => (
-              <div
-                key={i}
-                style={{
-                  background: 'var(--color-white)',
-                  border: '1px solid rgba(128,0,0,0.1)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '1.1rem 1.4rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
+              <div key={i} className={styles.gatheringCard}>
                 <span
                   style={{
                     display: 'inline-flex',
@@ -297,28 +186,9 @@ export default function YouthFellowshipPage() {
           <p style={{ fontSize: '0.96rem', color: 'var(--color-text-muted)', marginBottom: '1.25rem', lineHeight: 1.7 }}>
             Relevant and practical topics to equip young believers in their spiritual journey:
           </p>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.65rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.topicsContainer}>
             {topics.map((t) => (
-              <span
-                key={t}
-                style={{
-                  display: 'inline-block',
-                  padding: '0.45rem 1.1rem',
-                  borderRadius: '50px',
-                  background: 'rgba(128,0,0,0.06)',
-                  color: 'var(--color-primary-dark)',
-                  fontWeight: 600,
-                  fontSize: '0.88rem',
-                  border: '1px solid rgba(128,0,0,0.13)',
-                }}
-              >
+              <span key={t} className={styles.topicTag}>
                 {t}
               </span>
             ))}
@@ -336,28 +206,9 @@ export default function YouthFellowshipPage() {
           >
             Annual Activities
           </h2>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.25rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.annualActivitiesContainer}>
             {annualActivities.map((a, i) => (
-              <div
-                key={i}
-                style={{
-                  background: 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
-                  boxShadow: 'var(--shadow-sm)',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  padding: '1.75rem 2rem',
-                  display: 'flex',
-                  gap: '1.25rem',
-                  alignItems: 'flex-start',
-                }}
-              >
+              <div key={i} className={styles.annualActivityCard}>
                 <span style={{ fontSize: '2rem', lineHeight: 1, flexShrink: 0 }}>{a.icon}</span>
                 <div>
                   <p
@@ -407,25 +258,9 @@ export default function YouthFellowshipPage() {
           >
             What Scripture Says About Youth
           </h2>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.25rem',
-              marginBottom: '3.5rem',
-            }}
-          >
+          <div className={styles.scripturesContainer}>
             {scriptures.map((v, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
-                  boxShadow: 'var(--shadow-sm)',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  padding: '2rem 2.5rem',
-                }}
-              >
+              <div key={idx} className={styles.scriptureCard}>
                 <p
                   style={{
                     fontStyle: 'italic',
@@ -464,28 +299,13 @@ export default function YouthFellowshipPage() {
           >
             Youth Committee
           </h2>
-          <div
-            style={{
-              background: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginBottom: '1rem',
-            }}
-          >
+          <div className={styles.committeeContainer}>
             {committee.map((m, i) => (
               <div
                 key={i}
+                className={`${styles.committeeRow} ${i % 2 !== 0 ? styles.committeeRowAlt : ''}`}
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  padding: '1.1rem 2rem',
                   borderBottom: i < committee.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(128,0,0,0.015)',
                 }}
               >
                 <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '1rem' }}>

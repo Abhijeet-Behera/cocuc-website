@@ -349,6 +349,7 @@
     z-index: 99;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
   }

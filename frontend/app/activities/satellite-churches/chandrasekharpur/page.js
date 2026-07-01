@@ -1,90 +1,21 @@
 export const metadata = {
   title: 'Chandrasekharpur Worship Center | Church of Christ Union Church Bhubaneswar',
-  description: 'Odia Worship Service held every Sunday morning at 9:30 AM in Chandrasekharpur, Bhubaneswar.',
+  description: 'Odia Worship Service held every Sunday morning at 10:00 AM in Chandrasekharpur, Bhubaneswar.',
 }
+
+import PageHeader from '@/components/PageHeader'
 
 export default function ChandrasekharpurPage() {
   const leaders = [];
 
   return (
     <div>
-      {/* ── Hero Banner ── */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, #4a0000 60%, #1a0000 100%)',
-          color: 'var(--color-white)',
-          padding: '160px 0 110px 0',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20rem',
-              height: '30rem',
-              opacity: 0.04,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              zIndex: -1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              viewBox="0 0 24 36"
-              style={{
-                width: '100%',
-                height: '100%',
-                fill: 'currentColor',
-              }}
-            >
-              <path d="M 9,0 H 15 V 9 H 24 V 15 H 15 V 36 H 9 V 15 H 0 V 9 H 9 Z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: '0.85rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.7,
-              marginBottom: '1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            Satellite Churches
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Chandrasekharpur Worship Center
-          </h1>
-          <p
-            style={{
-              fontSize: '1.15rem',
-              opacity: 0.85,
-              maxWidth: '580px',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Serving the Chandrasekharpur community since the early 1990s.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        category="Satellite Churches"
+        title="Chandrasekharpur Worship Center"
+        description="Serving the Chandrasekharpur community since the early 1990s."
+      />
+
 
       {/* ── Content ── */}
       <section className="section">
@@ -107,12 +38,12 @@ export default function ChandrasekharpurPage() {
           >
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Worship Timing</p>
-              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 9:30 AM</p>
+              <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Every Sunday @ 10:00 AM</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Location</p>
-              <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>96, District Center, Chandrasekharpur</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>Chandrasekharpur</p>
             </div>
             <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
@@ -142,7 +73,7 @@ export default function ChandrasekharpurPage() {
             }}
           >
             <p>
-              We have a vibrant Odia Worship Service held <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 9:30 AM</strong>. This worship center is located in the Chandrasekharpur area. The center started way back in the early 90&rsquo;s and we have a wonderful congregation who turns up every Sunday morning to listen to God&rsquo;s Word. On December 15, 2019, it was shifted to a new location at <strong style={{ color: 'var(--color-text)' }}>96, District Center, Chandrasekharpur</strong>.
+              We have a vibrant Odia Worship Service held <strong style={{ color: 'var(--color-text)' }}>every Sunday morning at 10:00 AM</strong>. This worship center is located in the Chandrasekharpur area. The center started way back in the early 90&rsquo;s and we have a wonderful congregation who turns up every Sunday morning to listen to God&rsquo;s Word. On December 15, 2019, it was shifted to a new location at <strong style={{ color: 'var(--color-text)' }}>Chandrasekharpur</strong>.
             </p>
 
             <div
@@ -161,7 +92,7 @@ export default function ChandrasekharpurPage() {
             </p>
 
             <p>
-              They have their separate Sunday School for children in the area. The Sunday School classes are held in the morning before the main Worship Service commences at 9:30 AM.
+              They have their separate Sunday School for children in the area. The Sunday School classes are held in the morning before the main Worship Service commences at 10:00 AM.
             </p>
 
             {/* Warning / Note Alert */}

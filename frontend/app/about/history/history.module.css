@@ -1,0 +1,20 @@
+.cardContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--color-white);
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+  .cardContainer {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardContainer {
+    padding: 1.5rem 1rem;
+  }
+}

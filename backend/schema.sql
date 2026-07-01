@@ -82,6 +82,64 @@ CREATE TABLE IF NOT EXISTS speaking_arrangements (
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS developer_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) UNIQUE NOT NULL,
+    setting_value VARCHAR(255) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS developer_otps (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    hashed_otp VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS developer_login_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(45),
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS developer_audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    action_type VARCHAR(50) NOT NULL,
+    target_table VARCHAR(100) NOT NULL,
+    details TEXT NOT NULL,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS frontend_knowledge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    source_file VARCHAR(255) NOT NULL,
+    chunk_index INT NOT NULL,
+    content TEXT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FULLTEXT KEY ft_content (content)
+);
+
+CREATE TABLE IF NOT EXISTS chatbot_rate_limits (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL UNIQUE,
+    message_count INT DEFAULT 0,
+    first_message_time DATETIME NOT NULL,
+    cooldown_until DATETIME NULL,
+    spam_strikes INT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS chatbot_dynamic_knowledge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    knowledge_type VARCHAR(50) NOT NULL UNIQUE,
+    content TEXT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS donations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     donation_reference VARCHAR(50) UNIQUE NOT NULL,

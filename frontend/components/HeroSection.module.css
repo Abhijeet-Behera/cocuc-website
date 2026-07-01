@@ -10,8 +10,8 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: #5c0000; /* fallback while images load */
-  padding: 110px 0 40px 0; /* Add top padding for navbar, bottom for breathing room */
+  background-color: #5c0000;
+  padding: 110px 0 40px 0;
 }
 
 /* ── Background stack ───────────────────────────────────── */
@@ -76,6 +76,11 @@
   flex-direction: column;
   align-items: center;
   gap: 2rem; /* Reduced from 3rem */
+}
+
+/* Conditionally push heroFg down ONLY when the broadcast marquee is rendered before it */
+:global(#broadcast-marquee) + .heroFg {
+  margin-top: 35px; /* Adds just a tiny bit more clearance for the marquee */
 }
 
 /* ── Title — three-tier premium layout ─────────────────── */

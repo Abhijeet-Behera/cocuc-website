@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Pulpit / lectern body -->
+  <path d="M70 100 L130 100 L125 160 L75 160 Z" fill="#fff" stroke="#800000" stroke-width="3"/>
+  <!-- Pulpit top surface -->
+  <rect x="60" y="90" width="80" height="14" rx="4" fill="#800000"/>
+  <!-- Open Bible on pulpit -->
+  <path d="M80 82 L100 88 L120 82 L120 96 L100 102 L80 96 Z" fill="#fff" stroke="#5c0000" stroke-width="2"/>
+  <line x1="100" y1="88" x2="100" y2="102" stroke="#5c0000" stroke-width="1.5"/>
+  <!-- Page lines left -->
+  <line x1="85" y1="88" x2="97" y2="93" stroke="#d4a0a0" stroke-width="1"/>
+  <line x1="85" y1="92" x2="97" y2="96" stroke="#d4a0a0" stroke-width="1"/>
+  <!-- Page lines right -->
+  <line x1="103" y1="93" x2="115" y2="88" stroke="#d4a0a0" stroke-width="1"/>
+  <line x1="103" y1="96" x2="115" y2="92" stroke="#d4a0a0" stroke-width="1"/>
+  <!-- Microphone -->
+  <rect x="135" y="50" width="10" height="28" rx="5" fill="#800000"/>
+  <line x1="140" y1="78" x2="140" y2="105" stroke="#5c0000" stroke-width="2.5"/>
+  <circle cx="140" cy="105" r="8" fill="none" stroke="#5c0000" stroke-width="2"/>
+  <!-- Sound waves -->
+  <path d="M150 55 Q156 64 150 73" fill="none" stroke="#d4a0a0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M155 50 Q164 64 155 78" fill="none" stroke="#e8c4c4" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Cross accent -->
+  <rect x="96" y="40" width="8" height="30" rx="2" fill="#a31f1f" opacity="0.3"/>
+  <rect x="86" y="50" width="28" height="8" rx="2" fill="#a31f1f" opacity="0.3"/>
+</svg>

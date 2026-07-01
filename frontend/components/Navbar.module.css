@@ -181,7 +181,8 @@
 .navLinkScrolled {
   color: var(--color-text);
 }
-.navLinkScrolled:hover {
+.navLinkScrolled:hover,
+.navLinkScrolled.active {
   background: rgba(139, 0, 0, 0.08); /* subtle primary tint, visible on white */
   color: var(--color-primary);
   border-color: rgba(139, 0, 0, 0.15);
@@ -191,11 +192,12 @@
 .navLinkTransparent {
   color: rgba(255,255,255,0.92);
 }
-.navLinkTransparent:hover {
-  background: rgba(255,255,255,0.22);
+.navLinkTransparent:hover,
+.navLinkTransparent.active {
+  background: rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(8px);
   color: var(--color-white);
-  border-color: rgba(255,255,255,0.35);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 /* Dropdown Trigger — same context-aware pill hover */

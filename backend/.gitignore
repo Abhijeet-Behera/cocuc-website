@@ -6,3 +6,9 @@
 
 # Safe template file should be committed
 !.env.example
+
+.env
+.env.local
+gallery_cache.json
+.next/
+node_modules/

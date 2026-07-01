@@ -312,9 +312,8 @@
   line-height: 1.2;
 }
 
-.gridItem.active .cardDescription,
-.gridItem.active .cardDescription,
-.gridItem.active .cardDescription {
+.gridItem:hover .cardDescription,
+.gridItem:focus-within .cardDescription {
   margin-top: 1rem;
   max-height: 22rem;
 
@@ -477,10 +476,10 @@
 }
 
 /* Move Read More slightly upward only in Service Timing */
-.gridItem.active .serviceTimingContent .itemLink,
-.gridItem.active .serviceTimingContent .itemLink,
-.gridItem.active .serviceTimingContent .itemLink {
+.gridItem:hover .serviceTimingContent .itemLink,
+.gridItem:focus-within .serviceTimingContent .itemLink {
   margin-top: 0.5rem;
+  transform: translateY(-8px);
 }
 
 /* Compact layout for the Service Timing card */

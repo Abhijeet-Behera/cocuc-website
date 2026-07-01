@@ -146,20 +146,46 @@ export default function UpcomingEvents() {
         </div>
       )}
 
+
       {/* Empty / Error State */}
       {!loading && (error || events.length === 0) && (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
           </div>
-          <p className={styles.emptyText}>No upcoming events scheduled yet.</p>
+
+          <h3 className={styles.emptyTitle}>
+            Stay Connected for Upcoming Events
+          </h3>
+
+          <p className={styles.emptyText}>
+            New livestreams and Premieres will appear here as soon as they are
+            scheduled. Please stay connected with us.
+          </p>
+
+          <blockquote className={styles.bibleVerse}>
+            “To every thing there is a season, and a time to every purpose under
+            the heaven.”
+            <cite>— Ecclesiastes 3:1</cite>
+          </blockquote>
         </div>
       )}
+
+
 
       {/* Event Cards */}
       {!loading && events.length > 0 && (

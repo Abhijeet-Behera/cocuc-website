@@ -161,16 +161,16 @@ export default function Testimonies() {
   // Carousel Layout Parameters for Responsiveness
   const getCarouselParams = () => {
     if (typeof window === 'undefined') {
-      return { spacingY: 108, translateZ: 80 }
+      return { spacingY: 170, translateZ: 80 }
     }
     const w = window.innerWidth
     if (w < 480) {
-      return { spacingY: 82, translateZ: 60 }
+      return { spacingY: 150, translateZ: 60 }
     }
     if (w < 768) {
-      return { spacingY: 92, translateZ: 70 }
+      return { spacingY: 160, translateZ: 70 }
     }
-    return { spacingY: 108, translateZ: 80 }
+    return { spacingY: 170, translateZ: 80 }
   }
 
   // Update card coordinates and animations on 3D path
@@ -356,14 +356,14 @@ export default function Testimonies() {
     setIsDraggingState(true)
   }
 
-  const handleDragMove = (clientX, clientY) => {
+  const handleDragMove = (clientX, clientY, isTouch = false) => {
     const deltaX = clientX - startX.current
     const deltaY = clientY - startY.current
 
     if (!dragDirection.current) {
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
         dragDirection.current = 'horizontal'
-      } else if (Math.abs(deltaY) >= Math.abs(deltaX) && Math.abs(deltaY) > 20) {
+      } else if (Math.abs(deltaY) >= Math.abs(deltaX) && Math.abs(deltaY) > 10) {
         dragDirection.current = 'vertical'
       }
     }
@@ -372,13 +372,15 @@ export default function Testimonies() {
       const viewportWidth = sliderRef.current ? sliderRef.current.clientWidth : 480
       const deltaProgress = deltaX / viewportWidth
       pageTarget.current = startPageProgress.current - deltaProgress * 1.2
-      if (Math.abs(deltaX) > 15) hasDragged.current = true
+      if (Math.abs(deltaX) > 10) hasDragged.current = true
     } else if (dragDirection.current === 'vertical') {
+      // If it's a touch event, don't hijack vertical scrolling
+      if (isTouch) return;
       const params = getCarouselParams()
       const spacingY = params.spacingY
       const deltaProgress = deltaY / spacingY
       verticalScrollTarget.current = startScrollProgress.current - deltaProgress
-      if (Math.abs(deltaY) > 15) hasDragged.current = true
+      if (Math.abs(deltaY) > 10) hasDragged.current = true
     }
   }
 
@@ -406,7 +408,7 @@ export default function Testimonies() {
   useEffect(() => {
     const handleWindowMouseMove = (e) => {
       if (!isDragging.current) return
-      handleDragMove(e.clientX, e.clientY)
+      handleDragMove(e.clientX, e.clientY, false)
     }
 
     const handleWindowMouseUp = (e) => {
@@ -443,7 +445,7 @@ export default function Testimonies() {
     const handleTouchMove = (e) => {
       if (!isDragging.current) return
       const touch = e.touches[0]
-      handleDragMove(touch.clientX, touch.clientY)
+      handleDragMove(touch.clientX, touch.clientY, true)
     }
 
     const handleTouchEnd = (e) => {
@@ -460,11 +462,13 @@ export default function Testimonies() {
     viewport.addEventListener('touchstart', handleTouchStart, { passive: true })
     viewport.addEventListener('touchmove', handleTouchMove, { passive: true })
     viewport.addEventListener('touchend', handleTouchEnd, { passive: true })
+    viewport.addEventListener('touchcancel', handleTouchEnd, { passive: true })
 
     return () => {
       viewport.removeEventListener('touchstart', handleTouchStart)
       viewport.removeEventListener('touchmove', handleTouchMove)
       viewport.removeEventListener('touchend', handleTouchEnd)
+      viewport.removeEventListener('touchcancel', handleTouchEnd)
     }
   }, [testimonies])
 
@@ -740,7 +744,6 @@ export default function Testimonies() {
                 className={styles.pageButton}
                 onClick={handlePrevPage}
                 aria-label="Previous page"
-                style={{ border: 'none', background: 'transparent' }}
               >
                 &larr;
               </button>
@@ -775,7 +778,6 @@ export default function Testimonies() {
                 className={styles.pageButton}
                 onClick={handleNextPage}
                 aria-label="Next page"
-                style={{ border: 'none', background: 'transparent' }}
               >
                 &rarr;
               </button>
@@ -805,17 +807,11 @@ export default function Testimonies() {
       {/* ── Right Column: Submit Form ── */}
       <div
         ref={formColRef}
+        className={styles.formCol}
         style={{
-          background: '#fff',
-          border: '1px solid #efefef',
-          borderRadius: '16px',
-            overflow: 'hidden',
-            boxShadow: '0 8px 40px rgba(0,0,0,0.05)',
-            position: 'sticky',
-            top: '100px',
-            opacity: 0
-          }}
-        >
+          opacity: 0
+        }}
+      >
           {/* Dark header band */}
           <div style={{
             background: 'var(--color-primary)',

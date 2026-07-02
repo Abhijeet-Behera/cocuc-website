@@ -211,5 +211,40 @@
   .nowrapText {
     white-space: normal;
   }
+}
 
+.feedbackLink {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 6px 10px;
+  margin-left: -10px;
+  border-radius: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feedbackLink:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+.feedbackLink:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.96) translateY(0);
+}
+
+.feedbackIcon {
+  color: var(--color-primary-light);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .feedbackLink {
+    margin-left: 0;
+    justify-content: center;
+  }
 }

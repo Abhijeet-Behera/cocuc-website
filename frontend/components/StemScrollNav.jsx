@@ -13,11 +13,12 @@ const SECTIONS = [
   { id: 'upcoming-events', label: 'Upcoming Events' },
   { id: 'blog',            label: 'Blog & Inspiration' },
   { id: 'testimonies',     label: 'Share Your Testimony' },
+  { id: 'donate',          label: 'Tithes/Offerings' },
 ];
 
 const STEM_X  = 22;
 const PAD_TOP = 140; // clears navbar and some extra space
-const PAD_BOT = 120; // clears footer area
+const PAD_BOT = 70; // clears footer area
 
 function qBez(p0, p1, p2, t) {
   const m = 1 - t;
@@ -496,7 +497,7 @@ export default function StemScrollNav() {
   useEffect(() => {
     const check = () => {
       const hero   = document.getElementById('hero');
-      const last   = document.getElementById('testimonies');
+      const last   = document.getElementById('donate');
       const footer = document.querySelector('footer');
       if (!hero || !last) return;
 

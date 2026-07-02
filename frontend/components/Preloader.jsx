@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import gsap from 'gsap'
 import styles from './Preloader.module.css'
 
@@ -10,9 +11,15 @@ export default function Preloader() {
   const [progress, setProgress] = useState(0)
   const [visible, setVisible] = useState(true)
   const containerRef = useRef(null)
+  const pathname = usePathname()
+
+  // Immediately hide preloader for feedback page
+  if (pathname === '/feedback' || pathname === '/feedback/') {
+    hasPreloaded = true;
+  }
 
   useEffect(() => {
-    if (hasPreloaded) {
+    if (pathname === '/feedback' || pathname === '/feedback/' || hasPreloaded) {
       setVisible(false)
       return
     }
@@ -102,9 +109,10 @@ export default function Preloader() {
       document.body.style.overflow = ''
       tl.kill()
     }
-  }, [])
+  }, [pathname])
 
-  if (!visible) return null
+  if (pathname === '/feedback' || pathname === '/feedback/') return null;
+  if (!visible) return null;
 
   return (
     <div ref={containerRef} className={styles.preloader}>

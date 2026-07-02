@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, MessageSquare } from 'lucide-react';
 import styles from './Footer.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -115,6 +115,12 @@ export default function Footer() {
                   <a href="mailto:secretary@unionchurch.in" style={{color: 'inherit', textDecoration: 'none'}}>secretary@unionchurch.in</a>
                 </span>
               </div>
+            </li>
+            <li className={styles.contactItem} style={{ marginTop: '0.75rem', alignItems: 'center' }}>
+              <a href="/feedback/" target="_blank" rel="noopener noreferrer" className={styles.feedbackLink}>
+                <MessageSquare size={18} className={styles.feedbackIcon} />
+                <span>Feedback Form</span>
+              </a>
             </li>
           </ul>
         </div>

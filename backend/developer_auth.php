@@ -33,6 +33,22 @@ function logAttempt($pdo, $email, $status) {
 if ($action === 'verify_credentials') {
     $email = $data['email'] ?? '';
     $password = $data['password'] ?? '';
+    
+    // Verify reCAPTCHA
+    $recaptchaToken = $data['recaptcha_token'] ?? '';
+    if (!$recaptchaToken) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing reCAPTCHA token"]);
+        exit;
+    }
+    $secretKey = $_ENV['RECAPTCHA_SECRET_KEY'] ?? '';
+    $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaToken}");
+    $responseData = json_decode($verifyResponse);
+    if (!$responseData->success) {
+        http_response_code(403);
+        echo json_encode(["error" => "reCAPTCHA verification failed. Please try again."]);
+        exit;
+    }
 
     if (!in_array($email, $allowed_emails)) {
         http_response_code(403);

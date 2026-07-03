@@ -89,6 +89,22 @@ if ($method === 'GET') {
         echo json_encode(["error" => "Missing required fields or consent"]);
         exit;
     }
+
+    // Verify reCAPTCHA
+    $recaptchaToken = $data['recaptcha_token'] ?? '';
+    if (!$recaptchaToken) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing reCAPTCHA token"]);
+        exit;
+    }
+    $secretKey = $_ENV['RECAPTCHA_SECRET_KEY'] ?? '';
+    $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaToken}");
+    $responseData = json_decode($verifyResponse);
+    if (!$responseData->success) {
+        http_response_code(403);
+        echo json_encode(["error" => "reCAPTCHA verification failed. Please try again."]);
+        exit;
+    }
     
     // Check word count
     $wordCount = str_word_count(strip_tags($body));

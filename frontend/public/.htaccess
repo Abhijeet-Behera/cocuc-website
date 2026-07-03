@@ -1,18 +1,21 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Route /api/ requests to the backend directory
-  RewriteRule ^api/(.*)$ /backend/$1 [L,QSA]
+  # 1. Force HTTPS (Secure connection)
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Serve existing files and directories directly
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
+  # 2. Redirect WWW to non-WWW (Solves "WWW and non-WWW" critical issue)
+  RewriteCond %{HTTP_HOST} ^www\.unionchurch\.in [NC]
+  RewriteRule ^(.*)$ https://unionchurch.in/$1 [L,R=301]
 
-  # Map extensionless URLs to their .html equivalents
-  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-  RewriteRule ^(.+?)/?$ /$1.html [L]
+  # 3. Redirect /index.html to the root / (Solves "Accessible index page" critical issue)
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
+  RewriteRule ^index\.html$ https://unionchurch.in/ [R=301,L]
 
-  # Serve Next.js 404 page for missing files
-  ErrorDocument 404 /404.html
+  # 4. Force Trailing Slash (Solves "Trailing slash" critical issue)
+  # If the request is not for a direct file, and doesn't have a slash, add a slash.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_URI} !(.*)/$
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1/ [L,R=301]
 </IfModule>

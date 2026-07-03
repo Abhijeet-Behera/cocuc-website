@@ -6,7 +6,7 @@ function base64UrlEncode($text) {
 
 function generateJWT($payload, $secret) {
     $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
-    $payload['exp'] = time() + (86400 * 30); // 30 days expiration
+    $payload['exp'] = time() + (60 * 30); // 30 minutes expiration
 
     $base64UrlHeader = base64UrlEncode($header);
     $base64UrlPayload = base64UrlEncode(json_encode($payload));

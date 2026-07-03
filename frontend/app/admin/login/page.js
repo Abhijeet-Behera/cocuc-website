@@ -4,6 +4,7 @@ import { useAuth } from '../../../components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 function LoginLogic({ setSuccess, setError }) {
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function LoginRegister() {
   
   const [devOtpSent, setDevOtpSent] = useState(false);
   const [devOtp, setDevOtp] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
   const allowedDevEmails = process.env.NEXT_PUBLIC_ALLOWED_DEV_EMAILS ? process.env.NEXT_PUBLIC_ALLOWED_DEV_EMAILS.split(',') : [];
   
   const [error, setError] = useState('');
@@ -81,6 +83,12 @@ export default function LoginRegister() {
         setIsLoading(false);
         return;
       }
+      
+      if (!recaptchaToken) {
+        setError("Please complete the reCAPTCHA.");
+        setIsLoading(false);
+        return;
+      }
 
       if (!devOtpSent) {
         // Step 1: Verify Password and Send OTP
@@ -88,7 +96,7 @@ export default function LoginRegister() {
           const res = await fetch(`${API_URL}/developer_auth.php?action=verify_credentials`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: formData.email, password: formData.password })
+            body: JSON.stringify({ email: formData.email, password: formData.password, recaptcha_token: recaptchaToken })
           });
           const data = await res.json();
           if (res.ok) {
@@ -140,16 +148,24 @@ export default function LoginRegister() {
       }
     }
 
+    if (!recaptchaToken) {
+      setError("Please complete the reCAPTCHA.");
+      setIsLoading(false);
+      return;
+    }
+
     const endpoint = isLogin ? '/auth.php?action=login' : '/auth.php?action=register';
     const payload = isLogin ? {
       identifier: formData.identifier,
-      password: formData.password
+      password: formData.password,
+      recaptcha_token: recaptchaToken
     } : {
       full_name: formData.fullName,
       designation: role,
       email: formData.email,
       mobile: formData.mobile,
-      password: formData.password
+      password: formData.password,
+      recaptcha_token: recaptchaToken
     };
 
     try {
@@ -487,6 +503,13 @@ export default function LoginRegister() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+              onChange={setRecaptchaToken}
+            />
+          </div>
 
           <motion.button 
             type="submit" 

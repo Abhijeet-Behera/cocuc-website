@@ -1,5 +1,10 @@
 import PageHeader from '@/components/PageHeader'
 
+export const metadata = {
+  title: 'About Us | Church of Christ - Union Church',
+  description: 'Learn about the history, mission, and leadership of Church of Christ (Union Church) in Bhubaneswar.',
+}
+
 export default function AboutUs() {
   const boardMembers = [
     { name: 'Dr. Johnson Smith', role: 'Senior Pastor & Chairman' },

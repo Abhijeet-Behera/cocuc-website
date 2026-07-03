@@ -343,6 +343,7 @@ export default function ActivitiesGrid() {
             <img
               src={item.imageUrl}
               alt={item.alt}
+              title={item.alt}
               className={styles.cardImage}
               loading="lazy"
             />

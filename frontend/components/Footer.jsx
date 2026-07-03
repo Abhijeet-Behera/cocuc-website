@@ -128,16 +128,16 @@ export default function Footer() {
         {/* Column 4: Address */}
         <div className={`${styles.footerCol} gsap-footer-col`}>
           <h3 className={styles.colTitle}>Visit Us</h3>
-          <ul className={styles.footerList}>
-            <li className={styles.contactItem}>
-              <MapPin size={18} className={styles.contactIcon} />
+          <address className={styles.footerList} style={{ fontStyle: 'normal' }}>
+            <div className={styles.contactItem} style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem' }}>
+              <MapPin size={18} className={styles.contactIcon} style={{ flexShrink: 0, marginTop: '4px' }} />
               <div>
                 <span>Lokseva Marg, Unit-4</span><br />
                 <span>PO Box 751001</span><br />
                 <span>Bhubaneswar, Odisha, India</span>
-                <div>
+                <div style={{ marginTop: '0.5rem' }}>
                   <a
-                    href="https://www.google.com/maps/place/Union+Church,+Unit+4+Main+St,+Unit+4,+Bhouma+Nagar,+Bhubaneswar,+Odisha+751001/@20.2761087,85.8342424,18z/data=!4m6!3m5!1s0x3a19a7594579150b:0x23298f0ac9cae304!8m2!3d20.2764338!4d85.833986!16s%2Fg%2F11b8tb49mb?entry=ttu&g_ep=EgoyMDI2MDUzMS4wIKXMDSoASAFQAw%3D%3D"
+                    href="https://www.google.com/maps/place/Union+Church,+Unit+4+Main+St,+Unit+4,+Bhouma+Nagar,+Bhubaneswar,+Odisha+751001"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.mapLink}
@@ -149,8 +149,8 @@ export default function Footer() {
                   </a>
                 </div>
               </div>
-            </li>
-          </ul>
+            </div>
+          </address>
         </div>
 
       </div>

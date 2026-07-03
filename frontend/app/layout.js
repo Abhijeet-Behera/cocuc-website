@@ -12,6 +12,9 @@ export const metadata = {
     default: 'Church of Christ - Union Church, Bhubaneswar',
     template: '%s | Church of Christ - Union Church',
   },
+  alternates: {
+    canonical: 'https://unionchurch.in',
+  },
   description: 'Welcome to Church of Christ (Union Church), Bhubaneswar. Join us for worship, sermons, Odia Christian fellowship, and community in Odisha. Best church in Bhubaneswar.',
   keywords: ['Church in Bhubaneswar', 'Union Church', 'Church of Christ', 'Odia Christian', 'Christian worship Bhubaneswar', 'Sunday service Bhubaneswar', 'Church of Christ Bhubaneswar', 'best church in odisha', 'prayer', 'youth ministry'],
   authors: [{ name: 'Church of Christ (Union Church)' }],

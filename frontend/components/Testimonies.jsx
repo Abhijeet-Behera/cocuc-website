@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import ReCAPTCHA from 'react-google-recaptcha'
 import styles from './Testimonies.module.css'
 
 const getPaginationIndices = (active, total) => {
@@ -34,6 +35,7 @@ export default function Testimonies() {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [wordCount, setWordCount] = useState(0)
+  const [recaptchaToken, setRecaptchaToken] = useState(null)
 
   const containerRef = useRef(null)
   const headerRef = useRef(null)
@@ -565,6 +567,7 @@ export default function Testimonies() {
     e.preventDefault()
     if (wordCount > 500) { setMessage("Your testimony exceeds the 500 word limit."); return }
     if (!consent1 || !consent2) { setMessage("Please agree to both checkboxes to submit."); return }
+    if (!recaptchaToken) { setMessage("Please complete the reCAPTCHA."); return }
 
     setSubmitLoading(true)
     setMessage('')
@@ -573,12 +576,12 @@ export default function Testimonies() {
       const res = await fetch(`${API_URL}/testimonials.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: formTitle, body: formBody, consent1, consent2 })
+        body: JSON.stringify({ title: formTitle, body: formBody, consent1, consent2, recaptcha_token: recaptchaToken })
       })
 
       if (res.ok) {
         setMessage('Testimony submitted successfully! It has been sent to the Pastor.')
-        setFormTitle(''); setFormBody(''); setConsent1(false); setConsent2(false); setWordCount(0)
+        setFormTitle(''); setFormBody(''); setConsent1(false); setConsent2(false); setWordCount(0); setRecaptchaToken(null);
       } else {
         const error = await res.json()
         setMessage(error.error || 'Failed to submit testimony.')
@@ -980,9 +983,16 @@ export default function Testimonies() {
                 </p>
               )}
 
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  onChange={setRecaptchaToken}
+                />
+              </div>
+
               <button
                 type="submit"
-                disabled={submitLoading || wordCount > 500 || !formTitle || !formBody || !consent1 || !consent2}
+                disabled={submitLoading || wordCount > 500 || !formTitle || !formBody || !consent1 || !consent2 || !recaptchaToken}
                 style={{
                   padding: '1rem',
                   fontSize: '0.9rem',
@@ -991,8 +1001,8 @@ export default function Testimonies() {
                   border: 'none',
                   background: 'var(--color-primary)',
                   color: '#fff',
-                  cursor: (submitLoading || wordCount > 500 || !formTitle || !formBody || !consent1 || !consent2) ? 'not-allowed' : 'pointer',
-                  opacity: (submitLoading || wordCount > 500 || !formTitle || !formBody || !consent1 || !consent2) ? 0.45 : 1,
+                  cursor: (submitLoading || wordCount > 500 || !formTitle || !formBody || !consent1 || !consent2 || !recaptchaToken) ? 'not-allowed' : 'pointer',
+                  opacity: (submitLoading || wordCount > 500 || !formTitle || !formBody || !consent1 || !consent2 || !recaptchaToken) ? 0.45 : 1,
                   transition: 'opacity 0.2s, transform 0.2s',
                   fontFamily: 'var(--font-heading)',
                   letterSpacing: '0.05em',

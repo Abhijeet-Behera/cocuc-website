@@ -14,6 +14,22 @@ $action = $_GET['action'] ?? '';
 $data = json_decode(file_get_contents("php://input"), true);
 
 if ($action === 'register') {
+    // Verify reCAPTCHA
+    $recaptchaToken = $data['recaptcha_token'] ?? '';
+    if (!$recaptchaToken) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing reCAPTCHA token"]);
+        exit;
+    }
+    $secretKey = $_ENV['RECAPTCHA_SECRET_KEY'] ?? '';
+    $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaToken}");
+    $responseData = json_decode($verifyResponse);
+    if (!$responseData->success) {
+        http_response_code(403);
+        echo json_encode(["error" => "reCAPTCHA verification failed. Please try again."]);
+        exit;
+    }
+    
     $fullName = $data['full_name'] ?? '';
     $designation = $data['designation'] ?? ''; // Pastor, Secretary, Developer
     $email = $data['email'] ?? '';
@@ -37,6 +53,22 @@ if ($action === 'register') {
         echo json_encode(["error" => "Email or mobile may already exist"]);
     }
 } elseif ($action === 'login') {
+    // Verify reCAPTCHA
+    $recaptchaToken = $data['recaptcha_token'] ?? '';
+    if (!$recaptchaToken) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing reCAPTCHA token"]);
+        exit;
+    }
+    $secretKey = $_ENV['RECAPTCHA_SECRET_KEY'] ?? '';
+    $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaToken}");
+    $responseData = json_decode($verifyResponse);
+    if (!$responseData->success) {
+        http_response_code(403);
+        echo json_encode(["error" => "reCAPTCHA verification failed. Please try again."]);
+        exit;
+    }
+
     $identifier = $data['identifier'] ?? ''; // Can be email or mobile
     $password = $data['password'] ?? '';
 

@@ -4,6 +4,7 @@ import Footer from '@/components/Footer'
 import Providers from '@/components/Providers'
 import Preloader from '@/components/Preloader'
 import ErrorLogger from '@/components/ErrorLogger'
+import PrivacyBanner from '@/components/PrivacyBanner'
 import styles from './layout.module.css'
 
 export const metadata = {
@@ -88,6 +89,7 @@ export default function RootLayout({ children }) {
           <main>{children}</main>
           <Footer />
         </Providers>
+        <PrivacyBanner />
       </body>
     </html>
   )

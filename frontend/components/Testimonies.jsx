@@ -378,8 +378,6 @@ export default function Testimonies() {
       pageTarget.current = startPageProgress.current - deltaProgress * 1.2
       if (Math.abs(deltaX) > 10) hasDragged.current = true
     } else if (dragDirection.current === 'vertical') {
-      // If it's a touch event, don't hijack vertical scrolling
-      if (isTouch) return;
       const params = getCarouselParams()
       const spacingY = params.spacingY
       const deltaProgress = deltaY / spacingY

@@ -12,7 +12,7 @@
   height: 580px;
   perspective: 1200px;
   overflow: hidden;
-  touch-action: pan-y;
+  touch-action: none;
   user-select: none;
   cursor: default;
   border-radius: 16px;

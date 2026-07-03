@@ -171,12 +171,22 @@ $tokenResponse = postRequest('https://oauth2.googleapis.com/token', [
 ]);
 
 if (isset($tokenResponse['error'])) {
+    error_log(
+        '[UpcomingEvents] Token refresh error: ' .
+        json_encode(
+            $tokenResponse,
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        )
+    );
+
     http_response_code(500);
+
     echo json_encode([
         'error' => true,
         'message' => 'Failed to refresh Google access token.',
-        'details' => isset($_GET['debug']) ? $tokenResponse : null
+        'details' => $tokenResponse
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
     exit;
 }
 

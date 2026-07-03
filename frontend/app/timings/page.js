@@ -1,8 +1,9 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Timings | Church of Christ (Union Church)',
-  description: 'Worship timings and schedules for Church of Christ (Union Church), Bhubaneswar.',
+  title: 'Worship Timings | Church of Christ - Union Church',
+  description: 'Join us for Sunday worship at Church of Christ (Union Church), Bhubaneswar. English worship at 9:30 AM and Odia worship at 3:30 PM. Discover our full schedule.',
+  keywords: ['Church timings Bhubaneswar', 'Sunday service Bhubaneswar', 'English worship Bhubaneswar', 'Odia worship service', 'Union Church timings'],
 };
 
 export default function Timings() {

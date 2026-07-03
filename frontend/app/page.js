@@ -13,6 +13,12 @@ import StemScrollNav from '@/components/StemScrollNav'
 import DonationSection from '@/components/DonationSection'
 import styles from './page.module.css'
 
+export const metadata = {
+  title: 'Home | Church of Christ - Union Church',
+  description: 'Welcome to the official website of Church of Christ (Union Church), Bhubaneswar. Discover our Sunday worship timings, ministries, and community events.',
+  keywords: ['Church in Bhubaneswar', 'Union Church Bhubaneswar', 'Odia Church', 'English Church service'],
+}
+
 export default function Home() {
   return (
     <div>

@@ -116,7 +116,13 @@ export default function Navbar() {
     { name: 'Baptism', href: '#' },
   ]
 
-
+  const prayerMenu = [
+    { name: 'Morning Prayer', href: '/prayer/morning-prayer' },
+    { name: 'Monday Prayer', href: '/prayer/monday-prayer' },
+    { name: 'Thursday Cottage Prayer', href: '/prayer/thursday-cottage-prayer' },
+    { name: 'Evening Zoom Prayer', href: '/prayer/evening-zoom-prayer' },
+    { name: 'Quarterly Prayer Week', href: '/prayer/quarterly-prayer-week' },
+  ]
 
   return (
     <nav ref={navRef} className={`${styles.nav} ${isNavSolid ? styles.navScrolled : styles.navTransparent}`}>
@@ -156,7 +162,7 @@ export default function Navbar() {
             <NavDropdown title="About" items={aboutMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavLink href="/gallery" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Gallery</NavLink>
             <NavDropdown title="Activities" items={activitiesMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
-            <NavLink href="#" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Prayer Wings</NavLink>
+            <NavDropdown title="Prayer Wings" items={prayerMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavDropdown title="Events" items={eventsMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavLink href="/blog" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Blog</NavLink>
           </div>

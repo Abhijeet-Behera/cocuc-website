@@ -20,8 +20,6 @@ import Reveal from './Reveal'
 
 const INITIAL_FORM_DATA = {
   fullName: '',
-  mobileNumber: '',
-  email: '',
   category: '',
   customCategory: '',
   amount: '',
@@ -35,7 +33,7 @@ export default function DonationSection() {
 
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [submissionReference, setSubmissionReference] = useState('')
+  const [, setSubmissionReference] = useState('')
 
   const [submitError, setSubmitError] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
@@ -100,7 +98,6 @@ export default function DonationSection() {
         [name]: nextValue,
       }
 
-      // Remove the custom category when another option is selected.
       if (
         name === 'category' &&
         value !== 'Other'
@@ -135,8 +132,12 @@ export default function DonationSection() {
   }
 
   const copyToClipboard = async (text, key) => {
+    if (!text) {
+      return
+    }
+
     try {
-      await navigator.clipboard.writeText(text)
+      await navigator.clipboard.writeText(String(text))
 
       setCopyStatus((previous) => ({
         ...previous,
@@ -158,46 +159,21 @@ export default function DonationSection() {
     const errors = {}
 
     const fullName = formData.fullName.trim()
-    const mobileNumber = formData.mobileNumber
-      .trim()
-      .replace(/[\s()-]/g, '')
-
-    const email = formData.email.trim()
     const amount = Number(formData.amount)
 
     if (!fullName) {
       errors.fullName = 'Full Name is required.'
     }
 
-    if (!formData.mobileNumber.trim()) {
-      errors.mobileNumber =
-        'Mobile Number is required.'
-    } else if (
-      !/^(\+91)?[6-9]\d{9}$/.test(mobileNumber)
-    ) {
-      errors.mobileNumber =
-        'Please enter a valid mobile number.'
-    }
-
-    if (
-      email &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    ) {
-      errors.email =
-        'Please enter a valid email address.'
-    }
-
     if (!formData.category) {
-      errors.category =
-        'Please select an offering category.'
+      errors.category = 'Please select an offering category.'
     }
 
     if (
       formData.category === 'Other' &&
       !formData.customCategory.trim()
     ) {
-      errors.customCategory =
-        'Custom category is required.'
+      errors.customCategory = 'Custom category is required.'
     }
 
     if (
@@ -205,13 +181,11 @@ export default function DonationSection() {
       !Number.isFinite(amount) ||
       amount <= 0
     ) {
-      errors.amount =
-        'Amount must be greater than zero.'
+      errors.amount = 'Amount must be greater than zero.'
     }
 
     if (!formData.consent) {
-      errors.consent =
-        'Please confirm that the information is correct.'
+      errors.consent = 'Please confirm that the information is correct.'
     }
 
     setFieldErrors(errors)
@@ -242,43 +216,24 @@ export default function DonationSection() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            fullName:
-              formData.fullName.trim(),
-
-            mobileNumber:
-              formData.mobileNumber.trim(),
-
-            email:
-              formData.email.trim(),
-
-            category:
-              formData.category,
-
-            customCategory:
-              formData.customCategory.trim(),
-
-            amount:
-              formData.amount,
-
-            message:
-              formData.message.trim(),
-
+            fullName: formData.fullName.trim(),
+            mobileNumber: '',
+            email: '',
+            category: formData.category,
+            customCategory: formData.customCategory.trim(),
+            amount: formData.amount,
+            message: formData.message.trim(),
             paymentMode:
               activeTab === 'upi'
                 ? 'upi'
                 : 'neft_rtgs',
-
-            status:
-              'DETAILS_SUBMITTED',
-
-            consent:
-              formData.consent,
+            status: 'DETAILS_SUBMITTED',
+            consent: formData.consent,
           }),
         }
       )
 
-      const responseText =
-        await response.text()
+      const responseText = await response.text()
 
       let result = {}
 
@@ -327,7 +282,7 @@ export default function DonationSection() {
   }
 
   const handleAnotherDonation = () => {
-    setFormData(INITIAL_FORM_DATA)
+    setFormData({ ...INITIAL_FORM_DATA })
     setActiveTab('upi')
     setCopyStatus({})
     setSubmitting(false)
@@ -413,15 +368,6 @@ export default function DonationSection() {
               your generous heart.
             </p>
 
-            {submissionReference && (
-              <p className={styles.referenceText}>
-                Submission Reference:{' '}
-                <strong>
-                  {submissionReference}
-                </strong>
-              </p>
-            )}
-
             <p className={styles.verificationNote}>
               Your details have been recorded. This
               confirmation does not automatically
@@ -472,43 +418,6 @@ export default function DonationSection() {
                     className={styles.input}
                     placeholder="Enter your name"
                     autoComplete="name"
-                  />
-                </Field>
-
-                <Field
-                  id="don-mobile"
-                  label="Mobile Number *"
-                  error={
-                    fieldErrors.mobileNumber
-                  }
-                >
-                  <input
-                    id="don-mobile"
-                    type="tel"
-                    name="mobileNumber"
-                    value={formData.mobileNumber}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    placeholder="e.g., +91 98765 43210"
-                    autoComplete="tel"
-                    inputMode="tel"
-                  />
-                </Field>
-
-                <Field
-                  id="don-email"
-                  label="Email Address (Optional)"
-                  error={fieldErrors.email}
-                >
-                  <input
-                    id="don-email"
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    placeholder="your@email.com"
-                    autoComplete="email"
                   />
                 </Field>
 
@@ -618,8 +527,8 @@ export default function DonationSection() {
                 {/* Confirmation checkbox */}
                 <label
                   className={`${styles.checkboxRow} ${fieldErrors.consent
-                    ? styles.checkboxError
-                    : ''
+                      ? styles.checkboxError
+                      : ''
                     }`}
                 >
                   <input
@@ -711,8 +620,8 @@ export default function DonationSection() {
                     }
                     aria-controls="upi-panel"
                     className={`${styles.tab} ${activeTab === 'upi'
-                      ? styles.activeTab
-                      : ''
+                        ? styles.activeTab
+                        : ''
                       }`}
                     onClick={() =>
                       setActiveTab('upi')
@@ -735,8 +644,8 @@ export default function DonationSection() {
                     }
                     aria-controls="neft-panel"
                     className={`${styles.tab} ${activeTab === 'neft'
-                      ? styles.activeTab
-                      : ''
+                        ? styles.activeTab
+                        : ''
                       }`}
                     onClick={() =>
                       setActiveTab('neft')
@@ -924,16 +833,18 @@ export default function DonationSection() {
                         copyStatus={copyStatus}
                       />
 
-                      <BankRow
-                        label="MICR"
-                        value={
-                          paymentConfig.bank
-                            .micrCode
-                        }
-                        copyKey="micr"
-                        onCopy={copyToClipboard}
-                        copyStatus={copyStatus}
-                      />
+                      {paymentConfig.bank.micrCode && (
+                        <BankRow
+                          label="MICR"
+                          value={
+                            paymentConfig.bank
+                              .micrCode
+                          }
+                          copyKey="micr"
+                          onCopy={copyToClipboard}
+                          copyStatus={copyStatus}
+                        />
+                      )}
                     </div>
                   </div>
                 )}

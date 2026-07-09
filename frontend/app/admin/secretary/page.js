@@ -8,23 +8,33 @@ import gsap from 'gsap'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+
+const SPEAKING_PDF_SECTIONS = [
+  { value: 'Sunday Worships', label: 'Sunday Worship Schedule' },
+  { value: 'Morning prayer', label: 'Morning Prayer' },
+  { value: 'Monday Prayer', label: 'Monday Prayer' },
+  { value: 'Wednesday Prayer', label: 'Wednesday Bible Study' },
+  { value: 'Zoom Prayer', label: 'Evening Zoom Prayer' },
+]
+
+
 export default function SecretaryPortal() {
+
   const { user, token, loading, logout } = useAuth()
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
-  
+
   const [activeTab, setActiveTab] = useState('weekly') // weekly, special, speaking
-  
+
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const [submitLoading, setSubmitLoading] = useState(false)
   const [toast, setToast] = useState({ show: false, type: '', text: '' })
   const toastRef = useRef(null)
-  
+
   const [weeklyEditId, setWeeklyEditId] = useState(null)
   const [specialEditId, setSpecialEditId] = useState(null)
-  const [speakingEditId, setSpeakingEditId] = useState(null)
   const tabContentRef = useRef(null)
-  
+
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
 
   // Weekly Notices State
@@ -45,21 +55,15 @@ export default function SecretaryPortal() {
   const [specialDetails, setSpecialDetails] = useState('')
   const [specialFile, setSpecialFile] = useState(null)
 
-  // Speaking Arrangements State
-  const [speakingArrangements, setSpeakingArrangements] = useState([])
+  // Speaking Arrangements State - PDF Driven
+  const [speakingUploads, setSpeakingUploads] = useState([])
   const [speakingSection, setSpeakingSection] = useState('Sunday Worships')
-  const [speakingDetails, setSpeakingDetails] = useState('')
-  const [speakingDate, setSpeakingDate] = useState('')
-  const [speakingFile1, setSpeakingFile1] = useState(null)
-  const [speakingFile2, setSpeakingFile2] = useState(null)
-  const [speakingFile3, setSpeakingFile3] = useState(null)
+  const [speakingFile, setSpeakingFile] = useState(null)
+  const [parsedPreview, setParsedPreview] = useState(null)
 
   // Previews
   const [weeklyFilesPreviews, setWeeklyFilesPreviews] = useState([])
   const [specialFilePreview, setSpecialFilePreview] = useState(null)
-  const [speakingFile1Preview, setSpeakingFile1Preview] = useState(null)
-  const [speakingFile2Preview, setSpeakingFile2Preview] = useState(null)
-  const [speakingFile3Preview, setSpeakingFile3Preview] = useState(null)
   const [fullscreenPreview, setFullscreenPreview] = useState(null)
   const [previewZoom, setPreviewZoom] = useState(1);
   const [previewPan, setPreviewPan] = useState({ x: 0, y: 0 });
@@ -114,14 +118,46 @@ export default function SecretaryPortal() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
+  const formatDateForInput = (date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  const getUpcomingSundays = (count = 16) => {
+    const sundays = []
+    const today = new Date()
+
+    const day = today.getDay()
+    const daysUntilSunday = day === 0 ? 0 : 7 - day
+
+    const firstSunday = new Date(today)
+    firstSunday.setDate(today.getDate() + daysUntilSunday)
+
+    for (let i = 0; i < count; i++) {
+      const sunday = new Date(firstSunday)
+      sunday.setDate(firstSunday.getDate() + i * 7)
+
+      const value = formatDateForInput(sunday)
+
+      sundays.push({
+        value,
+        label: sunday.toLocaleDateString(),
+      })
+    }
+
+    return sundays
+  }
+
   useEffect(() => {
     setMounted(true)
-    
+
     const formattedDate = getLocalFormattedDate();
-    
-    setWeeklyDate(formattedDate);
+    const weeklySundayOptions = getUpcomingSundays(16);
+
+    setWeeklyDate(weeklySundayOptions[0]?.value || formattedDate);
     setSpecialDate(formattedDate);
-    setSpeakingDate(formattedDate);
 
     if (!loading) {
       if (!user) {
@@ -160,11 +196,8 @@ export default function SecretaryPortal() {
     return () => {
       weeklyFilesPreviews.forEach(p => URL.revokeObjectURL(p.url))
       if (specialFilePreview) URL.revokeObjectURL(specialFilePreview)
-      if (speakingFile1Preview) URL.revokeObjectURL(speakingFile1Preview)
-      if (speakingFile2Preview) URL.revokeObjectURL(speakingFile2Preview)
-      if (speakingFile3Preview) URL.revokeObjectURL(speakingFile3Preview)
     }
-  }, [weeklyFilesPreviews, specialFilePreview, speakingFile1Preview, speakingFile2Preview, speakingFile3Preview])
+  }, [weeklyFilesPreviews, specialFilePreview])
 
   const handleWeeklyFilesChange = (e) => {
     if (e.target.files.length > 5) {
@@ -177,7 +210,7 @@ export default function SecretaryPortal() {
     }
     const files = Array.from(e.target.files)
     setWeeklyFiles(files)
-    
+
     // Create previews
     weeklyFilesPreviews.forEach(p => URL.revokeObjectURL(p.url))
     const previews = files.map(f => ({ file: f, url: URL.createObjectURL(f), type: f.type.startsWith('image/') ? 'image' : 'doc' }))
@@ -188,12 +221,12 @@ export default function SecretaryPortal() {
     const newFiles = [...weeklyFiles]
     newFiles.splice(index, 1)
     setWeeklyFiles(newFiles)
-    
+
     const newPreviews = [...weeklyFilesPreviews]
     URL.revokeObjectURL(newPreviews[index].url)
     newPreviews.splice(index, 1)
     setWeeklyFilesPreviews(newPreviews)
-    
+
     // Reset input
     if (newFiles.length === 0) {
       document.getElementById('weeklyFiles').value = ''
@@ -215,9 +248,11 @@ export default function SecretaryPortal() {
   }
 
   const fetchAllData = () => {
-    fetch(`${API_URL}/weekly_notices.php`).then(r => r.json()).then(d => Array.isArray(d) && setWeeklyNotices(d)).catch(() => {})
-    fetch(`${API_URL}/special_programmes.php`).then(r => r.json()).then(d => Array.isArray(d) && setSpecialProgrammes(d)).catch(() => {})
-    fetch(`${API_URL}/speaking_arrangements.php`).then(r => r.json()).then(d => Array.isArray(d) && setSpeakingArrangements(d)).catch(() => {})
+    fetch(`${API_URL}/weekly_notices.php`).then(r => r.json()).then(d => Array.isArray(d) && setWeeklyNotices(d)).catch(() => { })
+    fetch(`${API_URL}/special_programmes.php`).then(r => r.json()).then(d => Array.isArray(d) && setSpecialProgrammes(d)).catch(() => { })
+    fetch(`${API_URL}/speaking_schedules.php?action=admin_list`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    }).then(r => r.json()).then(d => Array.isArray(d) && setSpeakingUploads(d)).catch(() => { })
   }
 
   const showToast = (type, text) => {
@@ -241,22 +276,22 @@ export default function SecretaryPortal() {
 
   const handleWeeklySubmit = async (e) => {
     e.preventDefault()
-    
+
     const noticesToSave = individualNotices.map(n => ({ title: n.title, details: n.details })).filter(n => n.title.trim() || n.details.trim());
     const hasText = noticesToSave.length > 0;
     const hasFile = weeklyFiles.length > 0;
-    
+
     if (!hasText && !hasFile) return showToast('error', 'Please provide either a notice title/detail or an attachment.')
-    
+
     setSubmitLoading(true)
     try {
       const fd = new FormData()
       if (weeklyEditId) fd.append('id', weeklyEditId)
       fd.append('release_date', weeklyDate)
-      
+
       const noticesToSave = individualNotices.map(n => ({ title: n.title, details: n.details })).filter(n => n.title.trim() || n.details.trim())
       fd.append('notices_json', JSON.stringify(noticesToSave))
-      
+
       individualNotices.forEach((n, i) => {
         if (n.file) fd.append('notice_file_' + i, n.file)
       })
@@ -273,7 +308,7 @@ export default function SecretaryPortal() {
 
       if (res.ok) {
         showToast('success', 'Weekly Notice published successfully!')
-        setWeeklyDate(getLocalFormattedDate()); 
+        setWeeklyDate(getUpcomingSundays(16)[0]?.value || getLocalFormattedDate());
         setWeeklyFiles([]); document.getElementById('weeklyFiles').value = ''
         weeklyFilesPreviews.forEach(p => URL.revokeObjectURL(p.url))
         setWeeklyFilesPreviews([])
@@ -293,12 +328,12 @@ export default function SecretaryPortal() {
 
   const handleSpecialSubmit = async (e) => {
     e.preventDefault()
-    
+
     const hasText = specialTitle.trim() && specialEventFrom;
     const hasFile = !!specialFile;
     if (!hasText && !hasFile) return showToast('error', 'Please provide either Title & Date, or an Attachment.')
     if (!specialWing) return showToast('error', 'Wing is required.')
-    
+
     setSubmitLoading(true)
     try {
       const fd = new FormData()
@@ -321,7 +356,7 @@ export default function SecretaryPortal() {
 
       if (res.ok) {
         showToast('success', 'Special Programme added successfully!')
-        setSpecialDate(getLocalFormattedDate()); 
+        setSpecialDate(getLocalFormattedDate());
         setSpecialTitle(''); setSpecialWing('Church (General)'); setCustomWing(''); setSpecialEditId(null);
         setSpecialEventFrom(''); setSpecialEventTo(''); setSpecialDuration(''); setSpecialDetails('');
         clearSingleFile('specialFile', setSpecialFile, setSpecialFilePreview, specialFilePreview);
@@ -337,47 +372,214 @@ export default function SecretaryPortal() {
     }
   }
 
-  const handleSpeakingSubmit = async (e) => {
+  const handleSpeakingUpload = async (e) => {
     e.preventDefault()
-    
-    const hasText = speakingSection && speakingDetails.trim();
-    const hasFile = !!speakingFile1 || !!speakingFile2 || !!speakingFile3;
-    if (!hasText && !hasFile) return showToast('error', 'Please provide either Section & Details, or an Attachment.')
-    if (!speakingDate) return showToast('error', 'Event date is required.')
-    
+
+    if (!speakingSection) return showToast('error', 'Please select a schedule subsection.')
+    if (!speakingFile) return showToast('error', 'Please select one fixed-format text-based PDF to upload.')
+
+    if (speakingFile.type !== 'application/pdf' && !speakingFile.name.toLowerCase().endsWith('.pdf')) {
+      return showToast('error', 'Only PDF files are allowed for speaking schedules.')
+    }
+
     setSubmitLoading(true)
     try {
       const fd = new FormData()
-      if (speakingEditId) fd.append('id', speakingEditId)
       fd.append('sub_section', speakingSection)
-      fd.append('details', speakingDetails)
-      fd.append('event_date', speakingDate)
-      if (speakingFile1) fd.append('attachment1', speakingFile1)
-      if (speakingFile2) fd.append('attachment2', speakingFile2)
-      if (speakingFile3) fd.append('attachment3', speakingFile3)
+      fd.append('pdf_file', speakingFile)
 
-      const res = await fetch(`${API_URL}/speaking_arrangements.php`, {
+      const uploadRes = await fetch(`${API_URL}/speaking_schedules.php?action=upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: fd
       })
 
+      const uploadText = await uploadRes.text()
+      let uploadData = {}
+
+      try {
+        uploadData = uploadText ? JSON.parse(uploadText) : {}
+      } catch {
+        throw new Error(uploadText || 'Invalid server response while uploading PDF.')
+      }
+
+      if (!uploadRes.ok) {
+        throw new Error(uploadData.error || uploadData.message || 'Failed to upload and parse schedule PDF.')
+      }
+
+      const uploadId = uploadData.upload_id || uploadData.id || uploadData.upload?.id
+
+      if (uploadId) {
+        const publishRes = await fetch(`${API_URL}/speaking_schedules.php?action=publish`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ upload_id: uploadId })
+        })
+
+        if (!publishRes.ok) {
+          const publishText = await publishRes.text()
+          let publishData = {}
+
+          try {
+            publishData = publishText ? JSON.parse(publishText) : {}
+          } catch {
+            publishData = {}
+          }
+
+          throw new Error(publishData.error || publishData.message || 'PDF parsed, but publishing failed.')
+        }
+      }
+
+      showToast('success', 'PDF schedule uploaded, parsed, and published successfully!')
+
+      setSpeakingFile(null)
+      setParsedPreview(null)
+      if (document.getElementById('spkFile')) {
+        document.getElementById('spkFile').value = ''
+      }
+      fetchAllData()
+    } catch (e) {
+      console.error('Speaking PDF upload failed:', e)
+      showToast('error', e.message || 'Network error while uploading PDF.')
+    } finally {
+      setSubmitLoading(false)
+    }
+  }
+
+  const handleViewUploadItems = async (uploadId) => {
+    try {
+      const res = await fetch(`${API_URL}/speaking_schedules.php?action=preview&upload_id=${uploadId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
       if (res.ok) {
-        showToast('success', 'Speaking Arrangement added successfully!')
-        setSpeakingDate(getLocalFormattedDate());
-        setSpeakingSection('Sunday Worships'); setSpeakingDetails(''); setSpeakingEditId(null);
-        clearSingleFile('spkFile1', setSpeakingFile1, setSpeakingFile1Preview, speakingFile1Preview);
-        clearSingleFile('spkFile2', setSpeakingFile2, setSpeakingFile2Preview, speakingFile2Preview);
-        clearSingleFile('spkFile3', setSpeakingFile3, setSpeakingFile3Preview, speakingFile3Preview);
+        const data = await res.json()
+        setParsedPreview({
+          upload_id: data.upload.id,
+          sub_section: data.upload.sub_section,
+          title: data.upload.title,
+          period_start: data.upload.period_start,
+          period_end: data.upload.period_end,
+          meta_json: data.upload.meta_json,
+          preview_items: data.items,
+          is_already_published: data.upload.status === 'published'
+        })
+
+        setTimeout(() => {
+          const el = document.getElementById('preview-section')
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+      } else {
+        showToast('error', 'Failed to retrieve schedule items.')
+      }
+    } catch (e) {
+      showToast('error', 'Network error.')
+    }
+  }
+
+  const handleCellBlur = async (itemId, key, newValue, itemIndex) => {
+    if (!parsedPreview) return
+
+    // Check if anything actually changed
+    const currentVal = parsedPreview.preview_items[itemIndex].data_json[key]
+    if (currentVal === newValue) return
+
+    // Update local state first
+    const updatedItems = [...parsedPreview.preview_items]
+    updatedItems[itemIndex].data_json[key] = newValue
+    setParsedPreview({ ...parsedPreview, preview_items: updatedItems })
+
+    // Update cell value in database
+    try {
+      const res = await fetch(`${API_URL}/speaking_schedules.php?action=update_item`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          id: itemId,
+          data_json: updatedItems[itemIndex].data_json
+        })
+      })
+      if (res.ok) {
+        showToast('success', 'Cell updated successfully.')
+      } else {
+        showToast('error', 'Failed to save cell update on server.')
+      }
+    } catch (e) {
+      showToast('error', 'Network error while updating cell.')
+    }
+  }
+
+  const handlePublishSchedule = async (uploadId) => {
+    setSubmitLoading(true)
+    try {
+      const res = await fetch(`${API_URL}/speaking_schedules.php?action=publish`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ upload_id: uploadId })
+      })
+
+      if (res.ok) {
+        showToast('success', 'Schedule published and is now live!')
+        setParsedPreview(null)
         fetchAllData()
       } else {
         const err = await res.json()
-        showToast('error', err.error || 'Failed to add arrangement.')
+        showToast('error', err.error || 'Failed to publish schedule.')
       }
     } catch (e) {
       showToast('error', 'Network error.')
     } finally {
       setSubmitLoading(false)
+    }
+  }
+
+  const handleCancelDraft = async (uploadId) => {
+    if (!confirm("Are you sure you want to discard this draft? This will delete the parsed items permanently.")) return
+
+    try {
+      const res = await fetch(`${API_URL}/speaking_schedules.php?upload_id=${uploadId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (res.ok) {
+        showToast('success', 'Draft discarded.')
+        setParsedPreview(null)
+        fetchAllData()
+      } else {
+        showToast('error', 'Failed to discard draft.')
+      }
+    } catch (e) {
+      showToast('error', 'Network error.')
+    }
+  }
+
+  const handleDeleteUpload = async (uploadId) => {
+    if (!confirm("Are you sure you want to delete this schedule? This will remove all items and the uploaded file permanently.")) return
+
+    try {
+      const res = await fetch(`${API_URL}/speaking_schedules.php?upload_id=${uploadId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (res.ok) {
+        showToast('success', 'Schedule deleted successfully.')
+        if (parsedPreview && parsedPreview.upload_id === uploadId) {
+          setParsedPreview(null)
+        }
+        fetchAllData()
+      } else {
+        showToast('error', 'Failed to delete schedule.')
+      }
+    } catch (e) {
+      showToast('error', 'Network error.')
     }
   }
 
@@ -391,7 +593,7 @@ export default function SecretaryPortal() {
       } else {
         setIndividualNotices([{ title: '', details: '', file: null }])
       }
-    } catch(e) {
+    } catch (e) {
       setIndividualNotices([{ title: '', details: '', file: null }])
     }
     setActiveTab('weekly')
@@ -419,15 +621,6 @@ export default function SecretaryPortal() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleEditSpeaking = (item) => {
-    setSpeakingEditId(item.id)
-    setSpeakingSection(item.sub_section)
-    setSpeakingDetails(item.details || '')
-    setSpeakingDate(item.event_date)
-    setActiveTab('speaking')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
   const handleDelete = async (endpoint, id) => {
     if (!confirm("Are you sure you want to delete this entry permanently?")) return
     try {
@@ -447,12 +640,24 @@ export default function SecretaryPortal() {
     }
   }
 
+  const parseScheduleData = (value) => {
+    if (!value) return {}
+    if (typeof value === 'object') return value
+
+    try {
+      return JSON.parse(value)
+    } catch {
+      return { value }
+    }
+  }
+
   if (loading || !user) {
     return <div className="section container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}><div className="jumping-dots"><span></span><span></span><span></span></div></div>
   }
 
   const inputStyle = { width: '100%', padding: '1.1rem 1.2rem', borderRadius: '12px', border: '1px solid #e0e0e0', fontSize: '1rem', fontFamily: 'inherit', backgroundColor: '#fafafa', transition: 'all 0.2s ease' }
   const labelStyle = { display: 'block', marginBottom: '0.6rem', fontWeight: 600, color: '#333', fontSize: '0.95rem' }
+  const weeklySundayOptions = getUpcomingSundays(16)
 
   return (
     <>
@@ -489,7 +694,7 @@ export default function SecretaryPortal() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem', borderBottom: '1px solid #eee', paddingBottom: '1.5rem' }}>
           <div>
             <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3rem)', color: '#111', fontWeight: '800', lineHeight: '1.1', letterSpacing: '-1px' }}>Secretary Dashboard</h1>
-            <p style={{ color: '#666', fontSize: '1.1rem', marginTop: '0.8rem' }}>Welcome back, <strong style={{color: 'var(--color-primary)'}}>{user.full_name}</strong></p>
+            <p style={{ color: '#666', fontSize: '1.1rem', marginTop: '0.8rem' }}>Welcome back, <strong style={{ color: 'var(--color-primary)' }}>{user.full_name}</strong></p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             {user.designation === 'Developer' && (
@@ -511,19 +716,37 @@ export default function SecretaryPortal() {
         {/* Tab Contents */}
         <div ref={tabContentRef} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #fcfcfc 100%)', padding: 'clamp(2rem, 5vw, 3.5rem)', borderRadius: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.05)', border: '1px solid rgba(0,0,0,0.04)', marginBottom: '4rem', position: 'relative' }}>
           <div style={{ position: 'absolute', top: 0, right: 0, width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(139,0,0,0.03) 0%, rgba(255,255,255,0) 70%)', pointerEvents: 'none' }} />
-          
+
           {activeTab === 'weekly' && (
             <form onSubmit={handleWeeklySubmit} style={{ position: 'relative', zIndex: 1 }}>
               <h2 style={{ fontSize: '1.8rem', color: '#111', fontWeight: '800', marginBottom: '2rem' }}>Publish Weekly Notice</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 <div>
-                  <label style={labelStyle}>Upload Date * (Auto-filled)</label>
-                  <input type="text" readOnly value={displayDate(weeklyDate)} style={{...inputStyle, background: '#f0f0f0', color: '#666', cursor: 'not-allowed'}} />
+                  <label style={labelStyle}>Notice Sunday Date *</label>
+                  <select
+                    required
+                    value={weeklyDate}
+                    onChange={(e) => setWeeklyDate(e.target.value)}
+                    style={inputStyle}
+                  >
+                    <option value="">Select Sunday</option>
+                    {weeklyDate && !weeklySundayOptions.some(option => option.value === weeklyDate) && (
+                      <option value={weeklyDate}>
+                        {displayDate(weeklyDate)} — Current Selected
+                      </option>
+                    )}
+                    {weeklySundayOptions.map((sunday) => (
+                      <option key={sunday.value} value={sunday.value}>
+                        {sunday.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
                 <div>
                   <label style={labelStyle}>Attach Documents (Max 5 files)</label>
                   <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '-0.4rem', marginBottom: '0.8rem' }}>Allowed formats: PDF, DOCX, XLSX, PPT, Images. Hold Ctrl/Cmd to select multiple.</p>
-                  <input type="file" id="weeklyFiles" multiple onChange={handleWeeklyFilesChange} style={{...inputStyle, padding: '0.9rem'}} />
+                  <input type="file" id="weeklyFiles" multiple onChange={handleWeeklyFilesChange} style={{ ...inputStyle, padding: '0.9rem' }} />
                   {weeklyFilesPreviews.length > 0 && (
                     <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
                       {weeklyFilesPreviews.map((p, i) => (
@@ -542,34 +765,42 @@ export default function SecretaryPortal() {
                     </div>
                   )}
                 </div>
-                
-                <div style={{ borderTop: '1px solid #eee', paddingTop: '1.5rem' }}>
-                  <h3 style={{ fontSize: '1.2rem', color: '#111', fontWeight: '700', marginBottom: '1rem' }}>Add Individual Notices</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {individualNotices.map((notice, idx) => (
-                      <div key={idx} style={{ background: '#fafafa', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', position: 'relative' }}>
-                        {individualNotices.length > 1 && (
-                          <button type="button" onClick={() => {
-                            const newN = [...individualNotices]; newN.splice(idx, 1); setIndividualNotices(newN);
-                          }} style={{ position: 'absolute', top: '10px', right: '10px', background: '#ffebee', color: '#c62828', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&times;</button>
-                        )}
-                        <div style={{ marginBottom: '1rem' }}>
-                          <label style={{...labelStyle, fontSize: '0.9rem'}}>Notice Title</label>
-                          <input type="text" value={notice.title} onChange={e => { const newN = [...individualNotices]; newN[idx].title = e.target.value; setIndividualNotices(newN); }} style={{...inputStyle, padding: '0.7rem'}} placeholder="e.g. Women's Fellowship Meeting" />
+
+                {/*
+                  FUTURE DEVELOPMENT NOTE:
+                  Individual Notice section is temporarily hidden.
+                  The full code is intentionally kept here so it can be restored later.
+                  To show it again, change `false` to `true` below.
+                */}
+                {false && (
+                  <div style={{ borderTop: '1px solid #eee', paddingTop: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.2rem', color: '#111', fontWeight: '700', marginBottom: '1rem' }}>Add Individual Notices</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      {individualNotices.map((notice, idx) => (
+                        <div key={idx} style={{ background: '#fafafa', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', position: 'relative' }}>
+                          {individualNotices.length > 1 && (
+                            <button type="button" onClick={() => {
+                              const newN = [...individualNotices]; newN.splice(idx, 1); setIndividualNotices(newN);
+                            }} style={{ position: 'absolute', top: '10px', right: '10px', background: '#ffebee', color: '#c62828', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&times;</button>
+                          )}
+                          <div style={{ marginBottom: '1rem' }}>
+                            <label style={{ ...labelStyle, fontSize: '0.9rem' }}>Notice Title</label>
+                            <input type="text" value={notice.title} onChange={e => { const newN = [...individualNotices]; newN[idx].title = e.target.value; setIndividualNotices(newN); }} style={{ ...inputStyle, padding: '0.7rem' }} placeholder="e.g. Women's Fellowship Meeting" />
+                          </div>
+                          <div>
+                            <label style={{ ...labelStyle, fontSize: '0.9rem' }}>Details Space</label>
+                            <textarea value={notice.details} onChange={e => { const newN = [...individualNotices]; newN[idx].details = e.target.value; setIndividualNotices(newN); }} style={{ ...inputStyle, padding: '0.7rem', minHeight: '80px' }} placeholder="Write details..." />
+                          </div>
+                          <div style={{ marginTop: '1rem' }}>
+                            <label style={{ ...labelStyle, fontSize: '0.9rem' }}>Attachment (Optional)</label>
+                            <input type="file" onChange={e => { const newN = [...individualNotices]; newN[idx].file = e.target.files[0]; setIndividualNotices(newN); }} style={{ ...inputStyle, padding: '0.7rem' }} />
+                          </div>
                         </div>
-                        <div>
-                          <label style={{...labelStyle, fontSize: '0.9rem'}}>Details Space</label>
-                          <textarea value={notice.details} onChange={e => { const newN = [...individualNotices]; newN[idx].details = e.target.value; setIndividualNotices(newN); }} style={{...inputStyle, padding: '0.7rem', minHeight: '80px'}} placeholder="Write details..." />
-                        </div>
-                        <div style={{ marginTop: '1rem' }}>
-                          <label style={{...labelStyle, fontSize: '0.9rem'}}>Attachment (Optional)</label>
-                          <input type="file" onChange={e => { const newN = [...individualNotices]; newN[idx].file = e.target.files[0]; setIndividualNotices(newN); }} style={{...inputStyle, padding: '0.7rem'}} />
-                        </div>
-                      </div>
-                    ))}
-                    <button type="button" onClick={() => setIndividualNotices([...individualNotices, {title: '', details: ''}])} style={{ background: '#fff', border: '1px dashed var(--color-primary)', color: 'var(--color-primary)', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: '600' }}>+ Add More Notice</button>
+                      ))}
+                      <button type="button" onClick={() => setIndividualNotices([...individualNotices, { title: '', details: '' }])} style={{ background: '#fff', border: '1px dashed var(--color-primary)', color: 'var(--color-primary)', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: '600' }}>+ Add More Notice</button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <button type="submit" disabled={submitLoading} className="btn-primary" style={{ padding: '1.2rem', fontSize: '1.1rem', fontWeight: '700', borderRadius: '12px', border: 'none', background: 'var(--color-primary)', color: '#fff', cursor: 'pointer', opacity: submitLoading ? 0.6 : 1 }}>{weeklyEditId ? 'Update Notice' : 'Publish Notice'}</button>
               </div>
@@ -582,7 +813,7 @@ export default function SecretaryPortal() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 <div>
                   <label style={labelStyle}>Upload Date * (Auto-filled)</label>
-                  <input type="text" readOnly value={displayDate(specialDate)} style={{...inputStyle, background: '#f0f0f0', color: '#666', cursor: 'not-allowed'}} />
+                  <input type="text" readOnly value={displayDate(specialDate)} style={{ ...inputStyle, background: '#f0f0f0', color: '#666', cursor: 'not-allowed' }} />
                 </div>
                 <div>
                   <label style={labelStyle}>Wing *</label>
@@ -607,37 +838,37 @@ export default function SecretaryPortal() {
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   <div style={{ flex: 1, minWidth: '150px' }}>
                     <label style={labelStyle}>Event Date (From)</label>
-                    <DatePicker 
-                       selected={specialEventFrom ? new Date(specialEventFrom) : null} 
-                       onChange={(date) => setSpecialEventFrom(date ? getLocalFormattedDate(date) : '')} 
-                       dateFormat="dd/MM/yyyy"
-                       placeholderText="DD/MM/YYYY"
-                       customInput={<input style={inputStyle} />}
+                    <DatePicker
+                      selected={specialEventFrom ? new Date(specialEventFrom) : null}
+                      onChange={(date) => setSpecialEventFrom(date ? getLocalFormattedDate(date) : '')}
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="DD/MM/YYYY"
+                      customInput={<input style={inputStyle} />}
                     />
                   </div>
                   <div style={{ flex: 1, minWidth: '150px' }}>
                     <label style={labelStyle}>Event Date (To)</label>
-                    <DatePicker 
-                       selected={specialEventTo ? new Date(specialEventTo) : null} 
-                       onChange={(date) => setSpecialEventTo(date ? getLocalFormattedDate(date) : '')} 
-                       dateFormat="dd/MM/yyyy"
-                       placeholderText="DD/MM/YYYY"
-                       customInput={<input style={inputStyle} />}
+                    <DatePicker
+                      selected={specialEventTo ? new Date(specialEventTo) : null}
+                      onChange={(date) => setSpecialEventTo(date ? getLocalFormattedDate(date) : '')}
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="DD/MM/YYYY"
+                      customInput={<input style={inputStyle} />}
                     />
                   </div>
                   <div style={{ width: '120px', minWidth: '100px' }}>
                     <label style={labelStyle}>Duration</label>
-                    <input type="text" readOnly value={specialDuration} style={{...inputStyle, background: '#f5f5f5', color: '#666', padding: '1.1rem 0.5rem', textAlign: 'center'}} />
+                    <input type="text" readOnly value={specialDuration} style={{ ...inputStyle, background: '#f5f5f5', color: '#666', padding: '1.1rem 0.5rem', textAlign: 'center' }} />
                   </div>
                 </div>
                 <div>
                   <label style={labelStyle}>Programme Details</label>
-                  <textarea value={specialDetails} onChange={e => setSpecialDetails(e.target.value)} style={{...inputStyle, minHeight: '100px'}} placeholder="Write details about the programme..." />
+                  <textarea value={specialDetails} onChange={e => setSpecialDetails(e.target.value)} style={{ ...inputStyle, minHeight: '100px' }} placeholder="Write details about the programme..." />
                 </div>
                 <div>
                   <label style={labelStyle}>Attach Document (1 file max)</label>
                   <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '-0.4rem', marginBottom: '0.8rem' }}>Allowed formats: PDF, DOCX, XLSX, PPT, Images.</p>
-                  <input type="file" id="specialFile" onChange={e => handleSingleFileChange(e, setSpecialFile, setSpecialFilePreview)} style={{...inputStyle, padding: '0.9rem'}} />
+                  <input type="file" id="specialFile" onChange={e => handleSingleFileChange(e, setSpecialFile, setSpecialFilePreview)} style={{ ...inputStyle, padding: '0.9rem' }} />
                   {specialFilePreview && (
                     <div style={{ position: 'relative', width: '120px', height: '120px', borderRadius: '8px', border: '1px solid #ddd', overflow: 'hidden', background: '#fff', marginTop: '1rem' }}>
                       {specialFilePreview.type === 'image' ? (
@@ -658,65 +889,62 @@ export default function SecretaryPortal() {
           )}
 
           {activeTab === 'speaking' && (
-            <form onSubmit={handleSpeakingSubmit} style={{ position: 'relative', zIndex: 1 }}>
-              <h2 style={{ fontSize: '1.8rem', color: '#111', fontWeight: '800', marginBottom: '2rem' }}>Add Speaking Arrangement</h2>
+            <form onSubmit={handleSpeakingUpload} style={{ position: 'relative', zIndex: 1 }}>
+              <h2 style={{ fontSize: '1.8rem', color: '#111', fontWeight: '800', marginBottom: '0.6rem' }}>Upload Speaking Schedule PDF</h2>
+              <p style={{ color: '#666', marginBottom: '2rem', lineHeight: 1.6 }}>
+                Select the schedule subsection and attach one fixed-format text-based PDF. The PDF will be read, parsed, and published on the Speaking Arrangements page.
+              </p>
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 <div>
-                  <label style={labelStyle}>Upload Date * (Auto-filled)</label>
-                  <input type="text" readOnly value={displayDate(speakingDate)} style={{...inputStyle, background: '#f0f0f0', color: '#666', cursor: 'not-allowed'}} />
-                </div>
-                <div>
                   <label style={labelStyle}>Sub-Section *</label>
-                  <select required value={speakingSection} onChange={e => setSpeakingSection(e.target.value)} style={inputStyle}>
-                    <option value="Sunday Worships">Sunday Worships</option>
-                    <option value="Morning prayer">Morning prayer</option>
+                  <select
+                    required
+                    value={speakingSection}
+                    onChange={(e) => setSpeakingSection(e.target.value)}
+                    style={inputStyle}
+                  >
+                    <option value="Sunday Worships">Sunday Worship Schedule</option>
+                    <option value="Morning prayer">Morning Prayer</option>
                     <option value="Monday Prayer">Monday Prayer</option>
-                    <option value="C.E Union">C.E Union</option>
-                    <option value="Wednesday Prayer">Wednesday Prayer</option>
-                    <option value="Zoom Prayer">Zoom Prayer</option>
+                    <option value="Wednesday Prayer">Wednesday Bible Study</option>
+                    <option value="Zoom Prayer">Evening Zoom Prayer</option>
                   </select>
                 </div>
+
                 <div>
-                  <label style={labelStyle}>Details Space (Optional)</label>
-                  <textarea value={speakingDetails} onChange={e => setSpeakingDetails(e.target.value)} style={{...inputStyle, minHeight: '100px'}} placeholder="Write details..." />
+                  <label style={labelStyle}>Upload Schedule PDF *</label>
+                  <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '-0.4rem', marginBottom: '0.8rem' }}>
+                    Only one text-based PDF is allowed. Scanned/image-based PDFs are not supported.
+                  </p>
+                  <input
+                    type="file"
+                    id="spkFile"
+                    accept=".pdf,application/pdf"
+                    required
+                    onChange={e => setSpeakingFile(e.target.files?.[0] || null)}
+                    style={{ ...inputStyle, padding: '0.9rem' }}
+                  />
                 </div>
-                <div>
-                  <label style={labelStyle}>Attachments (Up to 3)</label>
-                  <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '-0.4rem', marginBottom: '0.8rem' }}>Allowed formats: PDF, DOCX, XLSX, PPT, Images.</p>
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', flexDirection: 'column' }}>
-                    <div style={{flex: 1}}>
-                      <label style={{...labelStyle, fontSize: '0.85rem', color: '#666'}}>Attachment 1</label>
-                      <input type="file" id="spkFile1" onChange={e => handleSingleFileChange(e, setSpeakingFile1, setSpeakingFile1Preview)} style={{...inputStyle, padding: '0.9rem'}} />
-                      {speakingFile1Preview && (
-                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', border: '1px solid #ddd', overflow: 'hidden', background: '#fff', marginTop: '0.5rem' }}>
-                          {speakingFile1Preview.type === 'image' ? <img src={speakingFile1Preview.url} style={{width:'100%', height:'100%', objectFit:'cover', cursor: 'pointer'}} onClick={() => setFullscreenPreview(speakingFile1Preview)} /> : <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', background:'#f9f9f9', cursor: 'pointer'}} onClick={() => setFullscreenPreview(speakingFile1Preview)}><span style={{fontSize:'0.6rem', color:'#666'}}>Doc 1</span></div>}
-                          <button type="button" onClick={(e) => { e.stopPropagation(); clearSingleFile('spkFile1', setSpeakingFile1, setSpeakingFile1Preview, speakingFile1Preview); }} style={{ position: 'absolute', top: '2px', right: '2px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>&times;</button>
-                        </div>
-                      )}
-                    </div>
-                    <div style={{flex: 1, minWidth: '100px'}}>
-                      <label style={{...labelStyle, fontSize: '0.85rem', color: '#666'}}>Attachment 2</label>
-                      <input type="file" id="spkFile2" onChange={e => handleSingleFileChange(e, setSpeakingFile2, setSpeakingFile2Preview)} style={{...inputStyle, padding: '0.9rem'}} />
-                      {speakingFile2Preview && (
-                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', border: '1px solid #ddd', overflow: 'hidden', background: '#fff', marginTop: '0.5rem' }}>
-                          {speakingFile2Preview.type === 'image' ? <img src={speakingFile2Preview.url} style={{width:'100%', height:'100%', objectFit:'cover', cursor: 'pointer'}} onClick={() => setFullscreenPreview(speakingFile2Preview)} /> : <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', background:'#f9f9f9', cursor: 'pointer'}} onClick={() => setFullscreenPreview(speakingFile2Preview)}><span style={{fontSize:'0.6rem', color:'#666'}}>Doc 2</span></div>}
-                          <button type="button" onClick={(e) => { e.stopPropagation(); clearSingleFile('spkFile2', setSpeakingFile2, setSpeakingFile2Preview, speakingFile2Preview); }} style={{ position: 'absolute', top: '2px', right: '2px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>&times;</button>
-                        </div>
-                      )}
-                    </div>
-                    <div style={{flex: 1, minWidth: '100px'}}>
-                      <label style={{...labelStyle, fontSize: '0.85rem', color: '#666'}}>Attachment 3</label>
-                      <input type="file" id="spkFile3" onChange={e => handleSingleFileChange(e, setSpeakingFile3, setSpeakingFile3Preview)} style={{...inputStyle, padding: '0.9rem'}} />
-                      {speakingFile3Preview && (
-                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', border: '1px solid #ddd', overflow: 'hidden', background: '#fff', marginTop: '0.5rem' }}>
-                          {speakingFile3Preview.type === 'image' ? <img src={speakingFile3Preview.url} style={{width:'100%', height:'100%', objectFit:'cover', cursor: 'pointer'}} onClick={() => setFullscreenPreview(speakingFile3Preview)} /> : <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', background:'#f9f9f9', cursor: 'pointer'}} onClick={() => setFullscreenPreview(speakingFile3Preview)}><span style={{fontSize:'0.6rem', color:'#666'}}>Doc 3</span></div>}
-                          <button type="button" onClick={(e) => { e.stopPropagation(); clearSingleFile('spkFile3', setSpeakingFile3, setSpeakingFile3Preview, speakingFile3Preview); }} style={{ position: 'absolute', top: '2px', right: '2px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>&times;</button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <button type="submit" disabled={submitLoading} className="btn-primary" style={{ padding: '1.2rem', fontSize: '1.1rem', fontWeight: '700', borderRadius: '12px', border: 'none', background: 'var(--color-primary)', color: '#fff', cursor: 'pointer', opacity: submitLoading ? 0.6 : 1 }}>{speakingEditId ? 'Update Arrangement' : 'Add Arrangement'}</button>
+
+                <button
+                  type="submit"
+                  disabled={submitLoading}
+                  className="btn-primary"
+                  style={{
+                    padding: '1.2rem',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'var(--color-primary)',
+                    color: '#fff',
+                    cursor: submitLoading ? 'not-allowed' : 'pointer',
+                    opacity: submitLoading ? 0.6 : 1
+                  }}
+                >
+                  {submitLoading ? 'Uploading PDF...' : 'Upload PDF Schedule'}
+                </button>
               </div>
             </form>
           )}
@@ -740,64 +968,150 @@ export default function SecretaryPortal() {
             </span>
             <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, var(--color-primary), transparent)', opacity: 0.35 }} />
           </div>
-          
+
           {/* Weekly List */}
           {activeTab === 'weekly' && (
             weeklyNotices.length === 0 ? <p style={{ padding: '3rem', textAlign: 'center', color: '#aaa' }}>No notices published yet.</p> :
-            weeklyNotices.map((item, i) => (
-              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 2rem', borderBottom: i < weeklyNotices.length - 1 ? '1px solid #f5f5f5' : 'none' }}>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ fontSize: '1rem', color: '#1a1a1a', margin: '0 0 0.3rem 0', fontWeight: '600' }}>Notice for {new Date(item.release_date).toLocaleDateString()}</h3>
-                  <p style={{ fontSize: '0.78rem', color: '#aaa', margin: 0 }}>Docs: {item.documents_json ? JSON.parse(item.documents_json).length : 0}</p>
+              weeklyNotices.map((item, i) => (
+                <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 2rem', borderBottom: i < weeklyNotices.length - 1 ? '1px solid #f5f5f5' : 'none' }}>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: '1rem', color: '#1a1a1a', margin: '0 0 0.3rem 0', fontWeight: '600' }}>Notice for {new Date(item.release_date).toLocaleDateString()}</h3>
+                    <p style={{ fontSize: '0.78rem', color: '#aaa', margin: 0 }}>Docs: {item.documents_json ? JSON.parse(item.documents_json).length : 0}</p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button onClick={() => handleEditWeekly(item)} style={{ padding: '0.45rem 1rem', background: '#e0f2fe', border: '1px solid #bae6fd', color: '#0369a1', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Edit</button>
+                    <button onClick={() => handleDelete('weekly_notices', item.id)} style={{ padding: '0.45rem 1rem', background: '#fff0f0', border: '1px solid #ffcdd2', color: '#d32f2f', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Delete</button>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button onClick={() => handleEditWeekly(item)} style={{ padding: '0.45rem 1rem', background: '#e0f2fe', border: '1px solid #bae6fd', color: '#0369a1', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Edit</button>
-                  <button onClick={() => handleDelete('weekly_notices', item.id)} style={{ padding: '0.45rem 1rem', background: '#fff0f0', border: '1px solid #ffcdd2', color: '#d32f2f', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Delete</button>
-                </div>
-              </div>
-            ))
+              ))
           )}
 
           {/* Special List */}
           {activeTab === 'special' && (
             specialProgrammes.length === 0 ? <p style={{ padding: '3rem', textAlign: 'center', color: '#aaa' }}>No programmes published yet.</p> :
-            specialProgrammes.map((item, i) => (
-              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 2rem', borderBottom: i < specialProgrammes.length - 1 ? '1px solid #f5f5f5' : 'none' }}>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ fontSize: '1rem', color: '#1a1a1a', margin: '0 0 0.3rem 0', fontWeight: '600' }}>{item.title}</h3>
-                  <p style={{ fontSize: '0.78rem', color: '#aaa', margin: 0 }}>{item.wing === 'Others' ? item.custom_wing : item.wing} | {new Date(item.upload_date).toLocaleDateString()}</p>
+              specialProgrammes.map((item, i) => (
+                <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 2rem', borderBottom: i < specialProgrammes.length - 1 ? '1px solid #f5f5f5' : 'none' }}>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: '1rem', color: '#1a1a1a', margin: '0 0 0.3rem 0', fontWeight: '600' }}>{item.title}</h3>
+                    <p style={{ fontSize: '0.78rem', color: '#aaa', margin: 0 }}>{item.wing === 'Others' ? item.custom_wing : item.wing} | {new Date(item.upload_date).toLocaleDateString()}</p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button onClick={() => handleEditSpecial(item)} style={{ padding: '0.45rem 1rem', background: '#e0f2fe', border: '1px solid #bae6fd', color: '#0369a1', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Edit</button>
+                    <button onClick={() => handleDelete('special_programmes', item.id)} style={{ padding: '0.45rem 1rem', background: '#fff0f0', border: '1px solid #ffcdd2', color: '#d32f2f', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Delete</button>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button onClick={() => handleEditSpecial(item)} style={{ padding: '0.45rem 1rem', background: '#e0f2fe', border: '1px solid #bae6fd', color: '#0369a1', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Edit</button>
-                  <button onClick={() => handleDelete('special_programmes', item.id)} style={{ padding: '0.45rem 1rem', background: '#fff0f0', border: '1px solid #ffcdd2', color: '#d32f2f', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Delete</button>
-                </div>
-              </div>
-            ))
+              ))
           )}
 
           {/* Speaking List */}
           {activeTab === 'speaking' && (
-            speakingArrangements.length === 0 ? <p style={{ padding: '3rem', textAlign: 'center', color: '#aaa' }}>No arrangements published yet.</p> :
-            speakingArrangements.map((item, i) => (
-              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 2rem', borderBottom: i < speakingArrangements.length - 1 ? '1px solid #f5f5f5' : 'none' }}>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ fontSize: '1rem', color: '#1a1a1a', margin: '0 0 0.3rem 0', fontWeight: '600' }}>{item.sub_section}</h3>
-                  <p style={{ fontSize: '0.78rem', color: '#aaa', margin: 0 }}>{new Date(item.event_date).toLocaleDateString()}</p>
-                </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button onClick={() => handleEditSpeaking(item)} style={{ padding: '0.45rem 1rem', background: '#e0f2fe', border: '1px solid #bae6fd', color: '#0369a1', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Edit</button>
-                  <button onClick={() => handleDelete('speaking_arrangements', item.id)} style={{ padding: '0.45rem 1rem', background: '#fff0f0', border: '1px solid #ffcdd2', color: '#d32f2f', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Delete</button>
-                </div>
-              </div>
-            ))
+            speakingUploads.length === 0 ? <p style={{ padding: '3rem', textAlign: 'center', color: '#aaa' }}>No speaking schedule PDFs uploaded yet.</p> :
+              speakingUploads.map((item, i) => {
+                const sectionLabel = SPEAKING_PDF_SECTIONS.find(section => section.value === item.sub_section)?.label || item.sub_section
+                const statusColor = item.status === 'published' ? '#15803d' : '#b45309'
+                const statusBg = item.status === 'published' ? '#f0fdf4' : '#fffbeb'
+
+                return (
+                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 2rem', borderBottom: i < speakingUploads.length - 1 ? '1px solid #f5f5f5' : 'none' }}>
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ fontSize: '1rem', color: '#1a1a1a', margin: '0 0 0.3rem 0', fontWeight: '700' }}>{sectionLabel}</h3>
+                      <p style={{ fontSize: '0.78rem', color: '#888', margin: 0 }}>
+                        {item.title || 'Uploaded schedule PDF'}
+                        {item.period_start && item.period_end ? ` | ${displayDate(item.period_start)} - ${displayDate(item.period_end)}` : ''}
+                      </p>
+                      <span style={{ display: 'inline-block', marginTop: '0.5rem', padding: '0.25rem 0.65rem', borderRadius: '999px', background: statusBg, color: statusColor, fontSize: '0.72rem', fontWeight: 700, textTransform: 'capitalize' }}>
+                        {item.status || 'draft'}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      <button onClick={() => handleViewUploadItems(item.id)} style={{ padding: '0.45rem 1rem', background: '#e0f2fe', border: '1px solid #bae6fd', color: '#0369a1', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>View</button>
+                      {item.status !== 'published' && (
+                        <button onClick={() => handlePublishSchedule(item.id)} style={{ padding: '0.45rem 1rem', background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#15803d', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Publish</button>
+                      )}
+                      <button onClick={() => handleDeleteUpload(item.id)} style={{ padding: '0.45rem 1rem', background: '#fff0f0', border: '1px solid #ffcdd2', color: '#d32f2f', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '0.82rem' }}>Delete</button>
+                    </div>
+                  </div>
+                )
+              })
           )}
         </div>
+
+        {activeTab === 'speaking' && parsedPreview && (
+          <div id="preview-section" style={{ background: '#fff', borderRadius: '16px', border: '1px solid #f0f0f0', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', overflow: 'hidden', marginTop: '2rem' }}>
+            <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid #f5f5f5' }}>
+              <h3 style={{ fontSize: '1.25rem', color: '#111', margin: '0 0 0.35rem 0', fontWeight: 800 }}>Parsed PDF Preview</h3>
+              <p style={{ color: '#777', margin: 0, fontSize: '0.9rem' }}>
+                {parsedPreview.title || 'Schedule PDF'}
+                {parsedPreview.period_start && parsedPreview.period_end ? ` | ${displayDate(parsedPreview.period_start)} - ${displayDate(parsedPreview.period_end)}` : ''}
+              </p>
+            </div>
+
+            <div style={{ padding: '1.5rem 2rem', overflowX: 'auto' }}>
+              {parsedPreview.preview_items?.length > 0 ? (
+                <table style={{ width: '100%', minWidth: '700px', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'left', padding: '0.8rem', borderBottom: '1px solid #eee', color: '#990000' }}>Date</th>
+                      <th style={{ textAlign: 'left', padding: '0.8rem', borderBottom: '1px solid #eee', color: '#990000' }}>Extracted Data</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {parsedPreview.preview_items.map((item, index) => {
+                      const data = parseScheduleData(item.data_json)
+
+                      return (
+                        <tr key={item.id || index}>
+                          <td style={{ padding: '0.8rem', borderBottom: '1px solid #f5f5f5', verticalAlign: 'top', fontWeight: 700 }}>
+                            {displayDate(item.schedule_date || item.event_date || '') || '—'}
+                          </td>
+                          <td style={{ padding: '0.8rem', borderBottom: '1px solid #f5f5f5', verticalAlign: 'top' }}>
+                            <div style={{ display: 'grid', gap: '0.35rem' }}>
+                              {Object.keys(data).length === 0 ? (
+                                <span style={{ color: '#999' }}>No extracted fields</span>
+                              ) : (
+                                Object.entries(data).map(([key, value]) => (
+                                  <div key={key} style={{ color: '#333', lineHeight: 1.5 }}>
+                                    <strong style={{ color: '#111' }}>{key.replaceAll('_', ' ')}:</strong>{' '}
+                                    {Array.isArray(value) ? JSON.stringify(value) : String(value || '—')}
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <p style={{ color: '#aaa', textAlign: 'center', padding: '2rem' }}>No parsed rows found.</p>
+              )}
+
+              <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                {!parsedPreview.is_already_published && (
+                  <button onClick={() => handlePublishSchedule(parsedPreview.upload_id)} style={{ padding: '0.75rem 1.25rem', background: '#15803d', border: 'none', color: '#fff', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}>
+                    Publish Schedule
+                  </button>
+                )}
+                {!parsedPreview.is_already_published && (
+                  <button onClick={() => handleCancelDraft(parsedPreview.upload_id)} style={{ padding: '0.75rem 1.25rem', background: '#fff7ed', border: '1px solid #fed7aa', color: '#c2410c', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}>
+                    Discard Draft
+                  </button>
+                )}
+                <button onClick={() => setParsedPreview(null)} style={{ padding: '0.75rem 1.25rem', background: '#f5f5f5', border: '1px solid #e5e5e5', color: '#444', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}>
+                  Close Preview
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
 
       {/* Fullscreen Preview Overlay */}
       {fullscreenPreview && (
-        <div 
+        <div
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 1100, display: 'flex', flexDirection: 'column', backdropFilter: 'blur(8px)' }}
           onWheel={handlePreviewWheel}
           onMouseUp={handlePreviewMouseUp}
@@ -808,12 +1122,12 @@ export default function SecretaryPortal() {
             {fullscreenPreview.type === 'image' && (
               <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(0,0,0,0.5)', padding: '0.5rem', borderRadius: '12px' }}>
                 <button onClick={(e) => { e.stopPropagation(); setPreviewZoom(z => Math.max(z - 0.2, 0.5)); }} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1.2rem' }}>-</button>
-                <button onClick={(e) => { e.stopPropagation(); setPreviewZoom(1); setPreviewPan({x:0, y:0}); }} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}>Reset</button>
+                <button onClick={(e) => { e.stopPropagation(); setPreviewZoom(1); setPreviewPan({ x: 0, y: 0 }); }} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}>Reset</button>
                 <button onClick={(e) => { e.stopPropagation(); setPreviewZoom(z => Math.min(z + 0.2, 5)); }} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1.2rem' }}>+</button>
               </div>
             )}
-            <button 
-              onClick={() => setFullscreenPreview(null)} 
+            <button
+              onClick={() => setFullscreenPreview(null)}
               style={{ background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', fontSize: '2.5rem', cursor: 'pointer', transition: 'background 0.2s', padding: '0.2rem 1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onMouseOver={(e) => e.target.style.background = 'rgba(220,38,38,0.8)'}
               onMouseOut={(e) => e.target.style.background = 'rgba(0,0,0,0.5)'}
@@ -821,8 +1135,8 @@ export default function SecretaryPortal() {
               &times;
             </button>
           </div>
-          
-          <div 
+
+          <div
             style={{ flex: 1, width: '100%', height: '100%', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', touchAction: 'none' }}
             onMouseDown={fullscreenPreview.type === 'image' ? handlePreviewMouseDown : undefined}
             onMouseMove={fullscreenPreview.type === 'image' ? handlePreviewMouseMove : undefined}
@@ -830,24 +1144,24 @@ export default function SecretaryPortal() {
             onTouchMove={fullscreenPreview.type === 'image' ? handlePreviewTouchMove : undefined}
           >
             {fullscreenPreview.type === 'image' ? (
-                <img 
-                  src={fullscreenPreview.url} 
-                  alt="Fullscreen Preview" 
-                  style={{ 
-                    maxWidth: '100%', 
-                    maxHeight: '100%', 
-                    objectFit: 'contain', 
-                    borderRadius: '8px', 
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                    transform: `translate(${previewPan.x}px, ${previewPan.y}px) scale(${previewZoom})`,
-                    cursor: previewIsDragging ? 'grabbing' : 'grab',
-                    transition: previewIsDragging ? 'none' : 'transform 0.1s ease-out',
-                    userSelect: 'none'
-                  }} 
-                  draggable={false}
-                />
+              <img
+                src={fullscreenPreview.url}
+                alt="Fullscreen Preview"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
+                  borderRadius: '8px',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                  transform: `translate(${previewPan.x}px, ${previewPan.y}px) scale(${previewZoom})`,
+                  cursor: previewIsDragging ? 'grabbing' : 'grab',
+                  transition: previewIsDragging ? 'none' : 'transform 0.1s ease-out',
+                  userSelect: 'none'
+                }}
+                draggable={false}
+              />
             ) : (
-                <iframe src={fullscreenPreview.url} style={{ width: '90%', height: '90%', border: 'none', borderRadius: '12px', backgroundColor: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
+              <iframe src={fullscreenPreview.url} style={{ width: '90%', height: '90%', border: 'none', borderRadius: '12px', backgroundColor: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
             )}
           </div>
         </div>

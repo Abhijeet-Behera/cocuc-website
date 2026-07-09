@@ -987,6 +987,10 @@ export default function Testimonies() {
                 <ReCAPTCHA
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                   onChange={setRecaptchaToken}
+                  onErrored={() => {
+                    console.warn('reCAPTCHA timed out or failed to load.');
+                    setRecaptchaToken(null);
+                  }}
                 />
               </div>
 

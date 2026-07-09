@@ -140,7 +140,7 @@ export default function ActivitiesGrid() {
     },
     {
       title: 'CE Union',
-      link: '/activities/christian-endeavour-union',
+      link: '/activities/ce-union',
       description: (
         <div className={styles.ceSchedule}>
           <div className={styles.ceScheduleItem}>

@@ -278,7 +278,7 @@ export default function LeadershipPage() {
                 borderRadius: '20px',
                 fontWeight: 600
               }}>
-                5
+                2
               </span>
             </h3>
 
@@ -286,9 +286,9 @@ export default function LeadershipPage() {
               {[
                 { name: "Evg. Pratap Kumar Sahoo", role: "Evangelist" },
                 { name: "Evg. Ranjit Singh", role: "Evangelist" },
-                { name: "Evg. Gobinda Sahoo", role: "Evangelist" },
-                { name: "Evg. Sujit Bishoi", role: "Evangelist" },
-                { name: "Evg. Christopher Surya", role: "Evangelist" }
+                // { name: "Evg. Gobinda Sahoo", role: "Evangelist" },
+                // { name: "Evg. Sujit Bishoi", role: "Evangelist" },
+                // { name: "Evg. Christopher Surya", role: "Evangelist" }
               ].map((evg, idx) => {
                 const imageSrc = '/images/deacon-male-placeholder.png';
                 return (

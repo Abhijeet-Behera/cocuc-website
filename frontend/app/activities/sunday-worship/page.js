@@ -59,7 +59,7 @@ export default function SundayWorshipPage() {
           {/* Main text */}
           <div className={styles.infoCard}>
             <p>
-              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong> every Sunday morning. We have another small Congregation in the Jagatsinghpur area, where Evangelist Bro. Gobinda Sahu leads the Worship.
+              Two Worship Services are held in Union Church every Sunday. The <strong style={{ color: 'var(--color-text)' }}>English Service</strong> starts at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong>, while the <strong style={{ color: 'var(--color-text)' }}>Odia Worship Service</strong> commences at <strong style={{ color: 'var(--color-text)' }}>4:30 PM</strong> . Apart from this, we have 3 more Worship centres in Chandrasekharpur, Kalinga Vihar and Sundarpada. The Worship starts in all these centres at <strong style={{ color: 'var(--color-text)' }}>10:00 AM</strong> every Sunday morning.
             </p>
 
             <div

@@ -339,31 +339,10 @@ export default function BlogInspiration() {
   return (
     <div ref={containerRef} className={styles.sliderSection}>
 
-      {/* Slider Controls Sub-Header */}
-      <div className={styles.sliderHeader}>
-        <span className={styles.sliderSubtitle}></span>
-        <div className={styles.sliderControls}>
-          <button
-            className={styles.navButton}
-            onClick={handlePrev}
-            aria-label="Previous posts"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-          </button>
-          <button
-            className={styles.navButton}
-            onClick={handleNext}
-            aria-label="Next posts"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-          </button>
-        </div>
-      </div>
-
       {/* Drag Hint */}
       <div className={styles.dragHint} aria-hidden="true">
         <span className={styles.dragHintLine} />
-        <span>drag to explore</span>
+        <span>swipe to explore</span>
         <span className={styles.dragHintLine} />
       </div>
 
@@ -440,6 +419,24 @@ export default function BlogInspiration() {
             </article>
           ))}
         </div>
+      </div>
+
+      {/* Navigation Buttons (Moved here) */}
+      <div className={styles.sliderControlsBottom}>
+        <button
+          className={styles.navButton}
+          onClick={handlePrev}
+          aria-label="Previous posts"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+        </button>
+        <button
+          className={styles.navButton}
+          onClick={handleNext}
+          aria-label="Next posts"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+        </button>
       </div>
 
       {/* Dot Indicators */}

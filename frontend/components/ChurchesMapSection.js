@@ -13,12 +13,12 @@ const SATELLITE_CHURCHES = [
 ];
 
 const MISSION_FIELDS = [
-  { id: 1, name: "Jagatsinghpur", coords: [20.2644, 86.1666], desc: "Our mission field in Jagatsinghpur district.", type: 'mission' },
-  { id: 2, name: "Nayagarh",      coords: [20.1255, 85.1066], desc: "Our mission field in Nayagarh district.",      type: 'mission' },
-  { id: 3, name: "Baripada",      coords: [21.9320, 86.7265], desc: "Our mission field in Baripada (Mayurbhanj).",  type: 'mission' },
+  // { id: 1, name: "Jagatsinghpur", coords: [20.2644, 86.1666], desc: "Our mission field in Jagatsinghpur district.", type: 'mission' },
+  // { id: 2, name: "Nayagarh",      coords: [20.1255, 85.1066], desc: "Our mission field in Nayagarh district.",      type: 'mission' },
+  // { id: 3, name: "Baripada",      coords: [21.9320, 86.7265], desc: "Our mission field in Baripada (Mayurbhanj).",  type: 'mission' },
 ];
 
-const ALL_CHURCHES = [...SATELLITE_CHURCHES, ...MISSION_FIELDS];
+const ALL_CHURCHES = [...SATELLITE_CHURCHES]; // ...MISSION_FIELDS removed for now
 
 // ── Unified warm palette ──
 const SATELLITE_COLOR = '#800000'; // deep maroon
@@ -49,7 +49,7 @@ export default function ChurchesMapSection() {
         { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
           scrollTrigger: { trigger: headingRef.current, start: 'top 88%', once: true } }
       );
-      gsap.fromTo([col1Ref.current, col2Ref.current],
+      gsap.fromTo([col1Ref.current /*, col2Ref.current*/],
         { opacity: 0, y: 32 },
         { opacity: 1, y: 0, duration: 0.7, stagger: 0.14, ease: 'power2.out',
           scrollTrigger: { trigger: col1Ref.current, start: 'top 84%', once: true } }
@@ -113,7 +113,7 @@ export default function ChurchesMapSection() {
         </div>
 
         {/* Mission Fields */}
-        <div ref={col2Ref} className="sc-list-col" style={{ opacity: 0 }}>
+        {/* <div ref={col2Ref} className="sc-list-col" style={{ opacity: 0 }}>
           <ListHeader label="Mission Fields" color={MISSION_COLOR} />
           <div className="sc-list custom-scrollbar">
             {MISSION_FIELDS.map((church) => (
@@ -126,7 +126,7 @@ export default function ChurchesMapSection() {
               />
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
       <style jsx>{`
@@ -151,7 +151,8 @@ export default function ChurchesMapSection() {
         @media (min-width: 992px) {
           .sc-content-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            /* grid-template-columns: 2fr 1fr 1fr; */
+            grid-template-columns: 2fr 1fr;
             align-items: start;
             gap: 20px;
           }

@@ -68,7 +68,7 @@ export default function ActivitiesGrid() {
     },
     {
       title: 'Sunday School',
-      link: '#',
+      link: '/activities/sunday-school',
       description: (
         <div className={`${styles.scheduleInfo} ${styles.sundaySchedule}`}>
           <div className={styles.scheduleRow}>
@@ -99,7 +99,7 @@ export default function ActivitiesGrid() {
     },
     {
       title: 'Counselling and Baptism',
-      link: '#',
+      link: '/activities/baptism-classes',
       description: (
         <div className={styles.ceSchedule}>
           <div className={styles.ceScheduleItem}>
@@ -140,7 +140,7 @@ export default function ActivitiesGrid() {
     },
     {
       title: 'CE Union',
-      link: '#',
+      link: '/activities/ce-union',
       description: (
         <div className={styles.ceSchedule}>
           <div className={styles.ceScheduleItem}>
@@ -181,7 +181,7 @@ export default function ActivitiesGrid() {
     },
     {
       title: "Women's Fellowship",
-      link: '#',
+      link: '/activities/womens-fellowship',
       description: (
         <div className={styles.ceSchedule}>
           <div className={styles.ceScheduleItem}>
@@ -222,7 +222,7 @@ export default function ActivitiesGrid() {
     },
     {
       title: 'Youth Fellowship',
-      link: '#',
+      link: '/activities/youth-fellowship',
       description: (
         <div className={styles.ceSchedule}>
           <div className={styles.ceScheduleItem}>

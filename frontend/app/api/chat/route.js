@@ -1,6 +1,25 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+
+// --- GLOBAL FULL-TEXT KNOWLEDGE CACHE ---
+let fullStaticKnowledge = "";
+
+function preloadKnowledgeBase() {
+    if (fullStaticKnowledge !== "") return;
+    try {
+        const knowledgeFilePath = path.join(process.cwd(), 'chatbot_knowledge.txt');
+        if (fs.existsSync(knowledgeFilePath)) {
+            fullStaticKnowledge = "\n--- FRONTEND WEBSITE DATA ---\n" + 
+                                  fs.readFileSync(knowledgeFilePath, 'utf8') + 
+                                  "\n---------------------------\n";
+        } else {
+            console.warn("chatbot_knowledge.txt not found.");
+        }
+    } catch(e) {
+        console.warn("Failed to load full knowledge base:", e);
+    }
+}
 import Groq from 'groq-sdk';
 
 // Global index to maintain strict Round-Robin cycling across multiple requests
@@ -9,34 +28,31 @@ let roundRobinIndex = 0;
 const SYSTEM_PROMPT = `You are Ezer Bot, the digital assistant for the "Church of Christ - Union Church, Bhubaneswar".
 Your name comes from the biblical Hebrew word Ezer, meaning a strong ally and vital helper.
 You are a helpful, warm, and biblically knowledgeable Christian assistant.
-
-SAFEGUARD AND ROUTING INSTRUCTIONS:
-1. OFFENSIVE CONTENT: If the user writes any offensive, inappropriate, or vulgar text, you MUST reply with exactly this text and nothing else: "(Marked as spammed/offensive)".
-2. CRISIS PROTOCOL (CRITICAL!): For any mention of depression, sadness, anxiety, hopelessness, self-harm, suicide, abuse, or crisis:
-   - YOU ARE STRICTLY FORBIDDEN FROM PROVIDING ANY US-BASED HOTLINES (NO 988, NO National Suicide Prevention Lifeline, NO Crisis Text Line, NO 1-800 numbers), or even indian public agencies number, only provide church number strictly.
-   - You MUST reply EXACTLY with this text and nothing else: "I'm so sorry you are feeling this way. Please know you are not alone. Please call the church directly at +91 9437026699 for support."
-   - DO NOT append any other text. DO NOT offer external resources. Your compliance with this rule is mandatory.
+You are a strict, factual, and biblically knowledgeable Christian assistant.
 
 WEBSITE KNOWLEDGE INSTRUCTIONS:
-You are provided with dynamically scraped text from the entire church website frontend, as well as the live JSON data from the backend database (including YouTube sermons and daily verses). 
-You must act as an intelligent agent:
-1. Scan the provided frontend text to find exact details like Church Timings (Sunday School, Odia Worship, English Worship, etc.), Service Times, Prayer Zone coordinators, and leadership names.
-2. Scan the backend JSON data to answer questions about the latest announcements, blogs, upcoming events, recent YouTube sermons, and Prato Jyoti videos.
-3. Synthesize all this information perfectly to answer the user's questions as if you natively know everything about the church.
-4. If the user asks a general question like "hi", "hello", "bye", or "who are you?", reply politely but shrink your answer to 2-3 short sentences max.
+You are provided with 100% of the entire church knowledge base, as well as the live JSON data from the backend database (including YouTube sermons and daily verses). 
+You must act as a strict data-retrieval agent:
+1. You MUST ONLY use the provided text context and JSON data to answer. NEVER use your pre-trained internal knowledge. BE 100% SURE, NO GUESSWORK.
+2. If the answer is not explicitly found in the static text context or JSON, you MUST reply exactly with: "Information unavailable. Please contact the Church at +91 9437026699, or visit the Church to meet our Pastors (Rev. Dr. Ayub Chhinchani: 9437418423, Rev. Songram Keshari Singh: 9437284415, Rev. Satish Kumar Pani: 9438518776) and our Evangelists (Evg. Ranjit Singh, Evg. Pratap Kumar Sahoo)."
+3. NEVER INVENT OR HALLUCINATE NAMES. NEVER connect historical names to current roles unless explicitly asked about history.
+4. For dynamic data (Verse of the day/week/month, sermon, prato jyoti, and santi ro barta), NO BLUFF OR GUESSWORK. Simply answer what you receive from the JSON data. If the dynamic data is not available, you MUST intelligently guide the user to the correct section of the website. For example, if they ask about sermons, say: "Please visit the Latest Videos section of our website, or contact the church at +91 9437026699." If they ask about verses, direct them to the Verses section. You MUST dynamically say the section name based on what the user's message asked for.
+5. Scan the backend JSON data to answer questions about the latest announcements, blogs, upcoming events, recent YouTube sermons, and Prato Jyoti videos.
+6. If the user asks a general question like "hi", "hello", "bye", or "who are you?", reply politely but shrink your answer to 2-3 short sentences max. NEVER claim to be an AI LLM.
 
 CRITICAL FORMATTING RULES:
 1. Keep your answers EXTREMELY precise and to the point. 
-2. Use a maximum of 2-3 short sentences for your entire response, unless the user explicitly asks for a long explanation.
-3. When listing multiple people and their phone numbers (like Prayer Zone coordinators), YOU MUST pair each name with their specific phone number immediately. 
-   - BAD: "Contact A, B, and C at 1, 2, and 3." (Do not group all names and all numbers!)
-   - GOOD: "Contact A (1), B (2), and C (3)."
-4. NEVER use the word "respectively".
+2. ALWAYS provide the names, dates, and times exactly as they appear in the data.
+3. Answer naturally as a member of the church team (e.g. use "we", "our church").
+4. Do NOT say "Based on the text" or "According to the json". Just state the facts.
 5. Do NOT use any markdown formatting (no asterisks *, no bolding, no bullet points). 
 6. Do NOT use any emojis. Output plain text only.`;
 
 export async function POST(req) {
   try {
+    // Instantly load pre-chunked file from memory (0 milliseconds)
+    preloadKnowledgeBase();
+
     const { message, history = [] } = await req.json();
 
     if (!message) {
@@ -78,105 +94,12 @@ export async function POST(req) {
     }
     // --------------------------------------
 
-    // 1. DYNAMIC FRONTEND FILE SYSTEM RAG (Optimized for Tokens)
-    let rawFrontendCode = "\n--- FRONTEND WEBSITE DATA ---\n";
-    try {
-      const knowledgeFilePath = path.join(process.cwd(), 'chatbot_knowledge.txt');
-      let rebuildNeeded = true;
-      let dbMtime = 0;
-
-      if (fs.existsSync(knowledgeFilePath)) {
-        dbMtime = fs.statSync(knowledgeFilePath).mtimeMs;
-        rebuildNeeded = false;
-      }
-
-      // Fast deep scan to check if any file is newer than the database
-      const checkMtime = (currentDir) => {
-        if (!fs.existsSync(currentDir)) return;
-        const files = fs.readdirSync(currentDir);
-        for (const file of files) {
-          const fullPath = path.join(currentDir, file);
-          const stat = fs.statSync(fullPath);
-          if (stat.isDirectory()) {
-             if (!['node_modules', '.next', 'public', 'api', 'fonts', 'images', 'styles'].includes(file)) {
-               checkMtime(fullPath);
-             }
-          } else if (file.endsWith('.js') || file.endsWith('.jsx')) {
-             if (stat.mtimeMs > dbMtime) {
-                rebuildNeeded = true;
-                break;
-             }
-          }
-        }
-      };
-
-      if (!rebuildNeeded) {
-        checkMtime(path.join(process.cwd(), 'app'));
-        if (!rebuildNeeded) checkMtime(path.join(process.cwd(), 'components'));
-      }
-
-      const forceUpdate = req.url && req.url.includes('update=true');
-
-      if (rebuildNeeded || forceUpdate) {
-        console.log("Rebuilding chatbot_knowledge.txt database...");
-        const getFrontendText = (maxChars = 100000) => {
-          let combinedText = '';
-          const extractText = (code) => {
-            let text = code.replace(/\/\*[\s\S]*?\*\//g, '');
-            text = text.replace(/\/\/.*/g, '');
-            text = text.replace(/import.*?from\s+['"].*?['"];?/gs, '');
-            text = text.replace(/export\s+(default\s+)?(function|const|let|var)?/g, '');
-            text = text.replace(/<[^>]+>/g, ' ');
-            text = text.replace(/className=[{'"$`\w\s-]+/g, '');
-            return text.replace(/\s+/g, ' ').trim();
-          };
-
-          const readDir = (currentDir) => {
-            if (combinedText.length > maxChars) return;
-            if (!fs.existsSync(currentDir)) return;
-            const files = fs.readdirSync(currentDir);
-            for (const file of files) {
-              if (combinedText.length > maxChars) break;
-              const fullPath = path.join(currentDir, file);
-              const stat = fs.statSync(fullPath);
-              if (stat.isDirectory()) {
-                 if (!['node_modules', '.next', 'public', 'api', 'fonts', 'images', 'styles'].includes(file)) {
-                   readDir(fullPath);
-                 }
-              } else if (file.endsWith('.js') || file.endsWith('.jsx')) {
-                 if (!['layout.js', 'layout.jsx', 'error.js', 'loading.js'].includes(file)) {
-                    const content = fs.readFileSync(fullPath, 'utf8');
-                    const cleanText = extractText(content);
-                    if (cleanText) combinedText += `[Source: ${file}] ${cleanText} \n`;
-                 }
-              }
-            }
-          };
-
-          // Read the components folder FIRST (This is where the heavy Prayer Zones/Arrays live!)
-          readDir(path.join(process.cwd(), 'components'));
-          readDir(path.join(process.cwd(), 'app'));
-          return combinedText.substring(0, maxChars);
-        };
-        
-        const generatedText = getFrontendText(100000);
-        fs.writeFileSync(knowledgeFilePath, generatedText, 'utf8');
-        rawFrontendCode += generatedText;
-      } else {
-        // Just read the static file in 1 millisecond!
-        rawFrontendCode += fs.readFileSync(knowledgeFilePath, 'utf8');
-      }
-    } catch (err) {
-      console.warn("Could not read frontend files for Ezer Bot:", err);
-    }
-    rawFrontendCode += "\n---------------------------\n";
-
-    // 2. DYNAMIC BACKEND FETCHING (With 2-second timeout for lightning speed)
+    // 2. DYNAMIC BACKEND FETCHING (With 3-second timeout to guarantee data is fetched)
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     let liveDatabaseContext = "\n--- LIVE CHURCH DATABASE INFO ---\n";
     
     const fetchWithTimeout = async (resource, options = {}) => {
-      const { timeout = 2000 } = options;
+      const { timeout = 3000 } = options;
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), timeout);
       const response = await fetch(resource, { ...options, signal: controller.signal });
@@ -218,66 +141,18 @@ export async function POST(req) {
     }
     liveDatabaseContext += "---------------------------------\n";
 
-    // --- ZERO-DEPENDENCY KEYWORD RAG ENGINE ---
-    let highlyRelevantContext = '';
-    try {
-      const chunks = rawFrontendCode.split('\n[Source: ');
-      const stopWords = new Set(['what','is','the','a','an','and','or','but','if','who','are','tell','me','about','of','in','on','at','to','for','with','how','why','do','does','can']);
-      const keywords = message.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(' ').filter(w => w.length > 2 && !stopWords.has(w));
-          
-      const scoredChunks = chunks.map(chunk => {
-          let score = 0;
-          const chunkLower = chunk.toLowerCase();
-          keywords.forEach(kw => {
-              if (chunkLower.includes(kw)) score++;
-          });
-          return { text: chunk, score };
-      });
-      
-      scoredChunks.sort((a, b) => b.score - a.score);
-      
-      let totalChars = 0;
-      const MAX_RAG_CHARS = 15000;
-      
-      const footerChunk = scoredChunks.find(c => c.text.includes('Footer'));
-      if (footerChunk) {
-          highlyRelevantContext += '\n[Source: ' + footerChunk.text;
-          totalChars += footerChunk.text.length;
-          scoredChunks.splice(scoredChunks.indexOf(footerChunk), 1);
-      }
-      
-      for (const chunk of scoredChunks) {
-          if (chunk.score === 0 && highlyRelevantContext.length > 5000) continue; 
-          if (totalChars + chunk.text.length > MAX_RAG_CHARS) break;
-          highlyRelevantContext += '\n[Source: ' + chunk.text;
-          totalChars += chunk.text.length;
-      }
-    } catch(e) {
-      console.warn("RAG Engine Error:", e);
-      highlyRelevantContext = rawFrontendCode.substring(0, 15000); 
-    }
-
-    // Format history for Standard OpenAI compatible array
+    // --- 100% KNOWLEDGE LOAD ---
+    // Instead of RAG chunking, we inject the ENTIRE pre-loaded file and dynamic DB fetch directly.
     const messages = [
       {
         role: "system",
-        content: SYSTEM_PROMPT + highlyRelevantContext + liveDatabaseContext
+        content: SYSTEM_PROMPT + fullStaticKnowledge + liveDatabaseContext
+      },
+      {
+        role: "user",
+        content: message
       }
     ];
-
-    if (history.length > 0) {
-      history.forEach(msg => {
-        messages.push({
-          role: msg.role === 'user' ? 'user' : 'assistant',
-          content: msg.content
-        });
-      });
-    }
-
-    messages.push({
-      role: "user",
-      content: message
-    });
 
     // 3. THE 5-API RANDOMIZED LOAD BALANCER
     async function fetchFromProvider(provider) {
@@ -285,18 +160,10 @@ export async function POST(req) {
       
       if (provider === 'gemini') {
         const geminiPayload = {
-          systemInstruction: { parts: [{ text: SYSTEM_PROMPT + highlyRelevantContext + liveDatabaseContext }] },
-          contents: []
+          systemInstruction: { parts: [{ text: SYSTEM_PROMPT + fullStaticKnowledge + liveDatabaseContext }] },
+          contents: [{ role: 'user', parts: [{ text: message }] }],
+          generationConfig: { temperature: 0.0 }
         };
-        if (history.length > 0) {
-           history.forEach(msg => {
-              geminiPayload.contents.push({
-                 role: msg.role === 'assistant' ? 'model' : 'user',
-                 parts: [{ text: msg.content }]
-              });
-           });
-        }
-        geminiPayload.contents.push({ role: 'user', parts: [{ text: message }] });
 
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
@@ -317,7 +184,7 @@ export async function POST(req) {
         model = 'llama-3.1-8b-instant';
       } else if (provider === 'openrouter') {
         url = 'https://openrouter.ai/api/v1/chat/completions';
-        model = 'nex-agi/nex-n2-pro:free';
+        model = 'google/gemma-4-31b-it:free';
       } else if (provider === 'github') {
         url = 'https://models.inference.ai.azure.com/chat/completions';
         model = 'gpt-4o-mini';
@@ -339,11 +206,6 @@ export async function POST(req) {
       }
 
       let finalMessages = messages;
-      if (provider === 'groq' || provider === 'github') {
-        // Groq Tier 0 limits requests to 6,000 Tokens. 10,000 chars is safely ~2,500 tokens.
-        finalMessages = [...messages];
-        finalMessages[0] = { ...finalMessages[0], content: finalMessages[0].content.substring(0, 10000) };
-      }
 
       const res = await fetch(url, {
         method: 'POST',
@@ -355,7 +217,7 @@ export async function POST(req) {
         body: JSON.stringify({
           model: model,
           messages: finalMessages,
-          temperature: 0.5,
+          temperature: 0.0,
           max_tokens: 1024
         })
       });

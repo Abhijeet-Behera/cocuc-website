@@ -53,6 +53,14 @@
   align-items: center;
 }
 
+.sliderControlsBottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
 /* Premium maroon-themed nav buttons */
 .navButton {
   width: 2.75rem;
@@ -370,7 +378,7 @@
   justify-content: center;
   align-items: center;
   gap: 0.45rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   pointer-events: none;
 }
 
@@ -581,7 +589,8 @@
     margin-bottom: 1.25rem;
   }
 
-  .sliderControls {
+  .sliderControls,
+  .sliderControlsBottom {
     display: none;
   }
 

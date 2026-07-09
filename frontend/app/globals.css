@@ -74,6 +74,11 @@ button {
   outline: none;
 }
 
+/* Prevent textareas from being manually resized to maintain layout */
+textarea {
+  resize: none;
+}
+
 /* Utilities */
 .container {
   width: 100%;
@@ -418,14 +423,11 @@ button {
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  filter: grayscale(100%) contrast(1.05);
-  transition: transform var(--transition-slow) cubic-bezier(0.165, 0.84, 0.44, 1),
-              filter var(--transition-slow) cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: transform var(--transition-slow) cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .deacon-card:hover .deacon-img {
   transform: scale(1.06);
-  filter: grayscale(0%) contrast(1.05);
 }
 
 .deacon-info-overlay {

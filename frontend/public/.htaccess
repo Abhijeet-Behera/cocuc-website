@@ -1,6 +1,15 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # ==========================================
+  # MAINTENANCE MODE
+  # If a file named "MAINTENANCE_ON" exists, return 503 and show maintenance.html
+  # ==========================================
+  RewriteCond %{DOCUMENT_ROOT}/MAINTENANCE_ON -f
+  RewriteCond %{REQUEST_URI} !/maintenance.html$ [NC]
+  RewriteRule .* - [R=503,L]
+  ErrorDocument 503 /maintenance.html
+
   # 1. Force HTTPS (Secure connection)
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

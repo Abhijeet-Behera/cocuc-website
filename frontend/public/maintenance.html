@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Maintenance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-start: #111111;
+            --bg-end: #3a0000;
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+
+
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            width: 100%;
+            max-width: 650px;
+            transform-style: preserve-3d;
+        }
+
+        .card {
+            background: rgba(25, 25, 25, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: transform 0.1s ease-out;
+            transform: translateZ(30px);
+        }
+
+        /* Character Styles */
+        .character-wrapper {
+            margin-bottom: 20px;
+            transform: translateZ(50px);
+            display: flex;
+            justify-content: center;
+        }
+        
+        .character-animator {
+            animation: float-char 4s ease-in-out infinite;
+        }
+
+        .maintenance-character {
+            width: 160px;
+            height: 160px;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        
+        .maintenance-character:hover {
+            transform: scale(1.15);
+        }
+
+        @keyframes float-char {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .wrench-group {
+            transform-origin: 0px 5px;
+            animation: rotateWrench 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes rotateWrench {
+            0% { transform: translate(35px, 175px) rotate(-15deg); }
+            100% { transform: translate(35px, 175px) rotate(25deg); }
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transform: translateZ(40px);
+            line-height: 1.2;
+        }
+
+        p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text-muted);
+            line-height: 1.6;
+            transform: translateZ(30px);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-container {
+            margin-top: 40px;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            transform: translateZ(20px);
+        }
+
+        .progress-bar {
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            border-radius: 4px;
+            animation: loading 2s infinite linear;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .card {
+                padding: 40px 20px;
+            }
+            .maintenance-character {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="container" id="container">
+        <div class="card" id="card">
+            
+            <div class="character-wrapper">
+                <div class="character-animator">
+                    <svg viewBox="0 0 200 215" xmlns="http://www.w3.org/2000/svg" class="maintenance-character">
+                        <defs>
+                            <linearGradient id="wrenchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#cfd8dc" />
+                                <stop offset="100%" stop-color="#90a4ae" />
+                            </linearGradient>
+                            <!-- Formal White/Silver Theme Gradients -->
+                            <radialGradient id="bulbGrad" cx="40%" cy="40%" r="60%">
+                                <stop offset="0%" stop-color="#ffffff" />
+                                <stop offset="100%" stop-color="#e0e0e0" />
+                            </radialGradient>
+                            <linearGradient id="hatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#f5f5f5" />
+                                <stop offset="100%" stop-color="#bdbdbd" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Left Arm -->
+                        <path d="M 50 120 Q 20 150 35 180" fill="none" stroke="#222" stroke-width="12" stroke-linecap="round" />
+                        <!-- Right Arm -->
+                        <path d="M 150 120 Q 180 150 165 180" fill="none" stroke="#222" stroke-width="12" stroke-linecap="round" />
+                        
+                        <!-- Legs -->
+                        <path d="M 80 150 L 80 190" fill="none" stroke="#222" stroke-width="14" stroke-linecap="round" />
+                        <path d="M 120 150 L 120 190" fill="none" stroke="#222" stroke-width="14" stroke-linecap="round" />
+                        
+                        <!-- Shoes (Black/Grey) -->
+                        <path d="M 60 195 C 60 175 90 175 90 195 Z" fill="#424242" stroke="#222" stroke-width="3" stroke-linejoin="round"/>
+                        <path d="M 110 195 C 110 175 140 175 140 195 Z" fill="#424242" stroke="#222" stroke-width="3" stroke-linejoin="round"/>
+                        <!-- Shoe soles (Metallic) -->
+                        <rect x="58" y="195" width="34" height="6" rx="3" fill="#9e9e9e" stroke="#222" stroke-width="2" />
+                        <rect x="108" y="195" width="34" height="6" rx="3" fill="#9e9e9e" stroke="#222" stroke-width="2" />
+                    
+                        <!-- Body (Lightbulb) -->
+                        <circle cx="100" cy="110" r="50" fill="url(#bulbGrad)" stroke="#222" stroke-width="4" />
+                        <!-- Gloss -->
+                        <path d="M 65 90 A 30 30 0 0 1 95 65" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.6" />
+                        
+                        <!-- Hard Hat -->
+                        <!-- Dome -->
+                        <path d="M 55 75 C 55 30 145 30 145 75 Z" fill="url(#hatGrad)" stroke="#222" stroke-width="4" />
+                        <!-- Brim -->
+                        <rect x="45" y="72" width="110" height="10" rx="5" fill="url(#hatGrad)" stroke="#222" stroke-width="4" />
+                        <!-- Hat Ridge -->
+                        <rect x="85" y="40" width="30" height="32" rx="5" fill="#e0e0e0" stroke="#222" stroke-width="3" />
+                        
+                        <!-- Eyes -->
+                        <circle cx="78" cy="100" r="14" fill="white" stroke="#222" stroke-width="3" />
+                        <circle cx="122" cy="100" r="14" fill="white" stroke="#222" stroke-width="3" />
+                        
+                        <g class="pupils">
+                            <circle cx="78" cy="100" r="6" fill="#222" />
+                            <circle cx="122" cy="100" r="6" fill="#222" />
+                            <!-- Eye highlights -->
+                            <circle cx="76" cy="98" r="2" fill="white" />
+                            <circle cx="120" cy="98" r="2" fill="white" />
+                        </g>
+                        
+                        <!-- Mouth (Surprised open mouth) -->
+                        <path d="M 85 125 C 85 145 115 145 115 125 Z" fill="#222" />
+                        <!-- Tongue -->
+                        <path d="M 90 135 C 90 145 110 145 110 135 Z" fill="#e91e63" />
+                    
+                        <!-- Left Hand Holding Wrench -->
+                        <g class="wrench-group" transform="translate(35, 175)">
+                            <!-- Wrench Handle -->
+                            <rect x="-8" y="-40" width="16" height="80" rx="4" fill="url(#wrenchGrad)" stroke="#222" stroke-width="3" />
+                            <!-- Wrench Top Head -->
+                            <path d="M -18 -45 C -18 -60 18 -60 18 -45 C 18 -35 8 -35 8 -30 L -8 -30 C -8 -35 -18 -35 -18 -45 Z" fill="url(#wrenchGrad)" stroke="#222" stroke-width="3" />
+                            <circle cx="0" cy="-45" r="8" fill="#222" />
+                            <!-- Wrench Bottom Head -->
+                            <circle cx="0" cy="45" r="14" fill="url(#wrenchGrad)" stroke="#222" stroke-width="3" />
+                            
+                            <!-- Hand over Wrench -->
+                            <circle cx="0" cy="5" r="14" fill="white" stroke="#222" stroke-width="3" />
+                            <!-- Fingers -->
+                            <path d="M -8 0 Q 0 6 8 0 M -10 4 Q 0 10 10 4" fill="none" stroke="#222" stroke-width="2" />
+                        </g>
+                        
+                        <!-- Right Hand -->
+                        <circle cx="165" cy="180" r="14" fill="white" stroke="#222" stroke-width="3" />
+                        <!-- Fingers -->
+                        <path d="M 155 178 Q 165 184 175 178 M 153 182 Q 165 188 177 182" fill="none" stroke="#222" stroke-width="2" />
+                    </svg>
+                </div>
+            </div>
+
+            <h1>Under Maintenance</h1>
+            <p>Sorry for the inconvenience caused but we are under maintenance right now. We will be back soon.</p>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 3D Tilt Effect & Eye Tracking
+        const container = document.getElementById('container');
+        const card = document.getElementById('card');
+        const pupils = document.querySelector('.pupils');
+
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 30;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 30;
+            card.style.transform = `translateZ(30px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+
+            // Pupil movement
+            if (pupils) {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                let moveX = ((e.clientX - centerX) / window.innerWidth) * 12;
+                let moveY = ((e.clientY - centerY) / window.innerHeight) * 12;
+                
+                moveX = Math.max(-6, Math.min(6, moveX));
+                moveY = Math.max(-6, Math.min(6, moveY));
+                
+                pupils.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+            card.style.transform = `translateZ(30px) rotateY(0deg) rotateX(0deg)`;
+            card.style.transition = 'transform 0.5s ease';
+            if (pupils) {
+                pupils.style.transform = `translate(0px, 0px)`;
+                pupils.style.transition = 'transform 0.5s ease';
+            }
+        });
+
+        document.addEventListener('mouseenter', () => {
+            card.style.transition = 'transform 0.1s ease-out';
+            if (pupils) {
+                pupils.style.transition = 'none'; 
+            }
+        });
+
+
+
+    </script>
+</body>
+</html>

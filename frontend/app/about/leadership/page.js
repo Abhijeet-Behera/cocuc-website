@@ -5,29 +5,29 @@ import { Search } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 
 const DEACONS_DATA = [
-  { id: 101, name: "Mr. Asish Baran Parida", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/asish_baran_parida.jpg" },
+  { id: 101, name: "Mr. Asish Baran Parida", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/asish_baran_parida.png" },
   { id: 102, name: "Mr. Biren Kumar Pradhan", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/biren_kumar_pradhan.png" },
   { id: 103, name: "Mr. Pradip Kumar Roul", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/pradip_kumar_roul.png" },
   { id: 104, name: "Mr. Sarat Kumar Singh", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/sarat_kumar_singh.png" },
-  { id: 105, name: "Mr. Sishir Baran Puri", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/sishir_baran_puri.jpg" },
+  { id: 105, name: "Mr. Sishir Baran Puri", role: "Elder", category: "Elder", gender: "male", image: "/images/leadership/sishir_baran_puri.png" },
   { id: 1, name: "Mr. Michael Rajesh Behera", role: "Secretary", category: "Secretary", gender: "male", image: "/images/leadership/michael_rajesh_behera.png" },
   { id: 2, name: "Mr. Smruti Ranjan Nayak", role: "Joint secretary", category: "Office Bearers", gender: "male", image: "/images/leadership/smruti_ranjan_nayak.png" },
   { id: 3, name: "Mr. Suranjan Thomas", role: "Treasurer", category: "Office Bearers", gender: "male", image: "/images/leadership/suranjan_thomas.png" },
   { id: 4, name: "Mr. Adit Jena", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/adit_jena.png" },
-  { id: 5, name: "Mr. Amrut Kumar Jena", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/amrut_kumar_jena.jpg" },
-  { id: 6, name: "Mr. Benjamin Peter", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/benjamin_peter.jpg" },
-  { id: 7, name: "Mr. Bipra Charan Digal", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/bipra_charan_digal.jpg" },
+  { id: 5, name: "Mr. Amrut Kumar Jena", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/amrut_kumar_jena.png" },
+  { id: 6, name: "Mr. Benjamin Peter", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/benjamin_peter.png" },
+  { id: 7, name: "Mr. Bipra Charan Digal", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/bipra_charan_digal.png" },
   { id: 8, name: "Mr. Gokula Chandra Pradhan", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/gokula_chandra_pradhan.png" },
   { id: 9, name: "Mr. Manas Ranjan Behera", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/manas_ranjan_behera.png" },
-  { id: 10, name: "Mr. Prafulla Kumar Dash", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/prafulla_kumar_dash.jpg" },
+  { id: 10, name: "Mr. Prafulla Kumar Dash", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/prafulla_kumar_dash.png" },
   { id: 11, name: "Mr. Pravat Kumar Chand", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/pravat_chand.png" },
   { id: 12, name: "Mr. Rajsekhar Sahu", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/rajsekhar_sahu.png" },
   { id: 13, name: "Mr. Ranjan Gan", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/ranjan_gan.png" },
   { id: 14, name: "Mr. Santosh Kumar Nayak", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/santosh_kumar_nayak.png" },
-  { id: 15, name: "Mr. Satya Ranjan Singh", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/satya_ranjan_singh.jpg" },
+  { id: 15, name: "Mr. Satya Ranjan Singh", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/satya_ranjan_singh.png" },
   { id: 16, name: "Mr. Sudhir Kumar Swain", role: "Deacon", category: "Deacon", gender: "male", image: "/images/leadership/sudhir_kumar_swain.png" },
-  { id: 17, name: "Ms. Swarnamayee Patra", role: "Deaconess", category: "Deaconess", gender: "female", image: "/images/leadership/swarnamayee_patra.jpg" },
-  { id: 18, name: "Ms. Madhuleeta Samantaray", role: "Deaconess", category: "Deaconess", gender: "female", image: "/images/leadership/madhuleeta_samantaray.jpg" }
+  { id: 17, name: "Ms. Swarnamayee Patra", role: "Deaconess", category: "Deaconess", gender: "female", image: "/images/leadership/swarnamayee_patra.png" },
+  { id: 18, name: "Ms. Madhuleeta Samantaray", role: "Deaconess", category: "Deaconess", gender: "female", image: "/images/leadership/madhuleeta_samantaray.png" }
 ];
 
 const CATEGORIES = ["All", "Secretary", "Office Bearers", "Elders", "Deacons & Deaconesses"];
@@ -278,7 +278,7 @@ export default function LeadershipPage() {
                 borderRadius: '20px',
                 fontWeight: 600
               }}>
-                5
+                2
               </span>
             </h3>
 
@@ -286,9 +286,9 @@ export default function LeadershipPage() {
               {[
                 { name: "Evg. Pratap Kumar Sahoo", role: "Evangelist" },
                 { name: "Evg. Ranjit Singh", role: "Evangelist" },
-                { name: "Evg. Gobinda Sahoo", role: "Evangelist" },
-                { name: "Evg. Sujit Bishoi", role: "Evangelist" },
-                { name: "Evg. Christopher Surya", role: "Evangelist" }
+                // { name: "Evg. Gobinda Sahoo", role: "Evangelist" },
+                // { name: "Evg. Sujit Bishoi", role: "Evangelist" },
+                // { name: "Evg. Christopher Surya", role: "Evangelist" }
               ].map((evg, idx) => {
                 const imageSrc = '/images/deacon-male-placeholder.png';
                 return (

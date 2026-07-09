@@ -3,12 +3,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
+import { usePathname, useRouter } from 'next/navigation';
 
 const SECTIONS = [
   { id: 'church-updates',  label: 'Church Updates' },
   { id: 'activities',      label: 'Activity Sections' },
   { id: 'prayer-zones',    label: 'Prayer Zones' },
-  { id: 'churches',        label: 'Satellite Churches & Mission Fields', mobileLabel: 'Map' },
+  { id: 'churches',        label: 'Satellite Churches', mobileLabel: 'Map' },
   { id: 'sermons',         label: 'Latest Videos' },
   { id: 'upcoming-events', label: 'Upcoming Events' },
   { id: 'blog',            label: 'Blog & Inspiration' },
@@ -53,7 +54,7 @@ function solveBezierT(Y0, Y2, cy, yTarget) {
 }
 
 // ── Desktop Implementation (Original Physics Stem) ───────────────────────────
-function DesktopStemNav({ activeIndex, inBounds, isIdle, mouseXRef, mouseYRef, velRef, setIsHovered }) {
+function DesktopStemNav({ activeIndex, inBounds, isIdle, mouseXRef, mouseYRef, velRef, setIsHovered, onNavigate }) {
   const pathRef      = useRef(null);
   const fillPathRef  = useRef(null);
   const glowRef      = useRef(null);
@@ -138,11 +139,7 @@ function DesktopStemNav({ activeIndex, inBounds, isIdle, mouseXRef, mouseYRef, v
   }, [mouseXRef, mouseYRef, velRef]);
 
   const scrollTo = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    onNavigate(id);
   };
 
   const initVh = typeof window !== 'undefined' ? window.innerHeight : 700;
@@ -287,7 +284,7 @@ function DesktopStemNav({ activeIndex, inBounds, isIdle, mouseXRef, mouseYRef, v
 }
 
 // ── Mobile Implementation (OnePlus Style Sidebar) ─────────────────────────────
-function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered, setIsHovered }) {
+function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered, setIsHovered, onNavigate }) {
   const [pendingIndex, setPendingIndex] = useState(null);
   const isOpen = !isIdle && inBounds;
 
@@ -296,11 +293,7 @@ function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered,
   }, [isOpen]);
 
   const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    onNavigate(id);
   };
 
   const handleItemClick = (index) => {
@@ -471,6 +464,8 @@ function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered,
 
 // ── Main Component (Switches based on screen width) ────────────────────────
 export default function StemScrollNav() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [inBounds,    setInBounds]    = useState(false);
   const [isIdle,      setIsIdle]      = useState(false);
@@ -585,6 +580,18 @@ export default function StemScrollNav() {
     };
   }, [isHovered, isMobile]);
 
+  const handleNavigation = (id) => {
+    if (pathname !== '/') {
+      router.push(`/#${id}`);
+    } else {
+      const el = document.getElementById(id);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+  };
+
   if (!mounted) return null;
 
   return createPortal(
@@ -597,6 +604,7 @@ export default function StemScrollNav() {
           setIsIdle={setIsIdle}
           isHovered={isHovered}
           setIsHovered={setIsHovered}
+          onNavigate={handleNavigation}
         />
       ) : (
         <DesktopStemNav 
@@ -607,6 +615,7 @@ export default function StemScrollNav() {
           mouseYRef={mouseYRef}
           velRef={velRef}
           setIsHovered={setIsHovered}
+          onNavigate={handleNavigation}
         />
       )}
       <style>{`

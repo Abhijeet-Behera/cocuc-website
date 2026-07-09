@@ -144,7 +144,7 @@ export default function ThursdayCottagePrayerPage() {
                 Prayer Coordinators who are ready to welcome you. Want to join your local prayer zone? Simply find your location from the link
                 below and get in touch with the respective Prayer Coordinator to get involved.
               </p>
-              <Link href="/timings" className={styles.zonesBtn}>
+              <Link href="/#prayer-zones" className={styles.zonesBtn}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />

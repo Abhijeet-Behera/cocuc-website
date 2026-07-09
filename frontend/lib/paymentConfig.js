@@ -5,7 +5,7 @@
 export const paymentConfig = {
   organizationName: 'Church of Christ (Union Church), Bhubaneswar',
   upi: {
-    id: 'unionchurch@bank', // Placeholder
+    id: 'Mswipe.1430060425003513@mswipesbm', // Placeholder
     payeeName: 'Union Church Bhubaneswar',
     qrPath: '/payment-qr.png', // Ensure this image exists in public folder
   },

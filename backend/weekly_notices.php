@@ -32,7 +32,7 @@ if ($method === 'GET') {
 
     $data = json_decode(file_get_contents("php://input"), true);
     $id = $data['id'] ?? null;
-    
+
     if (!$id) {
         http_response_code(400);
         echo json_encode(["error" => "Missing notice ID"]);
@@ -41,11 +41,11 @@ if ($method === 'GET') {
 
     $stmt = $pdo->prepare("DELETE FROM weekly_notices WHERE id = ?");
     $stmt->execute([$id]);
-    
+
     if ($payload['designation'] === 'Developer') {
         logDeveloperAction($pdo, $payload['email'], 'DELETE', 'weekly_notices', "Deleted notice ID {$id}");
     }
-    
+
     echo json_encode(["message" => "Notice deleted successfully"]);
 
 } elseif ($method === 'POST') {
@@ -73,10 +73,12 @@ if ($method === 'GET') {
         exit;
     }
 
-    $target_dir = "../uploads/weekly_notices/";
-    if (!is_dir($target_dir)) @mkdir($target_dir, 0777, true);
+    $target_dir = __DIR__ . "/uploads/weekly_notices/";
+    if (!is_dir($target_dir))
+        @mkdir($target_dir, 0777, true);
 
-    function handleUploads($fileInputName, $targetDir) {
+    function handleUploads($fileInputName, $targetDir)
+    {
         $uploadedPaths = [];
         if (isset($_FILES[$fileInputName])) {
             $files = $_FILES[$fileInputName];
@@ -107,7 +109,7 @@ if ($method === 'GET') {
 
     // Handle individual notice attachments
     $noticesArray = json_decode($notices_json, true) ?? [];
-    
+
     try {
         if ($id) {
             $stmt = $pdo->prepare("SELECT documents_json, notices_json FROM weekly_notices WHERE id = ?");
@@ -120,10 +122,12 @@ if ($method === 'GET') {
             }
 
             $existingDocs = json_decode($existing['documents_json'] ?? '[]', true);
-            if (!is_array($existingDocs)) $existingDocs = [];
+            if (!is_array($existingDocs))
+                $existingDocs = [];
             $existingNotices = json_decode($existing['notices_json'] ?? '[]', true);
-            if (!is_array($existingNotices)) $existingNotices = [];
-            
+            if (!is_array($existingNotices))
+                $existingNotices = [];
+
             // Either replace docs if new ones uploaded, or keep existing
             $finalDocs = !empty($newDocs) ? $newDocs : $existingDocs;
 
@@ -144,11 +148,11 @@ if ($method === 'GET') {
 
             $stmt = $pdo->prepare("UPDATE weekly_notices SET release_date = ?, documents_json = ?, notices_json = ? WHERE id = ?");
             $stmt->execute([$release_date, json_encode($finalDocs), $notices_json_final, $id]);
-            
+
             if ($payload['designation'] === 'Developer') {
                 logDeveloperAction($pdo, $payload['email'], 'UPDATE', 'weekly_notices', "Updated notice ID {$id}");
             }
-            
+
             echo json_encode(["message" => "Notice updated successfully"]);
         } else {
             foreach ($noticesArray as $idx => &$notice) {
@@ -162,12 +166,12 @@ if ($method === 'GET') {
 
             $stmt = $pdo->prepare("INSERT INTO weekly_notices (release_date, documents_json, notices_json, author_id) VALUES (?, ?, ?, ?)");
             $stmt->execute([$release_date, json_encode($newDocs), $notices_json_final, $payload['id']]);
-            
+
             $new_id = $pdo->lastInsertId();
             if ($payload['designation'] === 'Developer') {
                 logDeveloperAction($pdo, $payload['email'], 'INSERT', 'weekly_notices', "Created new notice ID {$new_id}");
             }
-            
+
             echo json_encode(["message" => "Notice created successfully", "id" => $new_id]);
         }
     } catch (PDOException $e) {

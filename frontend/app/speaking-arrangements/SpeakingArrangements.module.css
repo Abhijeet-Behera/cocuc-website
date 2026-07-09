@@ -1,0 +1,558 @@
+/* ============================================
+   Speaking Arrangements – Public Page
+   Uses existing theme variables from globals.css
+   ============================================ */
+
+/* --- Page Wrapper --- */
+.page {
+  min-height: 100vh;
+  padding-top: 140px;
+  padding-bottom: 5rem;
+  background: var(--color-background);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* --- Header --- */
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 3.25rem;
+  font-weight: 400;
+  color: var(--color-primary);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.titleNormal {
+  font-style: normal;
+  font-weight: 600;
+}
+
+.titleAccent {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* --- Sub-Section Block --- */
+.subSectionBlock {
+  margin-bottom: 3.5rem;
+}
+
+.subSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(128, 0, 0, 0.1);
+}
+
+.subSectionIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(128, 0, 0, 0.07);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.subSectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.subSectionCount {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: rgba(128, 0, 0, 0.06);
+  padding: 0.2rem 0.65rem;
+  border-radius: 50px;
+  margin-left: auto;
+}
+
+/* --- Arrangement Cards Grid --- */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+/* --- Individual Arrangement Card --- */
+.arrangementCard {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  transition:
+    transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.arrangementCard:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 18px 40px rgba(128, 0, 0, 0.1),
+    0 8px 18px rgba(0, 0, 0, 0.05);
+}
+
+.arrangementCard:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+.cardDateBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(128, 0, 0, 0.06);
+  color: var(--color-primary);
+  padding: 0.3rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.cardDateBadge svg {
+  flex-shrink: 0;
+}
+
+.cardDetails {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--color-text);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.attachmentBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(128, 0, 0, 0.05);
+  padding: 0.25rem 0.6rem;
+  border-radius: 50px;
+}
+
+.viewDetailsHint {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+.arrangementCard:hover .viewDetailsHint {
+  color: var(--color-primary);
+}
+
+/* --- Empty State per Sub-Section --- */
+.emptyState {
+  width: 100%;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(128, 0, 0, 0.03), rgba(255, 255, 255, 0.9));
+  border: 1.5px dashed rgba(128, 0, 0, 0.1);
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(128, 0, 0, 0.06);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin: 0 auto 0.75rem;
+}
+
+.emptyTitle {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.3rem;
+}
+
+.emptyText {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* --- Detail Modal Overlay --- */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.modalPanel {
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(128, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modalHeader {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.modalTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.modalTitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.modalSubSection {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modalCloseBtn {
+  background: rgba(128, 0, 0, 0.06);
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--color-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.modalCloseBtn:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.modalBody {
+  padding: 2rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: rgba(128, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+.modalMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.modalMetaRow svg {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.modalDetailsLabel {
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  margin-bottom: 0.6rem;
+}
+
+.modalDetailsText {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin-bottom: 2rem;
+}
+
+.modalAttachments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modalAttachmentLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(128, 0, 0, 0.18);
+  align-self: flex-start;
+}
+
+.modalAttachmentLink:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 6px 16px rgba(128, 0, 0, 0.28);
+  transform: translateY(-1px);
+}
+
+.modalNoDetails {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* --- Loading --- */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 2.5px solid rgba(128, 0, 0, 0.1);
+  border-left-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Error State --- */
+.errorState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-muted);
+}
+
+/* --- Back Link --- */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-bottom: 2.5rem;
+  transition: all 0.2s ease;
+}
+
+.backLink:hover {
+  transform: translateX(-3px);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: 120px;
+    padding-bottom: 3.5rem;
+  }
+
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .header {
+    margin-bottom: 3rem;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .subSectionBlock {
+    margin-bottom: 2.5rem;
+  }
+
+  .modalPanel {
+    max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .modalBackdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modalHeader {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .modalBody {
+    padding: 1.5rem;
+  }
+
+  .modalTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .subSectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .arrangementCard {
+    padding: 1.2rem;
+  }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .arrangementCard {
+    transition: none;
+  }
+
+  .arrangementCard:hover {
+    transform: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
+}

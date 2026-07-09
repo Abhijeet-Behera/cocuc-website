@@ -108,16 +108,6 @@ $mobileNumber = trim(
     (string) ($data['mobileNumber'] ?? '')
 );
 
-/*
- * Remove spaces, hyphens and parentheses before
- * validating and storing the mobile number.
- */
-$normalizedMobile = preg_replace(
-    '/[\s\-()]/',
-    '',
-    $mobileNumber
-) ?? '';
-
 $email = trim(
     (string) ($data['email'] ?? '')
 );
@@ -153,16 +143,7 @@ if ($fullName === '') {
     $errors[] = 'Full Name is required.';
 }
 
-if ($mobileNumber === '') {
-    $errors[] = 'Mobile Number is required.';
-} elseif (
-    !preg_match(
-        '/^(\+91)?[6-9]\d{9}$/',
-        $normalizedMobile
-    )
-) {
-    $errors[] = 'Mobile Number is invalid.';
-}
+
 
 if ($category === '') {
     $errors[] = 'Offering Category is required.';
@@ -253,7 +234,7 @@ $payloadData = [
     'fullName' =>
         sanitizeCell($fullName),
     'mobileNumber' =>
-        sanitizeCell($normalizedMobile),
+        sanitizeCell($mobileNumber),
     'email' =>
         sanitizeCell($email),
     'category' =>

@@ -13,8 +13,10 @@ const SPEAKING_PDF_SECTIONS = [
   { value: 'Sunday Worships', label: 'Sunday Worship Schedule' },
   { value: 'Morning prayer', label: 'Morning Prayer' },
   { value: 'Monday Prayer', label: 'Monday Prayer' },
+  { value: 'CE Union', label: 'CE Union' },
   { value: 'Wednesday Prayer', label: 'Wednesday Bible Study' },
   { value: 'Zoom Prayer', label: 'Evening Zoom Prayer' },
+  { value: 'Quarterly Prayer', label: 'Quarterly Prayer' },
 ]
 
 
@@ -907,8 +909,10 @@ export default function SecretaryPortal() {
                     <option value="Sunday Worships">Sunday Worship Schedule</option>
                     <option value="Morning prayer">Morning Prayer</option>
                     <option value="Monday Prayer">Monday Prayer</option>
+                    <option value="CE Union">CE Union</option>
                     <option value="Wednesday Prayer">Wednesday Bible Study</option>
                     <option value="Zoom Prayer">Evening Zoom Prayer</option>
+                    <option value="Quarterly Prayer">Quarterly Prayer</option>
                   </select>
                 </div>
 

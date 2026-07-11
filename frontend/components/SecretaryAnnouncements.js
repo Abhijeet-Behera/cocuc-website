@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import styles from './ChurchUpdates.module.css'
 
@@ -15,18 +16,18 @@ const CARD_CONFIG = [
     label: 'NOTICES',
   },
   {
-    key: 'special',
-    title: 'Special Programmes',
-    image: '/images/church-updates/church-updates-programmes.svg',
-    alt: 'Calendar showing church event dates',
-    label: 'PROGRAMMES',
-  },
-  {
     key: 'speaking',
     title: 'Speaking Arrangements',
     image: '/images/church-updates/church-updates-speaking.svg',
     alt: 'Pulpit with Bible and microphone',
     label: 'SPEAKING',
+  },
+  {
+    key: 'special',
+    title: 'Special Programmes',
+    image: '/images/church-updates/church-updates-programmes.svg',
+    alt: 'Calendar showing church event dates',
+    label: 'PROGRAMMES',
   },
 ]
 
@@ -46,6 +47,78 @@ const EMPTY_STATE_CONFIG = {
     title: 'No arrangements available yet',
     text: 'Speaking arrangements will be updated shortly.',
     icon: '✦',
+  },
+}
+
+const SPEAKING_MOTIVATION_STYLES = {
+  card: {
+    position: 'relative',
+    width: '100%',
+    minHeight: '230px',
+    padding: '28px 24px',
+    border: '1px solid rgba(153, 0, 0, 0.12)',
+    borderRadius: '20px',
+    background:
+      'linear-gradient(145deg, rgba(255, 248, 248, 0.98), rgba(255, 255, 255, 1))',
+    boxShadow:
+      '0 14px 35px rgba(80, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.03)',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+  icon: {
+    position: 'relative',
+    zIndex: 1,
+    width: '50px',
+    height: '50px',
+    marginBottom: '16px',
+    borderRadius: '50%',
+    background: 'rgba(153, 0, 0, 0.07)',
+    color: '#990000',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '20px',
+  },
+  title: {
+    position: 'relative',
+    zIndex: 1,
+    margin: '0 0 12px',
+    color: '#990000',
+    fontSize: '17px',
+    fontWeight: 800,
+    lineHeight: 1.3,
+  },
+  text: {
+    position: 'relative',
+    zIndex: 1,
+    maxWidth: '520px',
+    margin: '0 0 22px',
+    color: '#555555',
+    fontSize: '15px',
+    lineHeight: 1.65,
+  },
+  button: {
+    position: 'relative',
+    zIndex: 1,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '9px',
+    minHeight: '46px',
+    padding: '12px 27px',
+    borderRadius: '999px',
+    background: '#990000',
+    color: '#ffffff',
+    fontSize: '14px',
+    fontWeight: 800,
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    textDecoration: 'none',
+    boxShadow: '0 10px 22px rgba(153, 0, 0, 0.22)',
   },
 }
 const getFileType = (path) => {
@@ -235,6 +308,37 @@ export default function SecretaryAnnouncements() {
   }
 
   const renderCardContent = (key, data, expanded) => {
+    if (key === 'speaking') {
+      return (
+        <div style={SPEAKING_MOTIVATION_STYLES.card}>
+          <div
+            style={SPEAKING_MOTIVATION_STYLES.icon}
+            aria-hidden="true"
+          >
+            ✦
+          </div>
+
+          <strong style={SPEAKING_MOTIVATION_STYLES.title}>
+            Stay Connected with Every Gathering
+          </strong>
+
+          {/* <span style={SPEAKING_MOTIVATION_STYLES.text}>
+            Every service carries a message, and every gathering has a purpose.
+            Explore all worship services, prayer meetings, Bible studies, and
+            upcoming speaking arrangements in one place.
+          </span>*/}
+
+          <Link
+            href="/speaking-arrangements"
+            style={SPEAKING_MOTIVATION_STYLES.button}
+          >
+            View All Arrangements
+            <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      )
+    }
+
     if (data.length === 0) {
       const emptyState = EMPTY_STATE_CONFIG[key]
 
@@ -430,40 +534,42 @@ export default function SecretaryAnnouncements() {
                   {renderCardContent(config.key, data, expanded)}
                 </div>
 
-                <button
-                  className={styles.churchUpdateCardButton}
-                  onClick={(e) => {
-                    e.stopPropagation()
+                {config.key !== 'speaking' && (
+                  <button
+                    className={styles.churchUpdateCardButton}
+                    onClick={(e) => {
+                      e.stopPropagation()
 
-                    if (config.key === 'weekly') {
-                      const noticeUrl = getWeeklyNoticeDocumentUrl(data[0])
+                      if (config.key === 'weekly') {
+                        const noticeUrl = getWeeklyNoticeDocumentUrl(data[0])
 
-                      if (noticeUrl) {
-                        window.open(noticeUrl, '_blank', 'noopener,noreferrer')
+                        if (noticeUrl) {
+                          window.open(noticeUrl, '_blank', 'noopener,noreferrer')
+                        }
+
+                        return
                       }
 
-                      return
+                      if (isSpecial) {
+                        setIsSpecialOpen(true)
+                      } else if (config.key === 'speaking') {
+                        router.push('/speaking-arrangements')
+                      } else {
+                        toggleExpanded(config.key)
+                      }
+                    }}
+                    aria-expanded={isSpecial ? isSpecialOpen : !!expanded}
+                    aria-label={
+                      config.key === 'weekly'
+                        ? `Read notice ${config.title}`
+                        : `${(isSpecial ? isSpecialOpen : expanded) ? 'Show less' : 'Read more'} ${config.title}`
                     }
-
-                    if (isSpecial) {
-                      setIsSpecialOpen(true)
-                    } else if (config.key === 'speaking') {
-                      router.push('/speaking-arrangements')
-                    } else {
-                      toggleExpanded(config.key)
-                    }
-                  }}
-                  aria-expanded={isSpecial ? isSpecialOpen : !!expanded}
-                  aria-label={
-                    config.key === 'weekly'
-                      ? `Read notice ${config.title}`
-                      : `${(isSpecial ? isSpecialOpen : expanded) ? 'Show less' : 'Read more'} ${config.title}`
-                  }
-                >
-                  {config.key === 'weekly'
-                    ? 'Read Notice'
-                    : 'Read More'}
-                </button>
+                  >
+                    {config.key === 'weekly'
+                      ? 'Read Notice'
+                      : 'Read More'}
+                  </button>
+                )}
               </div>
             </div>
           )

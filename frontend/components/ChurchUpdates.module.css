@@ -1208,3 +1208,146 @@
     max-height: none;
   }
 }
+
+/* ============================================
+   Speaking Arrangements Motivational Card
+   ============================================ */
+
+.speakingMotivationCard {
+  position: relative;
+  width: 100%;
+  min-height: 230px;
+  padding: 2rem 1.75rem;
+  border: 1px solid rgba(153, 0, 0, 0.12);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 12%,
+      rgba(153, 0, 0, 0.08) 0,
+      rgba(153, 0, 0, 0.03) 22%,
+      transparent 23%),
+    linear-gradient(145deg,
+      rgba(255, 250, 250, 0.98),
+      rgba(255, 255, 255, 1));
+  box-shadow:
+    0 14px 35px rgba(80, 0, 0, 0.08),
+    0 3px 10px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.speakingMotivationCard::after {
+  content: 'SPEAKING';
+  position: absolute;
+  left: 50%;
+  bottom: -0.2rem;
+  transform: translateX(-50%);
+  color: rgba(153, 0, 0, 0.035);
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.speakingMotivationIcon {
+  position: relative;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  background: rgba(153, 0, 0, 0.07);
+  color: #990000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.speakingMotivationTitle {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 0.75rem;
+  color: #990000;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.speakingMotivationText {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  margin: 0 0 1.4rem;
+  color: #555555;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.speakingMotivationButton {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 0.75rem 1.7rem;
+  border-radius: 999px;
+  background: #990000;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  box-shadow: 0 10px 22px rgba(153, 0, 0, 0.22);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.speakingMotivationButton:hover {
+  background: #7d0000;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(153, 0, 0, 0.3);
+}
+
+.speakingMotivationButton span {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.speakingMotivationButton:hover span {
+  transform: translateX(4px);
+}
+
+@media (max-width: 480px) {
+  .speakingMotivationCard {
+    min-height: 250px;
+    padding: 1.75rem 1.25rem;
+    border-radius: 18px;
+  }
+
+  .speakingMotivationTitle {
+    font-size: 1.2rem;
+  }
+
+  .speakingMotivationText {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .speakingMotivationButton {
+    width: 100%;
+    max-width: 240px;
+  }
+}

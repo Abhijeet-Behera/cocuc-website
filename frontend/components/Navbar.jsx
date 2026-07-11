@@ -120,13 +120,12 @@ export default function Navbar() {
   ]
 
 
-  /*const eventsMenu = [
-    { name: 'Monthly Programme', href: '#' },
-    { name: 'Special Announcements', href: '#' },
+  const eventsMenu = [
+    // { name: 'Monthly Programme', href: '#' },
+    // { name: 'Special Announcements', href: '#' },
     { name: 'Speaking Engagements', href: '/speaking-arrangements' },
-    { name: 'Holy Week', href: '#' },
-    { name: 'Baptism', href: '#' },
-  ]*/
+    // { name: 'Holy Week', href: '#' },
+  ]
 
   const prayerMenu = [
     { name: 'Morning Prayer', href: '/prayer/morning-prayer' },

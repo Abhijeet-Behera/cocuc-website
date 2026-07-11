@@ -6,7 +6,7 @@
 /* --- Page Wrapper --- */
 .page {
   min-height: 100vh;
-  padding-top: 140px;
+  padding-top: 86px;
   padding-bottom: 5rem;
   background: var(--color-background);
 }
@@ -432,7 +432,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* --- Error State --- */
@@ -460,6 +462,84 @@
   transform: translateX(-3px);
 }
 
+.heroWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.heroBackLink {
+  position: absolute;
+  top: 34px;
+  left: clamp(1.5rem, 12vw, 15rem);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  background: rgba(153, 0, 0, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  transition: all 0.2s ease;
+}
+
+.heroBackLink:hover {
+  background: rgba(153, 0, 0, 0.95);
+  transform: translateY(-2px);
+}
+
+.heroTitleMain {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.heroTitleAccent {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+  .heroBackLink {
+    top: 22px;
+    left: 1rem;
+    font-size: 0.85rem;
+    padding: 0.55rem 0.85rem;
+  }
+}
+
+/* Remove the unwanted space between navbar and hero */
+.speakingPage,
+.pageWrapper,
+.mainWrapper {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.heroSection {
+  margin-top: 0 !important;
+  padding-top: 0;
+  display: block;
+
+  /* Keeps space between the image and tabs */
+  margin-bottom: 0;
+}
+
+/* Add controlled white spacing below the hero image */
+.tabsSection {
+  background: #ffffff;
+  padding-top: 28px;
+  padding-bottom: 20px;
+}
+
 /* ============================================
    Responsive
    ============================================ */
@@ -473,8 +553,12 @@
 
 @media (max-width: 768px) {
   .page {
-    padding-top: 120px;
+    padding-top: 72px;
     padding-bottom: 3.5rem;
+  }
+
+  .heroWrapper {
+    margin-bottom: 1.5rem;
   }
 
   .container {
@@ -554,5 +638,47 @@
 
   .spinner {
     animation: none;
+  }
+}
+
+/* Mobile subsection automatic horizontal movement */
+.mobileSubsectionViewport {
+  display: contents;
+}
+
+@media (max-width: 768px) {
+  .mobileSubsectionViewport {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .mobileSubsectionTrack {
+    width: max-content;
+    min-width: max-content;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 0.75rem;
+    padding: 1.4rem 1rem 1.25rem;
+    animation: mobileSubsectionSlide 10s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  .mobileSubsectionTrack>* {
+    flex: 0 0 auto !important;
+    white-space: nowrap;
+  }
+}
+
+@keyframes mobileSubsectionSlide {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-100% + 100vw));
   }
 }

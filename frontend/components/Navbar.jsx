@@ -100,7 +100,7 @@ export default function Navbar() {
     { name: 'History', href: '/about/history' },
     { name: 'What We Believe', href: '/about/what-we-believe' },
     { name: 'Supervisory Committee', href: '/about/supervisory-committe' },
-    { name: 'Leadership Team', href: '/about/leadership' },
+    { name: 'Leadership Team & Support Staff', href: '/about/leadership' },
     { name: 'Secretary’s Corner', href: '/about/secretary' },
     { name: 'Pastor’s Note', href: '/pastors-note' },
     { name: 'Celebrations', href: '#' },
@@ -173,8 +173,17 @@ export default function Navbar() {
             <NavDropdown title="About" items={aboutMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             <NavLink href="/gallery" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Gallery</NavLink>
             <NavDropdown title="Activities" items={activitiesMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
+            {/* Prayer Wings hidden temporarily */}
+            {/*
             <NavDropdown title="Prayer Wings" items={prayerMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
-            <NavDropdown title="Events" items={eventsMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
+*/}
+            <NavLink
+              href="/speaking-arrangements"
+              scrolled={isNavSolid}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Speaking Arrangements
+            </NavLink>
             <NavLink href="/#blog" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Blog</NavLink>
           </div>
 
@@ -236,9 +245,9 @@ function NavLink({ href, children, scrolled, onClick }) {
       whileHover={{ scale: 1.05, y: -2 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      <Link 
-        href={href} 
-        className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent} ${usePathname() === href ? styles.active : ''}`} 
+      <Link
+        href={href}
+        className={`${styles.navLink} ${scrolled ? styles.navLinkScrolled : styles.navLinkTransparent} ${usePathname() === href ? styles.active : ''}`}
         onClick={onClick}
       >
         {children}

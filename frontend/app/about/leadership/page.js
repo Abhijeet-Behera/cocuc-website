@@ -69,14 +69,14 @@ export default function LeadershipPage() {
     <div>
       <PageHeader
         category="About"
-        title="Leadership Team"
+        title="Leadership Team & Support Staff"
         description="Meet the dedicated individuals serving our congregation."
       />
 
       {/* Main Content Section */}
       <section className="section" style={{ backgroundColor: 'var(--color-surface)' }}>
         <div className="container" style={{ maxWidth: '1200px' }}>
-          
+
           {/* Pastoral Team */}
           <div style={{ marginBottom: '6rem' }}>
             <h2 className="section-title-elegant" style={{ marginBottom: '3rem' }}>
@@ -85,15 +85,31 @@ export default function LeadershipPage() {
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
               {[
-                { name: "Rev. Dr. Ayub Chhinchani", role: "Pastor", phone: "9437418423", image: "/images/pastors-note/pastors-note-01.jpg" },
-                { name: "Rev. Songram Keshari Singh", role: "Pastor", phone: "9437284415", image: "/images/pastors-note/pastors-note-02.jpg" },
-                { name: "Rev. Satish Kumar Pani", role: "Pastor", phone: "9438518776", image: "/images/pastors-note/pastors-note-03.jpg" }
+                {
+                  name: "Rev. Dr. Ayub Chhinchani",
+                  role: "Pastor",
+                  phone: "9437418423",
+                  image: "/images/pastors-note/ayub-chhinchani.png"
+                },
+                {
+                  name: "Rev. Songram Keshari Singh",
+                  role: "Pastor",
+                  phone: "9437284415",
+                  image: "/images/pastors-note/songram-keshari-singh.png"
+                },
+                {
+                  name: "Rev. Satish Kumar Pani",
+                  role: "Pastor",
+                  phone: "9438518776",
+                  image: "/images/pastors-note/satish-kumar-pani.png"
+                },
+
               ].map((pastor, index) => (
                 <div key={index} className="card" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-sm)' }}>
                   <div style={{ height: '260px', overflow: 'hidden', position: 'relative', backgroundColor: '#e2e8f0' }}>
-                    <img 
-                      src={pastor.image} 
-                      alt={pastor.name} 
+                    <img
+                      src={pastor.image}
+                      alt={pastor.name}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                     />
                     <div style={{ position: 'absolute', top: '1rem', right: '1rem', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: '0.35rem 0.85rem', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -121,16 +137,16 @@ export default function LeadershipPage() {
               <span className="title-normal">Meet the </span>
               <em className="title-italic">leadership team</em>
             </h2>
-            
+
             <p className="deacon-section-desc">
               The selection was held on 21st & 23rd January, 2026, by the five-member Supervisory Committee of the Church.
             </p>
 
             {/* Interactive Filters Panel */}
             <div className="deacon-search-wrapper">
-              <input 
-                type="text" 
-                placeholder="Search deacons by name or designation..." 
+              <input
+                type="text"
+                placeholder="Search deacons by name or designation..."
                 className="deacon-search-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -183,10 +199,10 @@ export default function LeadershipPage() {
 
                     <div className="deacon-grid">
                       {section.members.map((deacon) => {
-                        const imageSrc = deacon.image || (deacon.gender === 'female' 
-                          ? '/images/deacon-female-placeholder.png' 
+                        const imageSrc = deacon.image || (deacon.gender === 'female'
+                          ? '/images/deacon-female-placeholder.png'
                           : '/images/deacon-male-placeholder.png');
-                        
+
                         return (
                           <div key={deacon.id} className="deacon-card">
                             {deacon.category === 'Elder' && (
@@ -210,13 +226,13 @@ export default function LeadershipPage() {
                             )}
 
                             <div className="deacon-img-container">
-                              <img 
-                                src={imageSrc} 
-                                alt={deacon.name} 
+                              <img
+                                src={imageSrc}
+                                alt={deacon.name}
                                 className="deacon-img"
                               />
                             </div>
-                            
+
                             <div className="deacon-info-overlay">
                               <span className="deacon-name">{deacon.name}</span>
                               <span className="deacon-role">{deacon.role}</span>
@@ -284,22 +300,30 @@ export default function LeadershipPage() {
 
             <div className="deacon-grid">
               {[
-                { name: "Evg. Pratap Kumar Sahoo", role: "Evangelist" },
-                { name: "Evg. Ranjit Singh", role: "Evangelist" },
-                // { name: "Evg. Gobinda Sahoo", role: "Evangelist" },
-                // { name: "Evg. Sujit Bishoi", role: "Evangelist" },
-                // { name: "Evg. Christopher Surya", role: "Evangelist" }
+                {
+                  name: "Evg. Pratap Kumar Sahoo",
+                  role: "Evangelist",
+                  image: "/images/leadership/evg-pratap-kumar-sahoo.jpeg"
+                },
+                {
+                  name: "Evg. Ranjit Singh",
+                  role: "Evangelist",
+                  image: "/images/leadership/evg-ranjit-singh.png"
+                },
               ].map((evg, idx) => {
-                const imageSrc = '/images/deacon-male-placeholder.png';
+                const imageSrc =
+                  evg.image || "/images/deacon-male-placeholder.png";
+
                 return (
                   <div key={idx} className="deacon-card">
                     <div className="deacon-img-container">
-                      <img 
-                        src={imageSrc} 
-                        alt={evg.name} 
+                      <img
+                        src={imageSrc}
+                        alt={evg.name}
                         className="deacon-img"
                       />
                     </div>
+
                     <div className="deacon-info-overlay">
                       <span className="deacon-name">{evg.name}</span>
                       <span className="deacon-role">{evg.role}</span>
@@ -346,9 +370,9 @@ export default function LeadershipPage() {
                 return (
                   <div key={idx} className="deacon-card">
                     <div className="deacon-img-container">
-                      <img 
-                        src={imageSrc} 
-                        alt={staff.name} 
+                      <img
+                        src={imageSrc}
+                        alt={staff.name}
                         className="deacon-img"
                       />
                     </div>

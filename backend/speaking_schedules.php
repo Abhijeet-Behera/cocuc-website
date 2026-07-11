@@ -103,7 +103,7 @@ if ($method === 'GET') {
         $sub_section = $_GET['sub_section'] ?? null;
         if (!$sub_section) {
             http_response_code(400);
-            echo json_encode(["error" => "Missing sub_section. Supported: 'Sunday Worships', 'Morning prayer', 'Monday Prayer', 'Wednesday Prayer', 'Zoom Prayer'"]);
+            echo json_encode(["error" => "Missing sub_section. Supported: 'Sunday Worships', 'Morning prayer', 'Monday Prayer', 'Prayer Wings', 'CE Union', 'Wednesday Prayer', 'Zoom Prayer', 'Quarterly Prayer'"]);
             exit;
         }
 
@@ -191,11 +191,17 @@ if ($method === 'GET') {
             case 'Monday Prayer':
                 $parserFunc = 'parseMondayPrayerPdf';
                 break;
+            case 'CE Union':
+                $parserFunc = 'parseCEUnionPdf';
+                break;
             case 'Wednesday Prayer':
                 $parserFunc = 'parseWednesdayBibleStudyPdf';
                 break;
             case 'Zoom Prayer':
                 $parserFunc = 'parseEveningZoomPrayerPdf';
+                break;
+            case 'Quarterly Prayer':
+                $parserFunc = 'parseQuarterlyPrayerPdf';
                 break;
             default:
                 http_response_code(400);

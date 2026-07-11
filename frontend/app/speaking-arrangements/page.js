@@ -1,8 +1,8 @@
 'use client'
-
 import { useState, useEffect, Fragment } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
+import PageHeader from '@/components/PageHeader'
 import styles from './SpeakingArrangements.module.css'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
@@ -11,32 +11,45 @@ const SUB_SECTIONS = [
   {
     key: 'sunday_worship',
     label: 'Sunday Worship',
-    icon: '☀',
+    //icon: '☀',
     queryKeys: ['sunday_worship', 'Sunday Worships', 'Sunday Worship Schedule'],
   },
   {
     key: 'morning_prayer',
     label: 'Morning Prayer',
-    icon: '🌅',
+    //icon: '🌅',
     queryKeys: ['morning_prayer', 'Morning prayer', 'Morning Prayer'],
   },
   {
     key: 'monday_prayer',
     label: 'Monday Prayer',
-    icon: '🙏',
+    //icon: '🙏',
     queryKeys: ['monday_prayer', 'Monday Prayer'],
+  },
+
+  {
+    key: 'ce_union',
+    label: 'CE Union',
+    //icon: '✝️',
+    queryKeys: ['ce_union', 'CE Union', 'C.E Union', 'Christian Endeavour Union'],
   },
   {
     key: 'bible_study',
     label: 'Wednesday Bible Study',
-    icon: '📖',
+    //icon: '📖',
     queryKeys: ['bible_study', 'Wednesday Prayer', 'Wednesday Bible Study', 'WEDNESDAY BIBLE STUDY'],
   },
   {
     key: 'evening_zoom_prayer',
     label: 'Evening Zoom Prayer',
-    icon: '💻',
+    //icon: '💻',
     queryKeys: ['evening_zoom_prayer', 'Zoom Prayer', 'Evening Zoom Prayer'],
+  },
+  {
+    key: 'quarterly_prayer',
+    label: 'Quarterly Prayer',
+    //icon: '🗓️',
+    queryKeys: ['quarterly_prayer', 'Quarterly Prayer', 'Quarterly Prayer Week'],
   },
 ]
 
@@ -59,6 +72,11 @@ const defaultPrograms = {
     { item: 'Devotional Talk', duration: '15 Minutes' },
     { item: 'Prayer & Intercession', duration: '25 Minutes' },
     { item: 'The Lord’s Prayer & Benediction', duration: '5 Minutes' },
+  ],
+  quarterly_prayer: [
+    { item: 'Opening Prayer, Singing & Worship', duration: '20 Minutes' },
+    { item: 'Sharing from God’s Word', duration: '20 Minutes' },
+    { item: 'Sharing Thanks / Praise & Prayer Points followed by Closing Prayer & Benediction', duration: '20 Minutes' },
   ],
 }
 
@@ -208,6 +226,22 @@ export default function SpeakingArrangementsPage() {
   const [meta, setMeta] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)')
+
+    function updateMobileView() {
+      setIsMobile(mediaQuery.matches)
+    }
+
+    updateMobileView()
+    mediaQuery.addEventListener('change', updateMobileView)
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateMobileView)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -273,52 +307,94 @@ export default function SpeakingArrangementsPage() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.container}>
-        <Link href="/" className={styles.backLink}>
+      <div className={styles.heroWrapper}>
+        <PageHeader
+          category="Speaking Arrangements"
+          title={
+            <>
+              <span className={styles.heroTitleMain}>Speaking </span>
+              <span className={styles.heroTitleAccent}>Arrangements</span>
+            </>
+          }
+          description="View church speaking schedules across all services and prayer meetings."
+        />
+
+        {/*<Link href="/" className={styles.heroBackLink}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           Back to Home
-        </Link>
+        </Link>*/}
+      </div>
 
-        <header className={styles.header}>
-          <h1 className={styles.title}>
-            <span className={styles.titleNormal}>Speaking </span>
-            <span className={styles.titleAccent}>Arrangements</span>
-          </h1>
+      <div className={styles.container}>
 
-          <p className={styles.subtitle}>
-            View church speaking schedules across all services and prayer meetings.
-          </p>
-        </header>
-
-        <section style={ui.tabs} aria-label="Speaking arrangement sections">
-          {SUB_SECTIONS.map((section) => (
-            <motion.button
-              key={section.key}
-              type="button"
-              onClick={() => setActiveSection(section.key)}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.96 }}
-              animate={{
-                scale: activeSection === section.key ? 1.04 : 1,
-              }}
-              transition={{
-                duration: 0.2,
-                ease: 'easeOut',
-              }}
-              style={{
-                ...ui.tab,
-                ...(activeSection === section.key ? ui.activeTab : {}),
-              }}
-            >
-              <span aria-hidden="true" style={{ marginRight: 8 }}>
-                {section.icon}
-              </span>
-              <span>{section.label}</span>
-            </motion.button>
-          ))}
-        </section>
+        <div
+          style={
+            isMobile
+              ? {
+                width: '100%',
+                overflowX: 'auto',
+                overflowY: 'hidden',
+                WebkitOverflowScrolling: 'touch',
+                touchAction: 'pan-x',
+                overscrollBehaviorX: 'contain',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                margin: '0 0 34px',
+              }
+              : undefined
+          }
+        >
+          <motion.section
+            aria-label="Speaking arrangement sections"
+            style={{
+              ...ui.tabs,
+              ...(isMobile
+                ? {
+                  flexWrap: 'nowrap',
+                  justifyContent: 'flex-start',
+                  width: 'max-content',
+                  minWidth: 'max-content',
+                  margin: 0,
+                  padding: '0 16px 8px',
+                }
+                : {}),
+            }}
+          >
+            {SUB_SECTIONS.map((section) => (
+              <motion.button
+                key={section.key}
+                type="button"
+                onClick={() => setActiveSection(section.key)}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                animate={{
+                  scale: activeSection === section.key ? 1.04 : 1,
+                }}
+                transition={{
+                  duration: 0.2,
+                  ease: 'easeOut',
+                }}
+                style={{
+                  ...ui.tab,
+                  ...(activeSection === section.key ? ui.activeTab : {}),
+                  ...(isMobile
+                    ? {
+                      flex: '0 0 auto',
+                      whiteSpace: 'nowrap',
+                    }
+                    : {}),
+                }}
+              >
+                <span aria-hidden="true" style={{ marginRight: 8 }}>
+                  {section.icon}
+                </span>
+                <span>{section.label}</span>
+              </motion.button>
+            ))}
+          </motion.section>
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -371,12 +447,24 @@ function ScheduleRenderer({ section, items, meta }) {
     return <MondayPrayerTable items={items} meta={meta} />
   }
 
+  if (section === 'prayer_wings') {
+    return <PrayerWingsTable items={items} meta={meta} />
+  }
+
+  if (section === 'ce_union') {
+    return <CEUnionTable items={items} meta={meta} />
+  }
+
   if (section === 'bible_study') {
     return <BibleStudyTable items={items} meta={meta} />
   }
 
   if (section === 'evening_zoom_prayer') {
     return <EveningZoomPrayerTable items={items} meta={meta} />
+  }
+
+  if (section === 'quarterly_prayer') {
+    return <QuarterlyPrayerTable items={items} meta={meta} />
   }
 
   return null
@@ -451,6 +539,9 @@ function MorningPrayerTable({ items, meta }) {
         subtitle="From 07:00 to 08:00 AM, Every Day Except Sunday"
       />
 
+      <MorningPrayerGreeting />
+
+
       <InfoGrid
         items={[
           { label: 'Time', value: '07:00 AM – 08:00 AM' },
@@ -513,6 +604,8 @@ function MondayPrayerTable({ items, meta }) {
         title="Monday Prayer"
         subtitle="COCUC, Bhubaneswar"
       />
+
+      <MondayPrayerGreeting />
 
       <InfoGrid
         items={[
@@ -632,6 +725,161 @@ function MondayPrayerTable({ items, meta }) {
   )
 }
 
+
+function PrayerWingsTable({ items }) {
+  return (
+    <section style={ui.scheduleBox}>
+      <SectionHeader
+        title="Prayer Wings"
+        subtitle="Church of Christ, Union Church, Bhubaneswar"
+      />
+
+      <div style={ui.tableScroll}>
+        <table style={ui.table}>
+          <thead>
+            <tr>
+              <TableHead>Date</TableHead>
+              <TableHead>Day</TableHead>
+              <TableHead>Title / Focus</TableHead>
+              <TableHead>Leader / Speaker</TableHead>
+              <TableHead>Details</TableHead>
+            </tr>
+          </thead>
+
+          <tbody>
+            {renderGroupedRows(items, 5, (item) => {
+              const data = getItemData(item)
+
+              return (
+                <tr key={item.id || getDateValue(item)}>
+                  <TableCell>{formatDate(getDateValue(item))}</TableCell>
+                  <TableCell>{show(getValue(data, ['day', 'day_name', 'Day']) || item.day_name)}</TableCell>
+                  <TableCell>{show(getValue(data, ['title', 'focus', 'topic', 'prayer_focus', 'Title', 'Focus', 'Topic']))}</TableCell>
+                  <TableCell>{show(getValue(data, ['leader', 'speaker', 'presiding', 'presiding_by', 'Leader', 'Speaker', 'Presiding']))}</TableCell>
+                  <TableCell>{show(getValue(data, ['details', 'description', 'note', 'notes', 'Details', 'Description', 'Note']))}</TableCell>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
+function CEUnionTable({ items }) {
+  return (
+    <section style={ui.scheduleBox}>
+      <SectionHeader
+        title="CE Union Schedule"
+        subtitle="Christian Endeavour Union, Church of Christ, Union Church, Bhubaneswar"
+      />
+
+      <div style={ui.tableScroll}>
+        <table style={ui.table}>
+          <colgroup>
+            <col style={{ width: '14%' }} />
+            <col style={{ width: '24%' }} />
+            <col style={{ width: '42%' }} />
+            <col style={{ width: '20%' }} />
+          </colgroup>
+
+          <thead>
+            <tr>
+              <TableHead>Date</TableHead>
+              <TableHead>Speaker</TableHead>
+              <TableHead>Topic</TableHead>
+              <TableHead>Presiding</TableHead>
+            </tr>
+          </thead>
+
+          <tbody>
+            {renderGroupedRows(items, 4, (item) => {
+              const data = getItemData(item)
+
+              return (
+                <tr key={item.id || getDateValue(item)}>
+                  <TableCell>{formatDate(getDateValue(item))}</TableCell>
+                  <TableCell>{show(getValue(data, ['speaker', 'Speaker']))}</TableCell>
+                  <TableCell>{show(getValue(data, ['topic', 'Topic']))}</TableCell>
+                  <TableCell>{show(getValue(data, ['presiding', 'presiding_by', 'presided_by', 'Presiding', 'PRESIDING']))}</TableCell>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
+function QuarterlyPrayerTable({ items, meta }) {
+  const timing = getMetaValue(meta, items, ['timing', 'time', 'header', 'Timing']) || 'Every day at 07:00 PM'
+
+  return (
+    <section style={ui.scheduleBox}>
+      <SectionHeader
+        title="Quarterly Prayer Week"
+        subtitle="COCUC, Bhubaneswar"
+      />
+
+      <QuarterlyPrayerGreeting />
+
+      <InfoGrid
+        items={[
+          { label: 'Timing', value: timing },
+        ]}
+      />
+
+      <div style={ui.tableScroll}>
+        <table style={ui.table}>
+          <colgroup>
+            <col style={{ width: '12%' }} />
+            <col style={{ width: '13%' }} />
+            <col style={{ width: '20%' }} />
+            <col style={{ width: '22%' }} />
+            <col style={{ width: '20%' }} />
+            <col style={{ width: '13%' }} />
+          </colgroup>
+
+          <thead>
+            <tr>
+              <TableHead>Date</TableHead>
+              <TableHead>Day</TableHead>
+              <TableHead>Presiding</TableHead>
+              <TableHead>Speaker</TableHead>
+              <TableHead>Prayer Focus</TableHead>
+              <TableHead>Worship Led By</TableHead>
+            </tr>
+          </thead>
+
+          <tbody>
+            {renderGroupedRows(items, 6, (item) => {
+              const data = getItemData(item)
+
+              return (
+                <tr key={item.id || getDateValue(item)}>
+                  <TableCell>{formatDate(getDateValue(item))}</TableCell>
+                  <TableCell>{show(getValue(data, ['day', 'day_name', 'Day']) || item.day_name)}</TableCell>
+                  <TableCell>{show(getValue(data, ['presiding', 'presiding_by', 'presided_by', 'Presiding']))}</TableCell>
+                  <TableCell>{show(getValue(data, ['speaker', 'Speaker']))}</TableCell>
+                  <TableCell>{show(getValue(data, ['prayer_focus', 'focus', 'Prayer Focus', 'Focus']))}</TableCell>
+                  <TableCell>{show(getValue(data, ['worship_led_by', 'worship_by', 'worship', 'worship_led', 'Worship Led By', 'Worship Led By:']))}</TableCell>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <ProgramSchedule
+        title="Simple Schedule"
+        program={getProgram(meta, items, 'quarterly_prayer')}
+      />
+    </section>
+  )
+}
+
 function BibleStudyTable({ items }) {
   return (
     <section style={ui.scheduleBox}>
@@ -691,6 +939,8 @@ function EveningZoomPrayerTable({ items, meta }) {
         subtitle="C O C U C, Bhubaneswar | 07:00 PM – 08:00 PM"
       />
 
+      <EveningZoomPrayerGreeting />
+
       <InfoGrid
         items={[
           { label: 'Platform', value: 'Zoom' },
@@ -741,6 +991,572 @@ function EveningZoomPrayerTable({ items, meta }) {
         program={getProgram(meta, items, 'evening_zoom_prayer')}
       />
     </section>
+  )
+}
+
+function MorningPrayerGreeting() {
+  return (
+    <div style={{ marginBottom: '28px' }}>
+      <div
+        style={{
+          background: '#fff8ec',
+          borderLeft: '4px solid #990000',
+          borderRadius: '14px',
+          padding: '22px 26px',
+          marginBottom: '24px',
+          boxShadow: '0 12px 32px rgba(90, 0, 0, 0.08)',
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            color: '#111',
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: '20px',
+            fontWeight: 700,
+            fontStyle: 'italic',
+            lineHeight: 1.65,
+          }}
+        >
+          “In the morning, Lord, You hear my voice; in the morning I lay my
+          requests before You and wait expectantly.”
+        </p>
+
+        <p
+          style={{
+            margin: '12px 0 0',
+            color: '#990000',
+            fontSize: '13px',
+            fontWeight: 900,
+            letterSpacing: '0.08em',
+          }}
+        >
+          — PSALM 5:3
+        </p>
+      </div>
+
+      <div
+        style={{
+          background: '#870000',
+          color: '#ffffff',
+          borderRadius: '14px',
+          padding: '24px 28px',
+          marginBottom: '24px',
+          boxShadow: '0 16px 35px rgba(153, 0, 0, 0.22)',
+        }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+            gap: '20px',
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: '11px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Days
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: 900 }}>
+              Mon – Sat (Except Sunday)
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '11px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Time
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: 900 }}>
+              07:00 AM – 08:00 AM IST
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '11px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Venue
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: 900 }}>
+              Church & Online (Zoom)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          background: '#ffffff',
+          border: '1px solid #eeeeee',
+          borderRadius: '16px',
+          padding: '30px 34px',
+          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.06)',
+        }}
+      >
+        <p style={{ margin: '0 0 18px', color: '#222', lineHeight: 1.8 }}>
+          At the <strong>Church of Christ (Union Church), Bhubaneswar</strong>,
+          we believe there is no better way to face the day than by anchoring
+          our hearts in scripture, worship, and community prayer. Whether you
+          are seeking strength for the week ahead, peace in a time of trial, or
+          simply want to fellowship with God, our doors and hearts are open.
+        </p>
+
+        <p style={{ margin: '0 0 18px', color: '#222', lineHeight: 1.8 }}>
+          At Union Church, faithful worshippers come every day and pray for
+          others’ needs and also for the State and the Nation. Even Jesus set an
+          example for us as He used to pray early in the morning to His Father
+          in Heaven.
+        </p>
+
+        <blockquote
+          style={{
+            margin: '18px 0',
+            padding: '4px 0 4px 18px',
+            borderLeft: '2px solid #990000',
+            color: '#111',
+            fontStyle: 'italic',
+            lineHeight: 1.8,
+          }}
+        >
+          As a Church, the importance of Prayer is utmost in these days. Because
+          as believers, we are going to face difficult days in the future. We
+          need the power from above to face trials — and that power we can
+          receive only when we are on our knees and pray.
+        </blockquote>
+
+        <p style={{ margin: 0, color: '#222', lineHeight: 1.8 }}>
+          Join us as we gather to seek the Lord’s face, lift up our community,
+          and intercede for one another. Both our Pastors, Deacons, and other
+          members of the Church share God’s Word during this prayer time. Those
+          who come regularly are thoroughly blessed.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function MondayPrayerGreeting() {
+  return (
+    <div style={{ marginBottom: '28px' }}>
+      <div
+        style={{
+          background: '#870000',
+          color: '#ffffff',
+          borderRadius: '16px',
+          padding: '26px 32px',
+          marginBottom: '28px',
+          boxShadow: '0 16px 35px rgba(153, 0, 0, 0.22)',
+        }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+            gap: '24px',
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Day & Time
+            </div>
+
+            <div style={{ fontSize: '22px', fontWeight: 900 }}>
+              Every Monday | 7:00 PM – 8:00 PM
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              In-Person Venue
+            </div>
+
+            <div style={{ fontSize: '20px', fontWeight: 900 }}>
+              Ground Floor Amenity Hall
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Also Available
+            </div>
+
+            <div style={{ fontSize: '20px', fontWeight: 900 }}>
+              Online via Zoom
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          background: '#ffffff',
+          border: '1px solid #eeeeee',
+          borderRadius: '18px',
+          padding: '34px 38px',
+          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.06)',
+        }}
+      >
+        <p style={{ margin: '0 0 20px', color: '#222', lineHeight: 1.85 }}>
+          There is no better way to anchor our week than coming together as a
+          family in prayer. Every Monday, the{' '}
+          <strong>Church of Christ (Union Church), Bhubaneswar</strong> gathers
+          to seek God&apos;s face, intercede for our community, and lift up
+          different matters of the Church.
+        </p>
+
+        <p style={{ margin: '0 0 20px', color: '#222', lineHeight: 1.85 }}>
+          Whether you join us in person or virtually, your presence and prayers
+          matter! This dedicated time is spent in worship through songs,
+          meditation, and prayer — conducted by our Associate Pastors, Deacons,
+          or invited leaders.
+        </p>
+
+        <blockquote
+          style={{
+            margin: '22px 0 0',
+            padding: '4px 0 4px 20px',
+            borderLeft: '3px solid #990000',
+            color: '#111',
+            fontStyle: 'italic',
+            lineHeight: 1.85,
+          }}
+        >
+          Unless a Church prays, we cannot see lives being changed; we cannot
+          fulfill the Great Commission which the Lord has given to His people.
+          Do come and join us as we pray in faith on various matters.
+        </blockquote>
+      </div>
+    </div>
+  )
+}
+
+function EveningZoomPrayerGreeting() {
+  return (
+    <div style={{ marginBottom: '28px' }}>
+      <div
+        style={{
+          background: '#870000',
+          color: '#ffffff',
+          borderRadius: '16px',
+          padding: '26px 32px',
+          marginBottom: '28px',
+          boxShadow: '0 16px 35px rgba(153, 0, 0, 0.22)',
+        }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+            gap: '24px',
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Days
+            </div>
+
+            <div style={{ fontSize: '22px', fontWeight: 900 }}>
+              Every Friday & Saturday
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Time
+            </div>
+
+            <div style={{ fontSize: '22px', fontWeight: 900 }}>
+              07:00 PM – 08:00 PM IST
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Platform
+            </div>
+
+            <div style={{ fontSize: '22px', fontWeight: 900 }}>
+              Zoom Only
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          background: '#ffffff',
+          border: '1px solid #eeeeee',
+          borderRadius: '18px',
+          padding: '34px 38px',
+          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.06)',
+        }}
+      >
+        <p style={{ margin: '0 0 20px', color: '#222', lineHeight: 1.85 }}>
+          Evening Zoom Prayer takes place <strong>every Friday and Saturday</strong>.
+          During these sessions, we passionately intercede for our congregation
+          and community. All are welcome to join from the comfort of your home.
+        </p>
+
+        <p
+          style={{
+            margin: '0 0 20px',
+            color: '#111',
+            lineHeight: 1.85,
+            fontWeight: 800,
+          }}
+        >
+          During these sessions, we passionately intercede for:
+        </p>
+
+        <ul
+          style={{
+            margin: 0,
+            paddingLeft: '1.4rem',
+            color: '#222',
+            lineHeight: 1.9,
+          }}
+        >
+          <li style={{ marginBottom: '12px' }}>
+            The diverse prayer requests submitted by our congregation.
+          </li>
+
+          <li style={{ marginBottom: '12px' }}>
+            Prayer for healing of the sick.
+          </li>
+
+          <li>
+            Comfort, strength, and relief for our elders suffering from various
+            ailments.
+          </li>
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+
+function QuarterlyPrayerGreeting() {
+  return (
+    <div style={{ marginBottom: '28px' }}>
+      <div
+        style={{
+          background: '#fff8ec',
+          borderLeft: '4px solid #990000',
+          borderRadius: '14px',
+          padding: '22px 26px',
+          marginBottom: '24px',
+          boxShadow: '0 12px 32px rgba(90, 0, 0, 0.08)',
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            color: '#111',
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: '20px',
+            fontWeight: 700,
+            fontStyle: 'italic',
+            lineHeight: 1.65,
+          }}
+        >
+          “The earnest prayer of a righteous person has great power and produces
+          wonderful results.”
+        </p>
+
+        <p
+          style={{
+            margin: '12px 0 0',
+            color: '#990000',
+            fontSize: '13px',
+            fontWeight: 900,
+            letterSpacing: '0.08em',
+          }}
+        >
+          — JAMES 5:16
+        </p>
+      </div>
+
+      <div
+        style={{
+          background: '#870000',
+          color: '#ffffff',
+          borderRadius: '16px',
+          padding: '26px 32px',
+          marginBottom: '28px',
+          boxShadow: '0 16px 35px rgba(153, 0, 0, 0.22)',
+        }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '24px',
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              When
+            </div>
+
+            <div style={{ fontSize: '20px', fontWeight: 900 }}>
+              First Week of Every New Quarter
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              This Quarter
+            </div>
+
+            <div style={{ fontSize: '20px', fontWeight: 900 }}>
+              6th – 11th July 2026
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                opacity: 0.85,
+                marginBottom: '8px',
+              }}
+            >
+              Daily Time
+            </div>
+
+            <div style={{ fontSize: '20px', fontWeight: 900 }}>
+              07:00 PM IST
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          background: '#ffffff',
+          border: '1px solid #eeeeee',
+          borderRadius: '18px',
+          padding: '34px 38px',
+          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.06)',
+        }}
+      >
+        <p style={{ margin: '0 0 20px', color: '#222', lineHeight: 1.85 }}>
+          The <strong>Church Quarterly Prayer Week</strong> takes place every
+          first week of a new quarter. Join us as we gather as one body for six
+          evenings of focused, mission-driven prayer.
+        </p>
+
+        <p style={{ margin: 0, color: '#222', lineHeight: 1.85 }}>
+          Each evening, we will direct our hearts toward specific mission
+          fields, communities, and generations — interceding for transformation,
+          protection, and spiritual growth. These are not ordinary prayer
+          meetings; they are moments where the entire church family unites in
+          purpose and faith.
+        </p>
+      </div>
+    </div>
   )
 }
 

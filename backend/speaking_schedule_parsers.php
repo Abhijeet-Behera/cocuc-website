@@ -735,4 +735,466 @@ function parseEveningZoomPrayerPdf($filePath)
         'items' => $rows
     ];
 }
+
+/**
+ * Find the longest configured value that appears at the beginning of a text.
+ */
+function findLongestConfiguredPrefix($text, $values)
+{
+    $text = cleanPdfText($text);
+    $best = '';
+
+    foreach ($values as $value) {
+        $value = cleanPdfText($value);
+        if ($value === '')
+            continue;
+
+        if (preg_match('/^' . preg_quote($value, '/') . '(?:\b|\s|$)/iu', $text)) {
+            if (mb_strlen($value) > mb_strlen($best)) {
+                $best = $value;
+            }
+        }
+    }
+
+    return $best;
+}
+
+/**
+ * Find the longest configured value that appears at the end of a text.
+ */
+function findLongestConfiguredSuffix($text, $values)
+{
+    $text = cleanPdfText($text);
+    $best = '';
+
+    foreach ($values as $value) {
+        $value = cleanPdfText($value);
+        if ($value === '')
+            continue;
+
+        if (preg_match('/(?:^|\s)' . preg_quote($value, '/') . '$/iu', $text)) {
+            if (mb_strlen($value) > mb_strlen($best)) {
+                $best = $value;
+            }
+        }
+    }
+
+    return $best;
+}
+
+/**
+ * Normalize flexible CE Union date formats like 15.08,2026 or 06:12;2026
+ */
+function normalizeFlexibleScheduleDate($day, $month, $year)
+{
+    $day = str_pad($day, 2, '0', STR_PAD_LEFT);
+    $month = str_pad($month, 2, '0', STR_PAD_LEFT);
+    return "$year-$month-$day";
+}
+
+/**
+ * Parser for CE Union Schedule
+ */
+function parseCEUnionPdf($filePath)
+{
+    $parser = new \Smalot\PdfParser\Parser();
+    $pdf = $parser->parseFile($filePath);
+    $text = $pdf->getText();
+    $lines = explode("\n", $text);
+
+    $rows = [];
+    $periodStart = null;
+    $periodEnd = null;
+    $currentRow = null;
+
+    $eventRows = [
+        'PRIZE GIVING CEREMONY DAY',
+        'COCUC PRAYER WEEK',
+        'DISGUISE COMETITION',
+        'DISGUISE COMPETITION',
+        'DEVOTIONAL SONG',
+        'ANNUAL SPORTS',
+        'MEMORY VERSE',
+        'BIBLE ESSAY',
+        'BIBLE QUIZ',
+        'SYMPOSIUM',
+    ];
+
+    $knownSpeakers = [
+        'PRIZE GIVING CEREMONY DAY',
+        'COCUC PRAYER WEEK',
+        'DISGUISE COMETITION',
+        'DISGUISE COMPETITION',
+        'DEVOTIONAL SONG',
+        'ANNUAL SPORTS',
+        'MEMORY VERSE',
+        'BIBLE ESSAY',
+        'BIBLE QUIZ',
+        'SYMPOSIUM',
+        'REV SATISH KUMAR PANI',
+        'REV AYUB CHHINCHANI',
+        'REV AYUB CHHICHANI',
+        'REV S K SINGH',
+        'DR P N PRADHAN',
+        'PARESH KUMAR DAS',
+        'RANJAN KUMAR ROUT',
+        'RAJ KISHORE SUPAKAR',
+        'SARAT CHANDRA SINGH',
+        'MICHEAL RAJESH BEHERA',
+        'SMRUTIRANJAN NAYAK',
+        'RATAN KUMAR DASH',
+        'SATY RANJAN SINGH',
+        'PARESH DAS',
+        'TAPAS DEY',
+        'RANJAN PATI',
+        'SANJEEB DAS',
+        'PRATAP SAHOO',
+        'SISIR BARAN PURI',
+    ];
+
+    $knownPresiding = [
+        'BENJAMIN CHOUHAN',
+        'K UBHASISH RAO',
+        'SAMARPITA MOHARANA',
+        'SOUBHAGYA JENA',
+        'SUDIPTA PRADHAN',
+        'SUMIT DAS',
+        'ASISH KUMAR DAS',
+        'SAMUEL K PRADHAN',
+        'SUJOY KUMAR',
+        'PALLAVI DIGAL',
+        'AREEN JENA',
+        'SANTANU MOHANTY',
+        'KABITA DAS',
+        'KOMOLINI PRADHAN',
+        'KALPITA PRADHAN',
+        'AVINASH SAHOO',
+        'ANNUAL SPORTS',
+        'JHARANA PRADHAN',
+        'ELSHEMA NANDA',
+        'SWORNMAYEE PATRA',
+        'JOHN AUGUSTIN NAYAK',
+        'AMOS PRADHAN',
+        'COCUC',
+    ];
+
+    $parseFields = function ($rowText) use ($knownSpeakers, $knownPresiding, $eventRows) {
+        $rowText = cleanPdfText($rowText);
+
+        if ($rowText === '') {
+            return ['', '', '', 'normal'];
+        }
+
+        $presiding = '';
+        $presidingSuffix = findLongestConfiguredSuffix($rowText, $knownPresiding);
+
+        if ($presidingSuffix !== '') {
+            $presiding = $presidingSuffix;
+            $rowText = cleanPdfText(mb_substr($rowText, 0, mb_strlen($rowText) - mb_strlen($presidingSuffix)));
+        }
+
+        $speaker = '';
+        $topic = '';
+        $rowType = 'normal';
+
+        $speakerPrefix = findLongestConfiguredPrefix($rowText, $knownSpeakers);
+
+        if ($speakerPrefix !== '') {
+            $speaker = $speakerPrefix;
+            $topic = cleanPdfText(mb_substr($rowText, mb_strlen($speakerPrefix)));
+
+            foreach ($eventRows as $eventName) {
+                if (strcasecmp($speakerPrefix, $eventName) === 0) {
+                    $rowType = 'event';
+                    break;
+                }
+            }
+        } else {
+            if (preg_match('/^((?:REV|DR|MR|MRS|MS|DN|ER|EVG|PROF)\.?\s+(?:[A-Z]+\s*){1,4})(.*)$/u', $rowText, $matches)) {
+                $speaker = cleanPdfText($matches[1]);
+                $topic = cleanPdfText($matches[2]);
+                $rowType = 'normal';
+            } else {
+                $speaker = '';
+                $topic = $rowText;
+                $rowType = 'event';
+            }
+        }
+
+        if ($speaker !== '') {
+            foreach ($eventRows as $eventName) {
+                if (stripos($speaker, $eventName) !== false) {
+                    $rowType = 'event';
+                    break;
+                }
+            }
+        }
+
+        return [$speaker, $topic, $presiding, $rowType];
+    };
+
+    $flushCurrentRow = function () use (&$currentRow, &$rows, &$periodStart, &$periodEnd, $parseFields) {
+        if (!$currentRow) {
+            return;
+        }
+
+        $rowText = cleanPdfText(implode(' ', $currentRow['chunks']));
+        [$speaker, $topic, $presiding, $rowType] = $parseFields($rowText);
+
+        $rows[] = [
+            'schedule_date' => $currentRow['schedule_date'],
+            'month_label' => $currentRow['month_label'],
+            'day_name' => $currentRow['day_name'],
+            'data_json' => [
+                'speaker' => $speaker,
+                'topic' => $topic,
+                'presiding' => $presiding,
+                'row_type' => $rowType
+            ]
+        ];
+
+        if (!$periodStart || $currentRow['schedule_date'] < $periodStart)
+            $periodStart = $currentRow['schedule_date'];
+        if (!$periodEnd || $currentRow['schedule_date'] > $periodEnd)
+            $periodEnd = $currentRow['schedule_date'];
+
+        $currentRow = null;
+    };
+
+    foreach ($lines as $line) {
+        $line = cleanPdfText($line);
+        if (empty($line))
+            continue;
+
+        if (preg_match('/^(Christian Endeavour|Bhubaneswar|DATE\s+SPEAKER|Please do block|SECRETARY CE UNION)/i', $line)) {
+            continue;
+        }
+
+        if (preg_match('/^(JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)$/i', $line)) {
+            continue;
+        }
+
+        if (preg_match('/^(\d{1,2})[\.\:](\d{1,2})[\.\,\;\:](\d{4})(?:\s+to)?\s*(.*)$/i', $line, $matches)) {
+            $flushCurrentRow();
+
+            $scheduleDate = normalizeFlexibleScheduleDate($matches[1], $matches[2], $matches[3]);
+            $dateObj = DateTime::createFromFormat('Y-m-d', $scheduleDate);
+
+            $currentRow = [
+                'schedule_date' => $scheduleDate,
+                'month_label' => $dateObj ? $dateObj->format('F Y') : '',
+                'day_name' => $dateObj ? $dateObj->format('l') : '',
+                'chunks' => []
+            ];
+
+            $rest = cleanPdfText($matches[4]);
+
+            if ($rest !== '') {
+                $currentRow['chunks'][] = $rest;
+            }
+
+            continue;
+        }
+
+        if ($currentRow) {
+            $currentRow['chunks'][] = $line;
+        }
+    }
+
+    $flushCurrentRow();
+
+    if (empty($rows)) {
+        return null;
+    }
+
+    return [
+        'sub_section' => 'CE Union',
+        'title' => 'Christian Endeavour Union Schedule',
+        'period_start' => $periodStart,
+        'period_end' => $periodEnd,
+        'meta_json' => [
+            'header' => 'Christian Endeavour Union, Church of Christ, Union Church, Unit-IV, Bhubaneswar',
+            'columns' => ['Date', 'Speaker', 'Topic', 'Presiding']
+        ],
+        'items' => $rows
+    ];
+}
+
+/**
+ * Parser for Quarterly Prayer Week
+ */
+function parseQuarterlyPrayerPdf($filePath)
+{
+    $parser = new \Smalot\PdfParser\Parser();
+    $pdf = $parser->parseFile($filePath);
+    $text = $pdf->getText();
+    $lines = explode("\n", $text);
+
+    $rows = [];
+    $periodStart = null;
+    $periodEnd = null;
+    $currentRow = null;
+
+    $worshipLedByValues = [
+        'Youth Fellowship',
+        'Bethany Zone',
+        'Nazareth Zone',
+        'Golgotha Zone',
+        'Mizpah Zone',
+        'Bethel',
+    ];
+
+    $schedule = [
+        'Opening Prayer, Singing & Worship' => '20 Minutes',
+        'Sharing from God’s Word' => '20 Minutes',
+        'Sharing Thanks / Praise & Prayer Points followed by Closing Prayer & Benediction' => '20 Minutes'
+    ];
+
+    $findWorshipSuffix = function ($text) use ($worshipLedByValues) {
+        $text = cleanPdfText($text);
+
+        $values = $worshipLedByValues;
+        usort($values, function ($a, $b) {
+            return mb_strlen($b) - mb_strlen($a);
+        });
+
+        foreach ($values as $value) {
+            if (preg_match('/\b' . preg_quote($value, '/') . '$/iu', $text)) {
+                return $value;
+            }
+        }
+
+        return '';
+    };
+
+    $flushCurrentRow = function () use (&$currentRow, &$rows, &$periodStart, &$periodEnd, $findWorshipSuffix) {
+        if (!$currentRow) {
+            return;
+        }
+
+        $rowText = cleanPdfText(implode(' ', $currentRow['chunks']));
+        $presiding = '';
+        $speaker = '';
+        $prayerFocus = '';
+        $worshipLedBy = '';
+
+        $rowText = preg_replace('/\b20\s*Minutes\b/i', '', $rowText);
+        $rowText = cleanPdfText($rowText);
+
+        if (preg_match('/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+(.*)$/i', $rowText, $matches)) {
+            $currentRow['day_name'] = $matches[1];
+            $rowText = cleanPdfText($matches[2]);
+        }
+
+        $cols = segmentLineByPrefixes($rowText, 2);
+        $presiding = cleanPdfText($cols[0] ?? '');
+        $speakerAndRest = cleanPdfText($cols[1] ?? '');
+
+        $focusStart = false;
+        $focusMarkers = ['Mission Field', 'Odisha'];
+
+        foreach ($focusMarkers as $marker) {
+            $pos = stripos($speakerAndRest, $marker);
+            if ($pos !== false && ($focusStart === false || $pos < $focusStart)) {
+                $focusStart = $pos;
+            }
+        }
+
+        if ($focusStart !== false) {
+            $speaker = cleanPdfText(substr($speakerAndRest, 0, $focusStart));
+            $prayerAndWorship = cleanPdfText(substr($speakerAndRest, $focusStart));
+        } else {
+            $speaker = $speakerAndRest;
+            $prayerAndWorship = '';
+        }
+
+        $worshipSuffix = $findWorshipSuffix($prayerAndWorship);
+
+        if ($worshipSuffix !== '') {
+            $worshipLedBy = $worshipSuffix;
+            $prayerFocus = cleanPdfText(mb_substr($prayerAndWorship, 0, mb_strlen($prayerAndWorship) - mb_strlen($worshipSuffix)));
+        } else {
+            $prayerFocus = $prayerAndWorship;
+        }
+
+        $rows[] = [
+            'schedule_date' => $currentRow['schedule_date'],
+            'month_label' => $currentRow['month_label'],
+            'day_name' => $currentRow['day_name'],
+            'data_json' => [
+                'presiding' => $presiding,
+                'speaker' => $speaker,
+                'prayer_focus' => $prayerFocus,
+                'worship_led_by' => $worshipLedBy
+            ]
+        ];
+
+        if (!$periodStart || $currentRow['schedule_date'] < $periodStart)
+            $periodStart = $currentRow['schedule_date'];
+        if (!$periodEnd || $currentRow['schedule_date'] > $periodEnd)
+            $periodEnd = $currentRow['schedule_date'];
+
+        $currentRow = null;
+    };
+
+    foreach ($lines as $line) {
+        $line = cleanPdfText($line);
+        if (empty($line))
+            continue;
+
+        if (preg_match('/^We are following/i', $line)) {
+            $flushCurrentRow();
+            break;
+        }
+
+        if (preg_match('/^(QUARTERLY PRAYER WEEK|Date\/Day|Opening Prayer|Sharing from God|Sharing Thanks|followed by Closing)/i', $line)) {
+            continue;
+        }
+
+        if (preg_match('/^(\d{1,2})\.(\d{1,2})\.(\d{4})\s*(.*)$/', $line, $matches)) {
+            $flushCurrentRow();
+
+            $scheduleDate = normalizeFlexibleScheduleDate($matches[1], $matches[2], $matches[3]);
+            $dateObj = DateTime::createFromFormat('Y-m-d', $scheduleDate);
+
+            $currentRow = [
+                'schedule_date' => $scheduleDate,
+                'month_label' => $dateObj ? $dateObj->format('F Y') : '',
+                'day_name' => $dateObj ? $dateObj->format('l') : '',
+                'chunks' => []
+            ];
+
+            $rest = cleanPdfText($matches[4]);
+            if ($rest !== '') {
+                $currentRow['chunks'][] = $rest;
+            }
+
+            continue;
+        }
+
+        if ($currentRow) {
+            $currentRow['chunks'][] = $line;
+        }
+    }
+
+    $flushCurrentRow();
+
+    if (empty($rows)) {
+        return null;
+    }
+
+    return [
+        'sub_section' => 'Quarterly Prayer',
+        'title' => 'Quarterly Prayer Week',
+        'period_start' => $periodStart,
+        'period_end' => $periodEnd,
+        'meta_json' => [
+            'header' => 'Quarterly Prayer Week, COCUC, Bhubaneswar',
+            'timing' => 'Every day at 07:00 PM',
+            'schedule' => $schedule
+        ],
+        'items' => $rows
+    ];
+}
+
 ?>

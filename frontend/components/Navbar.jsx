@@ -121,11 +121,10 @@ export default function Navbar() {
 
 
   const eventsMenu = [
-    { name: 'Monthly Programme', href: '#' },
-    { name: 'Special Announcements', href: '#' },
+    // { name: 'Monthly Programme', href: '#' },
+    // { name: 'Special Announcements', href: '#' },
     { name: 'Speaking Engagements', href: '/speaking-arrangements' },
-    { name: 'Holy Week', href: '#' },
-    { name: 'Baptism', href: '#' },
+    // { name: 'Holy Week', href: '#' },
   ]
 
   const prayerMenu = [

@@ -24,7 +24,7 @@ const CONTENT_SECTIONS = [
       "We strive to proclaim the Good News of Jesus Christ to the community and the world, equip members by teaching the Word of God in its authority and entirety with accurate interpretation — depending on the guidance of the Holy Spirit — to be rooted and grounded in the Word of God for the ministry, encourage and promote Christ-like maturity, love and fellowship in order to glorify God in all aspects of life.",
       "Any time you are in the city looking for a church to worship and fellowship, look no further — just drop by our church which is closest to the railway station and airport. We welcome people from all walks of life and all backgrounds. It will be an honour to meet and know you and your family when you visit us. Soli Deo Gloria! (Glory to God). May God Bless you richly!",
     ],
-    image: "/images/pastors-note/aa2.jpg",
+    image: "/images/pastors-note/ayub-chhinchani.png",
     imageAlt: "Rev. Dr. Ayub Chhinchani — Pastor, Church of Christ Union Church",
     imagePosition: "left"
   },
@@ -39,7 +39,7 @@ const CONTENT_SECTIONS = [
       "We invite you to join us this Sunday. Come as you are, bring your questions, and find a place to connect. You don't have to navigate life alone; we would love to walk this path with you.",
       "If there is ever any way our team can serve you, pray for you, or help you get connected to a small group, please do not hesitate to reach out. We are honoured that you are considering us as your church family. Grace and peace.",
     ],
-    image: "/images/pastors-note/ss1.jpg",
+    image: "/images/pastors-note/songram-keshari-singh-backup.png",
     imageAlt: "Rev. Songram K. Singh — Pastor, Church of Christ Union Church",
     imagePosition: "right"
   },
@@ -54,7 +54,7 @@ const CONTENT_SECTIONS = [
       "It is greatly encouraging to know that our website has been visited by people from near about 35 different countries, and every sermon posted on YouTube has been heard by many. Many lives are being touched and transformed — and this gives us a great sense of satisfaction and fulfilment in the Lord.",
       "\"Come to me, all you who are weary and burdened, and I will give you rest.\" — Matthew 11:28. May God's peace, grace, and blessings be with you today and always. We look forward to welcoming you in person and sharing the journey of faith together.",
     ],
-    image: "/images/pastors-note/sa3.jpg",
+    image: "/images/pastors-note/satish-kumar-pani.png",
     imageAlt: "Rev. Satish Ku. Pani — Pastor, Church of Christ Union Church",
     imagePosition: "left"
   }

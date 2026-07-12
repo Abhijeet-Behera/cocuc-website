@@ -57,7 +57,7 @@ export default function WomensFellowshipPage() {
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Time</p>
               <p style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>4:30 PM</p>
             </div>
-            <div className={styles.infoDivider} />
+
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Venue</p>
               <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>Amenity Hall (Ground Floor), Union Church</p>

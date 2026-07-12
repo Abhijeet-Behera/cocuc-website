@@ -232,7 +232,7 @@ export default function WorshipTeamPage() {
                 lineHeight: 1.8,
               }}
             >
-              To <strong style={{ color: 'var(--color-text)' }}>glorify God</strong>, strengthen fellowship among believers, and use music as a ministry to spread the message of salvation. Both choirs play an integral role in the worship life of the Church of Christ (Union Church), fostering unity, discipleship, and a spirit of praise as they minister through music and lead the congregation in worship.
+              To glorify <strong style={{ color: 'var(--color-text)' }}>God</strong>, strengthen fellowship among believers, and use music as a ministry to spread the message of salvation. Both choirs play an integral role in the worship life of the Church of Christ (Union Church), fostering unity, discipleship, and a spirit of praise as they minister through music and lead the congregation in worship.
             </p>
           </div>
 

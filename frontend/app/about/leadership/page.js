@@ -106,7 +106,7 @@ export default function LeadershipPage() {
 
               ].map((pastor, index) => (
                 <div key={index} className="card" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-sm)' }}>
-                  <div style={{ height: '260px', overflow: 'hidden', position: 'relative', backgroundColor: '#e2e8f0' }}>
+                  <div style={{ height: '260px', overflow: 'hidden', position: 'relative', backgroundColor: '#fff' }}>
                     <img
                       src={pastor.image}
                       alt={pastor.name}

@@ -44,7 +44,6 @@ export default function SundarpadaPage() {
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Established</p>
               <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>26th February, 2017</p>
             </div>
-            <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.25)' }} />
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Coordinator</p>
               <p style={{ fontSize: '1rem', fontWeight: 600 }}>

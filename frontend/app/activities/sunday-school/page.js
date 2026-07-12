@@ -54,7 +54,7 @@ export default function SundaySchoolPage() {
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Extended English Sunday School</p>
               <p style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>10:00 AM onwards</p>
             </div>
-            <div className={styles.timingDivider} />
+
             <div>
               <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.8 }}>Schedule</p>
               <p style={{ fontSize: '1.05rem', fontWeight: 600 }}>Every Sunday Morning</p>

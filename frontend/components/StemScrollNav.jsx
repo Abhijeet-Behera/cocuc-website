@@ -490,6 +490,64 @@ export default function StemScrollNav() {
   }, []);
 
   useEffect(() => {
+    let observer = null;
+    let timeoutId = null;
+    let lastScrollHeight = 0;
+
+    const handleScrollToHash = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash) return;
+
+      const doScroll = () => {
+        const el = document.getElementById(hash);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      };
+
+      // Disconnect previous observer if any
+      if (observer) {
+        observer.disconnect();
+      }
+      clearTimeout(timeoutId);
+
+      // Scroll immediately
+      doScroll();
+
+      // Start observing height changes
+      lastScrollHeight = document.body.scrollHeight;
+      if (typeof window !== 'undefined' && 'ResizeObserver' in window) {
+        observer = new ResizeObserver(() => {
+          const scrollHeight = document.body.scrollHeight;
+          if (scrollHeight !== lastScrollHeight) {
+            lastScrollHeight = scrollHeight;
+            doScroll();
+          }
+        });
+        observer.observe(document.body);
+      }
+
+      // Stop observing after 3.5s
+      timeoutId = setTimeout(() => {
+        if (observer) observer.disconnect();
+      }, 3500);
+    };
+
+    // Run on mount / pathname change
+    handleScrollToHash();
+
+    // Listen for hashchange
+    window.addEventListener('hashchange', handleScrollToHash);
+
+    return () => {
+      window.removeEventListener('hashchange', handleScrollToHash);
+      if (observer) observer.disconnect();
+      clearTimeout(timeoutId);
+    };
+  }, [pathname]);
+
+  useEffect(() => {
     const check = () => {
       const hero   = document.getElementById('hero');
       const last   = document.getElementById('donate');

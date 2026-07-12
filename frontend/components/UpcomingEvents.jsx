@@ -180,7 +180,7 @@ export default function UpcomingEvents() {
           <blockquote className={styles.bibleVerse}>
             “To every thing there is a season, and a time to every purpose under
             the heaven.”
-            <cite>— Ecclesiastes 3:1</cite>
+            <cite>Ecclesiastes 3:1</cite>
           </blockquote>
         </div>
       )}

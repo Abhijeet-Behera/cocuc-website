@@ -187,7 +187,8 @@
 
 .textarea {
   min-height: 90px;
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
 }
 
 .charCount {

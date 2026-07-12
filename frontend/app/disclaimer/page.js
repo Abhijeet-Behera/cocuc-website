@@ -12,7 +12,7 @@ export default function Disclaimer() {
         <h1 className="section-title" style={{ marginBottom: '2rem', textAlign: 'left' }}>Disclaimer</h1>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', opacity: 0.9 }}>
-          <p><strong>Last Updated: June 2026</strong></p>
+          <p><strong>Last Updated: July, 2026</strong></p>
           
           <p>
             The information contained on the Church of Christ (Union Church) website is for general information purposes only.

@@ -78,7 +78,6 @@ export default function ChurchesMapSection() {
       <div ref={headingRef} style={{ textAlign: 'center', marginBottom: '2.5rem', opacity: 0 }}>
         <h2 className="section-title-elegant">
           <span className="title-normal">Satellite Churches</span>
-          <em className="title-italic"> &amp; Mission Fields</em>
         </h2>
         <p style={{ color: 'var(--color-text-muted)', marginTop: '10px', fontFamily: 'var(--font-body)', fontSize: '1rem' }}>
           Find our extended church family locations and mission fields across the state.

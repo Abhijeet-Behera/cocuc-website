@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import PageHeader from '@/components/PageHeader'
 import styles from './SpeakingArrangements.module.css'
+import { CalendarX } from 'lucide-react'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -418,7 +419,7 @@ export default function SpeakingArrangementsPage() {
               </div>
             ) : items.length === 0 ? (
               <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>✦</div>
+                <div className={styles.emptyIcon}><CalendarX size={32} strokeWidth={1.5} style={{ opacity: 0.7 }} /></div>
                 <div className={styles.emptyTitle}>No upcoming schedule available</div>
                 <div className={styles.emptyText}>
                   No upcoming schedule has been published for {activeSectionData?.label || 'this section'}.

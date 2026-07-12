@@ -8,11 +8,13 @@ export default function ErrorLogger() {
   useEffect(() => {
     const handleError = (event) => {
       const errorMsg = event.error ? event.error.stack || event.error.message : event.message;
+      if (typeof errorMsg === 'string' && errorMsg.includes('reCAPTCHA Timeout')) return;
       setErrors((prev) => [...prev, `Error: ${errorMsg}`]);
     };
 
     const handleRejection = (event) => {
       const reason = event.reason ? event.reason.stack || event.reason.message || String(event.reason) : 'Unhandled Rejection';
+      if (typeof reason === 'string' && reason.includes('reCAPTCHA Timeout')) return;
       setErrors((prev) => [...prev, `Promise Rejection: ${reason}`]);
     };
 

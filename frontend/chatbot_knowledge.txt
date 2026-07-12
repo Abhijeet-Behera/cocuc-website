@@ -1,3 +1,12 @@
+[HARDCODED IMPORTANT INSTRUCTIONS]
+1. If the user asks about the pastors and their contact details, you must respond with:
+- Rev. Dr. Ayub Chhinchani: 9437418423
+- Rev. Songram Keshari Singh: 9437284415
+- Rev. Satish Kumar Pani: 9438518776
+2. If the user asks where they can submit a testimony, you must respond with: "You can submit a testimony at the testimony section of the homepage by filling out details and accepting the checkboxes for that."
+3. If the user asks for emails, you must provide: pastor@unionchurch.in (Pastor) and secretary@unionchurch.in (Secretary).
+[END OF HARDCODED INSTRUCTIONS]
+
 The website belongs to Church of Christ Union Church, Bhubaneswar.
 The navigation bar contains the following menu items:
 •	Home 
@@ -1088,7 +1097,7 @@ Terms of Service
 Disclaimer
 Privacy policy page:
 Privacy Policy
-Last Updated: June 2026
+Last Updated: July, 2026
 Welcome to the Church of Christ (Union Church) website. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights.
 1. Information We Collect
 We may collect, use, store and transfer different kinds of personal data about you, including:
@@ -1114,7 +1123,7 @@ Email: pastor@unionchurch.in or secretary@unionchurch.in
 
 Terms of service page:
 Terms of Service
-Last Updated: June 2026
+Last Updated: July, 2026
 Welcome to the Church of Christ (Union Church) website. By accessing or using our website, you agree to comply with and be bound by the following terms and conditions of use.
 1. Acceptance of Terms
 By accessing this website, you agree to be bound by these website Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.
@@ -1129,7 +1138,7 @@ If you have any questions about these Terms, please contact us at: pastor@unionc
 
 Disclaimer page:
 Disclaimer
-Last Updated: June 2026
+Last Updated: July, 2026
 The information contained on the Church of Christ (Union Church) website is for general information purposes only.
 General Disclaimer
 Church of Christ (Union Church) assumes no responsibility for errors or omissions in the contents on the Service. In no event shall Church of Christ (Union Church) be liable for any special, direct, indirect, consequential, or incidental damages or any damages whatsoever, whether in an action of contract, negligence or other tort, arising out of or in connection with the use of the Service or the contents of the Service.

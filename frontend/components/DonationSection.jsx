@@ -512,6 +512,10 @@ export default function DonationSection() {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
+                    onInput={(e) => {
+                      e.target.style.height = 'auto';
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
                     className={styles.textarea}
                     placeholder="Any message or specific instructions…"
                     maxLength={300}

@@ -141,7 +141,7 @@ export default function SecretaryAnnouncements() {
   const [loading, setLoading] = useState(true)
   const [expandedCards, setExpandedCards] = useState({})
 
-  const [isSpecialOpen, setIsSpecialOpen] = useState(false)
+  const [activeModal, setActiveModal] = useState(null)
   const [mounted, setMounted] = useState(false)
 
   const cardRefs = useRef([])
@@ -191,11 +191,11 @@ export default function SecretaryAnnouncements() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        setIsSpecialOpen(false)
+        setActiveModal(null)
       }
     }
 
-    if (isSpecialOpen) {
+    if (activeModal) {
       window.addEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'hidden'
     }
@@ -204,7 +204,7 @@ export default function SecretaryAnnouncements() {
       window.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
     }
-  }, [isSpecialOpen])
+  }, [activeModal])
 
   useEffect(() => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
@@ -545,24 +545,25 @@ export default function SecretaryAnnouncements() {
 
                         if (noticeUrl) {
                           window.open(noticeUrl, '_blank', 'noopener,noreferrer')
+                        } else {
+                          setActiveModal('weekly')
                         }
-
                         return
                       }
 
                       if (isSpecial) {
-                        setIsSpecialOpen(true)
+                        setActiveModal('special')
                       } else if (config.key === 'speaking') {
                         router.push('/speaking-arrangements')
                       } else {
                         toggleExpanded(config.key)
                       }
                     }}
-                    aria-expanded={isSpecial ? isSpecialOpen : !!expanded}
+                    aria-expanded={isSpecial ? activeModal === 'special' : !!expanded}
                     aria-label={
                       config.key === 'weekly'
                         ? `Read notice ${config.title}`
-                        : `${(isSpecial ? isSpecialOpen : expanded) ? 'Show less' : 'Read more'} ${config.title}`
+                        : `${(isSpecial ? activeModal === 'special' : expanded) ? 'Show less' : 'Read more'} ${config.title}`
                     }
                   >
                     {config.key === 'weekly'
@@ -579,23 +580,23 @@ export default function SecretaryAnnouncements() {
       {mounted && createPortal(
         <>
           <div
-            className={`${styles.specialBackdrop} ${isSpecialOpen ? styles.specialBackdropOpen : ''}`}
-            onClick={() => setIsSpecialOpen(false)}
+            className={`${styles.specialBackdrop} ${activeModal ? styles.specialBackdropOpen : ''}`}
+            onClick={() => setActiveModal(null)}
           />
 
           <div
             ref={panelRef}
-            className={`${styles.specialPanel} ${isSpecialOpen ? styles.specialPanelOpen : ''}`}
+            className={`${styles.specialPanel} ${activeModal ? styles.specialPanelOpen : ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className={styles.specialPanelHeader}>
               <h2 className={styles.specialPanelTitle}>
-                Special Programmes
+                {activeModal === 'weekly' ? 'Weekly Notices' : 'Special Programmes'}
               </h2>
 
               <button
                 className={styles.specialPanelCloseBtn}
-                onClick={() => setIsSpecialOpen(false)}
+                onClick={() => setActiveModal(null)}
                 aria-label="Close panel"
               >
                 &times;
@@ -603,7 +604,11 @@ export default function SecretaryAnnouncements() {
             </div>
 
             <div className={styles.specialPanelGrid}>
-              {specialProgrammes.length === 0 ? (
+              {activeModal === 'weekly' ? (
+                <div className={styles.specialPanelEmpty}>
+                  <p>No notices are currently published. Please check back after the next Sunday update.</p>
+                </div>
+              ) : specialProgrammes.length === 0 ? (
                 <div className={styles.specialPanelEmpty}>
                   <p>No special programmes are currently scheduled.</p>
                 </div>

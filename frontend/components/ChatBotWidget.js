@@ -71,7 +71,7 @@ export default function ChatBotWidget() {
         {
           id: 'welcome',
           role: 'bot',
-          content: 'Hello! I am Ezer Bot. How may I help you today?',
+          content: "🤖 I'm coming soon to help you! This AI assistant is currently under development. Chat functionality is temporarily unavailable. Please check back soon.",
         },
       ]);
     }
@@ -495,16 +495,44 @@ export default function ChatBotWidget() {
                   <div ref={messagesEndRef} />
                 </div>
 
-                <div className="ezer-bot-input-area">
-                  <form onSubmit={handleSubmit} className="ezer-bot-form">
+                <div className="ezer-bot-input-area" style={{ position: 'relative' }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'rgba(255, 255, 255, 0.5)',
+                    backdropFilter: 'blur(3px)',
+                    zIndex: 10,
+                    cursor: 'not-allowed',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '0 0 24px 24px'
+                  }}>
+                    <span style={{
+                      backgroundColor: '#991b1b',
+                      color: '#fff',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                    }}>Under Development</span>
+                  </div>
+                  <form onSubmit={(e) => e.preventDefault()} className="ezer-bot-form">
                     <input
                       type="text"
                       value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder="Type a message..."
+                      onChange={() => {}}
+                      onPaste={(e) => e.preventDefault()}
+                      onKeyDown={(e) => e.preventDefault()}
+                      placeholder="Chat temporarily disabled..."
                       className="ezer-bot-input"
+                      readOnly
+                      style={{ pointerEvents: 'none', userSelect: 'none' }}
                     />
-                    <button type="submit" disabled={!input.trim() || isLoading} className="ezer-bot-submit">
+                    <button type="submit" disabled className="ezer-bot-submit" style={{ pointerEvents: 'none' }}>
                       <SendIcon size={16} />
                     </button>
                   </form>

@@ -11,23 +11,23 @@ export default function WorshipTeamPage() {
   const odiaChoir = [
     { name: 'Mr. Asit Kumar Mohanty', role: 'Convenor' },
     { name: 'Mr. Pradeep Kumar Roul', role: 'Co-Convenor' },
-    { name: 'Mrs. Swarnamayee Patra', role: 'Member' },
-    { name: 'Mrs. Jharana Pradhan', role: 'Member' },
-    { name: 'Mr. Gokula Chandra Pradhan', role: 'Member' },
-    { name: 'Mr. Obed Ranjan Singh', role: 'Member' },
-    { name: 'Mr. Benjamin Peter', role: 'Member' },
-    { name: 'Mrs. Dheera Rani Supakar', role: 'Member' },
-    { name: 'Er. Michael Rajesh Behera', role: 'Secretary' },
+    { name: 'Mrs. Swarnamayee Patra', role: null },
+    { name: 'Mrs. Jharana Pradhan', role: null },
+    { name: 'Mr. Gokula Chandra Pradhan', role: null },
+    { name: 'Mr. Obed Ranjan Singh', role: null },
+    { name: 'Mr. Benjamin Peter', role: null },
+    { name: 'Mrs. Dheera Rani Supakar', role: null },
+    { name: 'Er. Michael Rajesh Behera', role: null },
   ]
 
   const englishChoir = [
-    { name: 'Mr. Santanu Kumar Mohanty', role: 'Convenor' },
-    { name: 'Miss. Indira Patra', role: 'Co-Convenor' },
-    { name: 'Mr. Adarsh Vasa', role: 'Member' },
-    { name: 'Mrs. K. T. Mary', role: 'Member' },
-    { name: 'Mr. Amlan Nag', role: 'Member' },
-    { name: 'Mr. Vinod Mohanty', role: 'Member' },
-    { name: 'Er. Michael Rajesh Behera', role: 'Secretary' },
+    { name: 'Miss. Indira Patra', role: null },
+    { name: 'Mrs. K. T. Mary', role: null },
+    { name: 'Mr. Santanu Kumar Mohanty', role: null },
+    { name: 'Mr. Adarsh Vasa', role: null },
+    { name: 'Mr. Amlan Nag', role: null },
+    { name: 'Mr. Vinod Mohanty', role: null },
+    { name: 'Er. Michael Rajesh Behera', role: null },
   ]
 
   const MemberList = ({ members }) => (
@@ -43,24 +43,26 @@ export default function WorshipTeamPage() {
           <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.98rem' }}>
             {m.name}
           </span>
-          <span
-            style={{
-              padding: '0.2rem 0.8rem',
-              borderRadius: '50px',
-              background:
-                m.role === 'Convenor' || m.role === 'Co-Convenor'
-                  ? 'rgba(128,0,0,0.1)'
-                  : m.role === 'Secretary, Church'
-                    ? 'rgba(128,0,0,0.06)'
-                    : 'rgba(0,0,0,0.04)',
-              fontSize: '0.85rem',
-              color: 'var(--color-primary)',
-              fontWeight: 700,
-              letterSpacing: '0.03em',
-            }}
-          >
-            {m.role}
-          </span>
+          {m.role && (
+            <span
+              style={{
+                padding: '0.2rem 0.8rem',
+                borderRadius: '50px',
+                background:
+                  m.role === 'Convenor' || m.role === 'Co-Convenor'
+                    ? 'rgba(128,0,0,0.1)'
+                    : m.role === 'Secretary, Church'
+                      ? 'rgba(128,0,0,0.06)'
+                      : 'rgba(0,0,0,0.04)',
+                fontSize: '0.85rem',
+                color: 'var(--color-primary)',
+                fontWeight: 700,
+                letterSpacing: '0.03em',
+              }}
+            >
+              {m.role}
+            </span>
+          )}
         </div>
       ))}
     </div>

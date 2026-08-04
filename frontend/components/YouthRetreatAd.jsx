@@ -81,13 +81,56 @@ export default function YouthRetreatAd() {
           }
         }
 
-        // Neither local storage nor IP is registered -> Show the announcement!
-        setIsOpen(true);
+        const scheduleAdOpen = () => {
+          if (typeof window !== 'undefined' && window.__preloaderDone) {
+            setTimeout(() => setIsOpen(true), 600);
+          } else if (typeof window !== 'undefined') {
+            const onPreloaderComplete = () => {
+              window.__preloaderDone = true;
+              setTimeout(() => setIsOpen(true), 600);
+              window.removeEventListener('preloader-complete', onPreloaderComplete);
+            };
+            window.addEventListener('preloader-complete', onPreloaderComplete);
+            setTimeout(() => {
+              if (!window.__preloaderDone) {
+                window.__preloaderDone = true;
+                setIsOpen(true);
+                window.removeEventListener('preloader-complete', onPreloaderComplete);
+              }
+            }, 4800);
+          } else {
+            setIsOpen(true);
+          }
+        };
+
+        // Neither local storage nor IP is registered -> Wait for preloader to finish, then show!
+        scheduleAdOpen();
       } catch (err) {
         // If API fails or times out, fallback: show ad if client storage not set
         const clientRegistered = localStorage.getItem('youth_retreat_2026_registered');
         if (clientRegistered !== 'true') {
-          setIsOpen(true);
+          const scheduleAdOpen = () => {
+            if (typeof window !== 'undefined' && window.__preloaderDone) {
+              setTimeout(() => setIsOpen(true), 600);
+            } else if (typeof window !== 'undefined') {
+              const onPreloaderComplete = () => {
+                window.__preloaderDone = true;
+                setTimeout(() => setIsOpen(true), 600);
+                window.removeEventListener('preloader-complete', onPreloaderComplete);
+              };
+              window.addEventListener('preloader-complete', onPreloaderComplete);
+              setTimeout(() => {
+                if (!window.__preloaderDone) {
+                  window.__preloaderDone = true;
+                  setIsOpen(true);
+                  window.removeEventListener('preloader-complete', onPreloaderComplete);
+                }
+              }, 4800);
+            } else {
+              setIsOpen(true);
+            }
+          };
+          scheduleAdOpen();
         }
       }
     };
@@ -386,35 +429,19 @@ export default function YouthRetreatAd() {
                         </div>
 
                         <p className={styles.invitationParagraph}>
-                          We warmly encourage every one of you to join us to grow spiritually, strengthen your relationship with God, and enjoy meaningful fellowship with fellow believers. <strong>Please invite your friends</strong>{' '}so that they too may experience God&apos;s blessings!
+                          Join us for a blessed time of spiritual freedom, worship, and meaningful fellowship. <strong>Please invite your friends</strong>{' '}to experience God&apos;s blessings together!
                         </p>
 
-                        <div className={styles.feeBox}>
-                          <div className={styles.feeRow}>
+                        <div className={styles.compactSummaryBox}>
+                          <div className={styles.compactSummaryRow}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}>
                               <Ticket size={16} style={{ color: '#800000' }} />
-                              Registration Fee:
+                              Registration Fee: <strong>₹100 / person</strong>
                             </span>
-                            <strong>₹100 / person</strong>
+                            <span style={{ fontSize: '0.82rem', color: '#b91c1c', fontWeight: 600 }}>
+                              After 10th Aug: ₹200
+                            </span>
                           </div>
-                          <div className={styles.feeRowAlert}>
-                            After 10th August fee will be ₹200 per person
-                          </div>
-                        </div>
-
-                        <div className={styles.contactCard}>
-                          <div className={styles.contactText}>
-                            <span className={styles.contactTitle}>Registrations &amp; Queries</span>
-                            <span className={styles.contactSubtitle}>Tap number to call directly</span>
-                          </div>
-                          <a
-                            href="tel:7656852269"
-                            className={styles.phoneLink}
-                            title="Call 7656852269"
-                          >
-                            <PhoneCall size={16} />
-                            <span>7656852269</span>
-                          </a>
                         </div>
                       </div>
 

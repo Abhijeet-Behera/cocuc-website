@@ -21,6 +21,10 @@ export default function Preloader() {
   useEffect(() => {
     if (pathname === '/feedback' || pathname === '/feedback/' || hasPreloaded) {
       setVisible(false)
+      if (typeof window !== 'undefined') {
+        window.__preloaderDone = true
+        window.dispatchEvent(new Event('preloader-complete'))
+      }
       return
     }
     hasPreloaded = true
@@ -31,6 +35,10 @@ export default function Preloader() {
       onComplete: () => {
         document.body.style.overflow = ''
         setVisible(false)
+        if (typeof window !== 'undefined') {
+          window.__preloaderDone = true
+          window.dispatchEvent(new Event('preloader-complete'))
+        }
       }
     })
 

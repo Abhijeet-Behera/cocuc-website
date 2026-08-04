@@ -36,10 +36,15 @@ export default function YouthRetreatAd() {
   if (typeof window !== 'undefined') {
     window.resetRetreatAd = () => {
       localStorage.removeItem('youth_retreat_2026_registered');
+      fetch(`${API_URL}/retreat_registration.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reset' }),
+      }).catch(() => {});
       setIsOpen(true);
       setShowThankYou(false);
       setShowQuestion(false);
-      console.log('Youth Retreat Ad reset and opened for testing!');
+      console.log('Youth Retreat Ad reset and un-registered from server for testing!');
     };
   }
 

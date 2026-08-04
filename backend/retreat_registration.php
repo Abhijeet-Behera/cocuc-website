@@ -78,6 +78,19 @@ if ($method === 'GET') {
             'ip' => $clientIp
         ]);
         exit(0);
+    } elseif ($action === 'reset') {
+        $ips = getRegisteredIps($storageFile);
+        $ips = array_values(array_filter($ips, function($ip) use ($clientIp) {
+            return $ip !== $clientIp;
+        }));
+        file_put_contents($storageFile, json_encode($ips, JSON_PRETTY_PRINT));
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'registered' => false,
+            'ip' => $clientIp
+        ]);
+        exit(0);
     }
 
     http_response_code(400);

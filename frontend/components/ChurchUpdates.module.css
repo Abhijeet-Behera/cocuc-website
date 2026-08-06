@@ -445,13 +445,12 @@
   cursor: pointer;
 
   /*
-   * Hidden in the normal state.
-   * The button stays in the layout to prevent layout movement.
+   * Visible in the normal state, but resting slightly back in 3D space.
    */
-  opacity: 0;
-  pointer-events: none;
+  opacity: 1;
+  pointer-events: auto;
 
-  transform: translate3d(0, 12px, 42px);
+  transform: translate3d(0, 12px, 36px);
 
   transition:
     opacity 0.28s ease,
@@ -1237,6 +1236,40 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+.speakingArrangementsBtn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 12px 27px;
+  border-radius: 999px;
+  background: #990000;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  box-shadow: 0 10px 22px rgba(153, 0, 0, 0.22);
+  transition: all 0.4s cubic-bezier(.03, .98, .52, .99);
+  transform: translate3d(0, 12px, 36px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.churchUpdateCard:hover .speakingArrangementsBtn,
+.churchUpdateCard:focus-within .speakingArrangementsBtn {
+  transform: translate3d(0, 0, 48px);
+}
+
+.speakingArrangementsBtn:hover {
+  background: #7a0000;
+  box-shadow: 0 14px 28px rgba(153, 0, 0, 0.35);
 }
 
 .speakingMotivationCard::after {

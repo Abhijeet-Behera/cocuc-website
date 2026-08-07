@@ -123,6 +123,8 @@ export default function SecretaryAnnouncements() {
   const [expandedCards, setExpandedCards] = useState({})
 
   const [activeModal, setActiveModal] = useState(null)
+  const [activeDetailItem, setActiveDetailItem] = useState(null)
+  const [activePdfViewer, setActivePdfViewer] = useState(null)
   const [mounted, setMounted] = useState(false)
 
   const cardRefs = useRef([])
@@ -134,6 +136,18 @@ export default function SecretaryAnnouncements() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (activeModal || activeDetailItem || activePdfViewer) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [activeModal, activeDetailItem, activePdfViewer])
 
   const getAttachmentUrl = (path) => {
     if (!path) return ''
@@ -173,10 +187,11 @@ export default function SecretaryAnnouncements() {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setActiveModal(null)
+        setActiveDetailItem(null)
       }
     }
 
-    if (activeModal) {
+    if (activeModal || activeDetailItem) {
       window.addEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'hidden'
     }
@@ -185,26 +200,26 @@ export default function SecretaryAnnouncements() {
       window.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
     }
-  }, [activeModal])
+  }, [activeModal, activeDetailItem])
 
   useEffect(() => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
 
-    Promise.all([
-      fetch(`${API_URL}/weekly_notices.php`).then(res => res.json()),
-      fetch(`${API_URL}/special_programmes.php`).then(res => res.json()),
-      fetch(`${API_URL}/speaking_arrangements.php`).then(res => res.json()),
-    ])
-      .then(([weekly, special, speaking]) => {
-        if (Array.isArray(weekly)) setWeeklyNotices(weekly)
-        if (Array.isArray(special)) setSpecialProgrammes(special)
-        if (Array.isArray(speaking)) setSpeakingArrangements(speaking)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error('Failed to load secretary announcements', err)
-        setLoading(false)
-      })
+    fetch(`${API_URL}/weekly_notices.php`, { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data)) setWeeklyNotices(data) })
+      .catch(err => console.error('Failed to load weekly notices', err))
+      
+    fetch(`${API_URL}/special_programmes.php`, { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data)) setSpecialProgrammes(data) })
+      .catch(err => console.error('Failed to load special programmes', err))
+      
+    fetch(`${API_URL}/speaking_schedules.php`, { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data)) setSpeakingArrangements(data) })
+      .catch(err => console.error('Failed to load speaking schedules', err))
+      .finally(() => setLoading(false))
   }, [])
 
   // Pointer-based tilt effect
@@ -442,17 +457,29 @@ export default function SecretaryAnnouncements() {
         {key === 'speaking' && (
           <>
             <strong className={styles.churchUpdateItemTitle}>
-              {item.sub_section}
+              {item.title || item.sub_section}
             </strong>
 
             <small className={styles.churchUpdateItemMeta}>
-              Event Date: {new Date(item.event_date).toLocaleDateString()}
+              Upload Date: {new Date(item.created_at || item.event_date).toLocaleDateString()}
             </small>
           </>
         )}
       </div>
     ))
   }
+
+  // Lock body scroll when any modal is open
+  useEffect(() => {
+    if (activeModal || activeDetailItem || activePdfViewer) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [activeModal, activeDetailItem, activePdfViewer])
 
   if (loading) {
     return (
@@ -535,7 +562,7 @@ export default function SecretaryAnnouncements() {
                       if (isSpecial) {
                         setActiveModal('special')
                       } else if (config.key === 'speaking') {
-                        router.push('/speaking-arrangements')
+                        setActiveModal('speaking')
                       } else {
                         toggleExpanded(config.key)
                       }
@@ -572,7 +599,7 @@ export default function SecretaryAnnouncements() {
           >
             <div className={styles.specialPanelHeader}>
               <h2 className={styles.specialPanelTitle}>
-                {activeModal === 'weekly' ? 'Weekly Notices' : 'Special Programmes'}
+                {activeModal === 'weekly' ? 'Weekly Notices' : activeModal === 'special' ? 'Special Programmes' : 'Speaking Arrangements'}
               </h2>
 
               <button
@@ -586,9 +613,90 @@ export default function SecretaryAnnouncements() {
 
             <div className={styles.specialPanelGrid}>
               {activeModal === 'weekly' ? (
-                <div className={styles.specialPanelEmpty}>
-                  <p>No notices are currently published. Please check back after the next Sunday update.</p>
-                </div>
+                weeklyNotices.length === 0 ? (
+                  <div className={styles.specialPanelEmpty}>
+                    <p>No notices are currently published. Please check back after the next Sunday update.</p>
+                  </div>
+                ) : (
+                  weeklyNotices.map((item) => {
+                    const noticeUrl = getWeeklyNoticeDocumentUrl(item)
+                    return (
+                      <div 
+                        key={item.id} 
+                        className={styles.progCard}
+                        onClick={() => setActiveDetailItem({ ...item, isWeekly: true, fileUrl: noticeUrl })}
+                      >
+                        <div className={styles.progCardImageContainer}>
+                          <span className={styles.progCardWingTag} style={{ background: '#212529', color: '#fff', border: 'none' }}>
+                            PDF
+                          </span>
+                          <div className={styles.progCardPlaceholder}>
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                              <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <span className={styles.placeholderLabel}>Document Attached</span>
+                          </div>
+                          <div className={styles.progCardHoverOverlay}>
+                            <span className={styles.progCardHoverText}>Click to view details</span>
+                          </div>
+                        </div>
+
+                        <div className={styles.progCardBody}>
+                          <h3 className={styles.progTitle}>
+                            Notice for {new Date(item.release_date).toLocaleDateString()}
+                          </h3>
+                          
+                          <div className={styles.progUploadDate}>
+                            Uploaded: {new Date(item.release_date).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })
+                )
+              ) : activeModal === 'speaking' ? (
+                speakingArrangements.length === 0 ? (
+                  <div className={styles.specialPanelEmpty}>
+                    <p>No speaking arrangements are currently scheduled.</p>
+                  </div>
+                ) : (
+                  speakingArrangements.map((item) => {
+                    return (
+                      <div 
+                        key={item.id} 
+                        className={styles.progCard}
+                        onClick={() => setActiveDetailItem({ ...item, isSpeaking: true, document_path: item.pdf_file_path })}
+                      >
+                        <div className={styles.progCardImageContainer}>
+                          <span className={styles.progCardWingTag} style={{ background: '#212529', color: '#fff', border: 'none' }}>
+                            PDF
+                          </span>
+                          <div className={styles.progCardPlaceholder}>
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                              <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <span className={styles.placeholderLabel}>Document Attached</span>
+                          </div>
+                          <div className={styles.progCardHoverOverlay}>
+                            <span className={styles.progCardHoverText}>Click to view details</span>
+                          </div>
+                        </div>
+
+                        <div className={styles.progCardBody}>
+                          <h3 className={styles.progTitle}>
+                            {item.title || item.sub_section}
+                          </h3>
+                          
+                          <div className={styles.progUploadDate}>
+                            Uploaded: {new Date(item.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })
+                )
               ) : specialProgrammes.length === 0 ? (
                 <div className={styles.specialPanelEmpty}>
                   <p>No special programmes are currently scheduled.</p>
@@ -596,10 +704,12 @@ export default function SecretaryAnnouncements() {
               ) : (
                 specialProgrammes.map((item) => {
                   const fileType = getFileType(item.document_path)
-                  const hasAttachment = !!item.document_path
-
                   return (
-                    <div key={item.id} className={styles.progCard}>
+                    <div 
+                      key={item.id} 
+                      className={styles.progCard}
+                      onClick={() => setActiveDetailItem({ ...item, isSpecial: true })}
+                    >
                       <div className={styles.progCardImageContainer}>
                         {fileType === 'image' ? (
                           <Image
@@ -612,69 +722,45 @@ export default function SecretaryAnnouncements() {
                           />
                         ) : fileType === 'document' ? (
                           <div className={styles.progCardPlaceholder}>
-                            <svg
-                              width="40"
-                              height="40"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                               <polyline points="14 2 14 8 20 8"></polyline>
                             </svg>
-
-                            <span className={styles.placeholderLabel}>
-                              Document Attached
-                            </span>
+                            <span className={styles.placeholderLabel}>Document Attached</span>
                           </div>
                         ) : (
                           <div className={styles.progCardPlaceholder}>
-                            <svg
-                              width="40"
-                              height="40"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                               <line x1="16" y1="2" x2="16" y2="6"></line>
                               <line x1="8" y1="2" x2="8" y2="6"></line>
                               <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-
-                            <span className={styles.placeholderLabel}>
-                              Special Event
-                            </span>
+                            <span className={styles.placeholderLabel}>Special Event</span>
                           </div>
                         )}
 
                         <span className={styles.progCardWingTag}>
                           {item.wing === 'Others' ? item.custom_wing : item.wing}
                         </span>
+                        
+                        <div className={styles.progCardHoverOverlay}>
+                          <span className={styles.progCardHoverText}>Click to view details</span>
+                        </div>
                       </div>
 
                       <div className={styles.progCardBody}>
-                        <h3 className={styles.progTitle}>
-                          {item.title}
-                        </h3>
+                        <h3 className={styles.progTitle}>{item.title}</h3>
 
                         <div className={styles.progCardMetaGroup}>
                           {item.event_from && (
                             <div className={styles.metaRow}>
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
                               </svg>
-
                               <span>
                                 {new Date(item.event_from).toLocaleDateString()}
                                 {item.event_to && ` - ${new Date(item.event_to).toLocaleDateString()}`}
@@ -684,58 +770,14 @@ export default function SecretaryAnnouncements() {
 
                           {item.duration && (
                             <div className={styles.metaRow}>
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
                               </svg>
-
                               <span>
                                 Duration: {item.duration}
                               </span>
                             </div>
-                          )}
-                        </div>
-
-                        <div className={styles.progDetailsExpanded}>
-                          {item.details && (
-                            <p className={styles.progDetailsContent}>
-                              {item.details}
-                            </p>
-                          )}
-
-                          {item.upload_date && (
-                            <div className={styles.progUploadDate}>
-                              Uploaded: {new Date(item.upload_date).toLocaleDateString()}
-                            </div>
-                          )}
-
-                          {hasAttachment && (
-                            <a
-                              href={getAttachmentUrl(item.document_path)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.progDownloadBtn}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <svg
-                                width="12"
-                                height="12"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                              </svg>
-
-                              View Attachment
-                            </a>
                           )}
                         </div>
                       </div>
@@ -745,6 +787,158 @@ export default function SecretaryAnnouncements() {
               )}
             </div>
           </div>
+          
+          {/* Full Screen Detail Modal */}
+          {activeDetailItem && (
+            <div className={styles.detailOverlay} onClick={() => setActiveDetailItem(null)}>
+              <div className={styles.detailModal} onClick={(e) => e.stopPropagation()}>
+                <button
+                  className={styles.detailCloseBtn}
+                  onClick={() => setActiveDetailItem(null)}
+                  aria-label="Close details"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+                
+                <div className={styles.detailPosterColumn}>
+                  {activeDetailItem.isWeekly ? (
+                    <div className={styles.progCardPlaceholder} style={{ background: '#212529', color: '#fff', opacity: 1 }}>
+                      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                      </svg>
+                      <span className={styles.placeholderLabel} style={{ color: '#fff', fontSize: '1.2rem', marginTop: '1rem' }}>Weekly Notice PDF</span>
+                    </div>
+                  ) : getFileType(activeDetailItem.document_path) === 'image' ? (
+                    <img 
+                      src={getAttachmentUrl(activeDetailItem.document_path)}
+                      alt={activeDetailItem.title}
+                      className={styles.detailPosterImage}
+                    />
+                  ) : getFileType(activeDetailItem.document_path) === 'document' ? (
+                    <div className={styles.progCardPlaceholder}>
+                      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                      </svg>
+                      <span className={styles.placeholderLabel} style={{ fontSize: '1.2rem', marginTop: '1rem' }}>Document Attached</span>
+                    </div>
+                  ) : (
+                    <div className={styles.progCardPlaceholder}>
+                      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                      <span className={styles.placeholderLabel} style={{ fontSize: '1.2rem', marginTop: '1rem' }}>Special Event</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div className={styles.detailContentColumn}>
+                  <span className={styles.detailTagline}>
+                    {activeDetailItem.isWeekly ? 'Weekly Notices' : activeDetailItem.isSpeaking ? 'Speaking Arrangement' : (activeDetailItem.wing === 'Others' ? activeDetailItem.custom_wing : activeDetailItem.wing) || 'Special Programme'}
+                  </span>
+                  
+                  <h2 className={styles.detailTitle}>
+                    {activeDetailItem.isWeekly ? `Notice for ${new Date(activeDetailItem.release_date).toLocaleDateString()}` : activeDetailItem.isSpeaking ? (activeDetailItem.title || activeDetailItem.sub_section) : activeDetailItem.title}
+                  </h2>
+                  
+                  <div className={styles.detailInfoGrid}>
+                    <div className={styles.detailInfoCard}>
+                      <span className={styles.detailInfoLabel}>Upload Date</span>
+                      <span className={styles.detailInfoValue}>
+                        {activeDetailItem.isWeekly 
+                          ? new Date(activeDetailItem.release_date).toLocaleDateString() 
+                          : activeDetailItem.isSpeaking
+                            ? new Date(activeDetailItem.created_at).toLocaleDateString()
+                            : activeDetailItem.event_from 
+                              ? new Date(activeDetailItem.event_from).toLocaleDateString() 
+                              : new Date(activeDetailItem.upload_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                    
+                    {!activeDetailItem.isWeekly && activeDetailItem.duration && (
+                      <div className={styles.detailInfoCard}>
+                        <span className={styles.detailInfoLabel}>Duration</span>
+                        <span className={styles.detailInfoValue}>{activeDetailItem.duration}</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {activeDetailItem.details && (
+                    <div className={styles.detailDescription}>
+                      {activeDetailItem.details}
+                    </div>
+                  )}
+                  
+                  <div className={styles.detailActions}>
+                    {(activeDetailItem.isWeekly ? activeDetailItem.fileUrl : (activeDetailItem.document_path ? getAttachmentUrl(activeDetailItem.document_path) : null)) && (
+                      <>
+                        <button 
+                          onClick={() => {
+                            const url = activeDetailItem.isWeekly ? activeDetailItem.fileUrl : getAttachmentUrl(activeDetailItem.document_path);
+                            setActivePdfViewer(url);
+                          }} 
+                          className={styles.detailBtn}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                          View Document
+                        </button>
+                        <a 
+                          href={activeDetailItem.isWeekly ? activeDetailItem.fileUrl : getAttachmentUrl(activeDetailItem.document_path)} 
+                          download
+                          className={styles.detailBtnOutline}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                          </svg>
+                          Download
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Full Screen Viewer Modal (Scribd-like for PDF, Lightbox for Images) */}
+          {activePdfViewer && (
+            <div className={styles.pdfOverlay} onClick={() => setActivePdfViewer(null)}>
+              <div className={styles.pdfModal} style={getFileType(activePdfViewer) === 'image' ? { background: 'transparent', boxShadow: 'none' } : {}} onClick={(e) => e.stopPropagation()}>
+                <button
+                  className={styles.pdfCloseBtn}
+                  onClick={() => setActivePdfViewer(null)}
+                  aria-label="Close Viewer"
+                  style={getFileType(activePdfViewer) === 'image' ? { background: 'rgba(255,255,255,0.2)', color: '#fff', top: '10px', right: '10px' } : {}}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+                {getFileType(activePdfViewer) === 'image' ? (
+                  <img 
+                    src={activePdfViewer} 
+                    alt="Document Preview" 
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} 
+                  />
+                ) : (
+                  <iframe src={`${activePdfViewer}#toolbar=0`} className={styles.pdfIframe} title="PDF Viewer" />
+                )}
+              </div>
+            </div>
+          )}
         </>,
         document.body
       )}

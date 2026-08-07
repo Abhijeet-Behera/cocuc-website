@@ -1,10 +1,10 @@
 'use client'
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, Fragment, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import PageHeader from '@/components/PageHeader'
 import styles from './SpeakingArrangements.module.css'
-import { CalendarX } from 'lucide-react'
+import { CalendarX, FileText, ChevronLeft, ChevronRight, Download } from 'lucide-react'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -228,6 +228,7 @@ export default function SpeakingArrangementsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
+  const tabsRef = useRef(null)
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 768px)')
@@ -248,6 +249,16 @@ export default function SpeakingArrangementsPage() {
     let cancelled = false
 
     async function loadSchedules() {
+      const normalizeApiResponse = (data) => {
+        if (Array.isArray(data)) return { meta: {}, items: data }
+        return data || { meta: {}, items: [] }
+      }
+
+      const getUpcomingItems = (items) => {
+        if (!Array.isArray(items)) return []
+        return items
+      }
+
       const section = SUB_SECTIONS.find((item) => item.key === activeSection)
 
       if (!section) return
@@ -329,72 +340,119 @@ export default function SpeakingArrangementsPage() {
       </div>
 
       <div className={styles.container}>
-
-        <div
-          style={
-            isMobile
-              ? {
-                width: '100%',
-                overflowX: 'auto',
-                overflowY: 'hidden',
-                WebkitOverflowScrolling: 'touch',
-                touchAction: 'pan-x',
-                overscrollBehaviorX: 'contain',
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-                margin: '0 0 34px',
-              }
-              : undefined
-          }
-        >
-          <motion.section
-            aria-label="Speaking arrangement sections"
-            style={{
-              ...ui.tabs,
-              ...(isMobile
-                ? {
-                  flexWrap: 'nowrap',
-                  justifyContent: 'flex-start',
-                  width: 'max-content',
-                  minWidth: 'max-content',
-                  margin: 0,
-                  padding: '0 16px 8px',
+        <div style={{ position: 'relative', margin: '0 0 34px', display: 'flex', alignItems: 'center' }}>
+          {isMobile && (
+            <button
+              onClick={() => {
+                if (tabsRef.current) {
+                  tabsRef.current.scrollBy({ left: -200, behavior: 'smooth' });
                 }
-                : {}),
-            }}
+              }}
+              style={{
+                position: 'absolute', left: 4, zIndex: 2,
+                width: '32px', height: '32px', borderRadius: '16px',
+                background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                border: '1px solid #eee', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: '#990000'
+              }}
+              aria-label="Scroll left"
+            >
+              <ChevronLeft size={20} style={{ marginLeft: '-2px' }} />
+            </button>
+          )}
+
+          <div
+            ref={tabsRef}
+            style={
+              isMobile
+                ? {
+                  display: 'flex',
+                  overflowX: 'auto',
+                  WebkitOverflowScrolling: 'touch',
+                  touchAction: 'pan-x',
+                  overscrollBehaviorX: 'contain',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  margin: '0', // Full width so items aren't pushed in
+                  padding: '0 24px', // Space for buttons on sides
+                  scrollSnapType: 'x mandatory',
+                }
+                : {
+                  width: '100%'
+                }
+            }
           >
-            {SUB_SECTIONS.map((section) => (
-              <motion.button
-                key={section.key}
-                type="button"
-                onClick={() => setActiveSection(section.key)}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.96 }}
-                animate={{
-                  scale: activeSection === section.key ? 1.04 : 1,
-                }}
-                transition={{
-                  duration: 0.2,
-                  ease: 'easeOut',
-                }}
-                style={{
-                  ...ui.tab,
-                  ...(activeSection === section.key ? ui.activeTab : {}),
-                  ...(isMobile
-                    ? {
-                      flex: '0 0 auto',
-                      whiteSpace: 'nowrap',
-                    }
-                    : {}),
-                }}
-              >
-                <span aria-hidden="true" style={{ marginRight: 8 }}>
-                  {section.icon}
-                </span>
-                <span>{section.label}</span>
-              </motion.button>
-            ))}
-          </motion.section>
+            <motion.section
+              aria-label="Speaking arrangement sections"
+              style={{
+                ...ui.tabs,
+                ...(isMobile
+                  ? {
+                    flexWrap: 'nowrap',
+                    justifyContent: 'flex-start',
+                    width: 'max-content',
+                    minWidth: 'max-content',
+                    margin: 0,
+                    padding: '0 0 8px', // Removed horizontal padding from section
+                  }
+                  : {}),
+              }}
+            >
+              {SUB_SECTIONS.map((section) => (
+                <motion.button
+                  key={section.key}
+                  type="button"
+                  onClick={() => setActiveSection(section.key)}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  animate={{
+                    scale: activeSection === section.key ? 1.04 : 1,
+                  }}
+                  transition={{
+                    duration: 0.2,
+                    ease: 'easeOut',
+                  }}
+                  style={{
+                    ...ui.tab,
+                    ...(activeSection === section.key ? ui.activeTab : {}),
+                    ...(isMobile
+                      ? {
+                        flex: '0 0 auto',
+                        whiteSpace: 'nowrap',
+                        scrollSnapAlign: 'center', // Snap to center
+                        minWidth: '160px', // Just a reasonable min width
+                      }
+                      : {}),
+                  }}
+                >
+                  <span aria-hidden="true" style={{ marginRight: 8 }}>
+                    {section.icon}
+                  </span>
+                  <span>{section.label}</span>
+                </motion.button>
+              ))}
+            </motion.section>
+          </div>
+
+          {isMobile && (
+            <button
+              onClick={() => {
+                if (tabsRef.current) {
+                  tabsRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+                }
+              }}
+              style={{
+                position: 'absolute', right: 4, zIndex: 2,
+                width: '32px', height: '32px', borderRadius: '16px',
+                background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                border: '1px solid #eee', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: '#990000'
+              }}
+              aria-label="Scroll right"
+            >
+              <ChevronRight size={20} style={{ marginRight: '-2px' }} />
+            </button>
+          )}
         </div>
 
         <AnimatePresence mode="wait">
@@ -435,7 +493,187 @@ export default function SpeakingArrangementsPage() {
   )
 }
 
+function PdfThumbnailViewer({ pdfUrl, title }) {
+  const canvasRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let renderTask = null;
+    let isMounted = true;
+
+    const loadPdf = async () => {
+      try {
+        if (!window.pdfjsLib) {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+          document.head.appendChild(script);
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = reject;
+          });
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+        
+        if (!isMounted) return;
+
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
+        renderTask = page.render(renderContext);
+        await renderTask.promise;
+        
+        if (isMounted) setLoading(false);
+      } catch (err) {
+        console.error('Error rendering PDF preview:', err);
+        if (isMounted) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    };
+
+    loadPdf();
+
+    return () => {
+      isMounted = false;
+      if (renderTask) {
+        renderTask.cancel();
+      }
+    };
+  }, [pdfUrl]);
+
+  return (
+    <section style={ui.scheduleBox}>
+      <SectionHeader
+        title={title || "Speaking Schedule"}
+        subtitle="Click the document preview below to view or download the full PDF schedule"
+      />
+      <div style={{ marginTop: '24px' }}>
+        <a 
+          href={pdfUrl} 
+          target="_blank" 
+          rel="noreferrer"
+          style={{
+            display: 'block',
+            textDecoration: 'none',
+            maxWidth: '500px',
+            margin: '0 auto',
+            backgroundColor: '#fff',
+            borderRadius: '12px',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
+            overflow: 'hidden',
+            border: '1px solid #eee',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-4px)';
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.08)';
+          }}
+        >
+          <div style={{ position: 'relative', width: '100%', aspectRatio: '1 / 1.414', backgroundColor: '#f9fafb', overflow: 'hidden' }}>
+            {loading && !error && (
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                  <div className={styles.spinner} style={{ width: '24px', height: '24px', borderTopColor: '#990000' }} />
+                  <span>Loading document preview...</span>
+                </div>
+              </div>
+            )}
+            {error && (
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#990000', flexDirection: 'column', padding: '20px', textAlign: 'center' }}>
+                <span style={{ fontSize: '32px', marginBottom: '8px' }}>📄</span>
+                <span style={{ fontWeight: 'bold' }}>Preview unavailable</span>
+                <span style={{ fontSize: '14px', marginTop: '4px' }}>Click here to open the PDF directly</span>
+              </div>
+            )}
+            <canvas 
+              ref={canvasRef} 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                objectFit: 'contain',
+                opacity: loading ? 0 : 1,
+                transition: 'opacity 0.3s ease',
+                display: 'block'
+              }} 
+            />
+            
+            {/* PDF Badge */}
+            <div style={{ position: 'absolute', top: '20px', left: '0', background: 'rgba(0,0,0,0.85)', color: '#fff', padding: '6px 14px', fontWeight: 'bold', fontSize: '14px', borderTopRightRadius: '4px', borderBottomRightRadius: '4px', display: 'flex', alignItems: 'center', gap: '6px', backdropFilter: 'blur(4px)' }}>
+              <FileText size={16} /> PDF
+            </div>
+          </div>
+          
+          <div style={{ padding: '20px 24px', background: '#fff', borderTop: '1px solid #eee' }}>
+            <h3 style={{ margin: '0 0 12px', color: '#111', fontSize: '18px', fontWeight: '700', lineHeight: 1.3 }}>
+              {title || "Speaking Schedule"}
+            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+              <p style={{ margin: 0, color: '#990000', fontSize: '14px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>Click to view full document</span>
+                <span style={{ fontSize: '16px' }}>→</span>
+              </p>
+              
+              <a 
+                href={pdfUrl}
+                download
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  padding: '8px 16px', background: '#f5f5f5', color: '#333',
+                  borderRadius: '6px', fontSize: '13px', fontWeight: 'bold',
+                  textDecoration: 'none', border: '1px solid #e0e0e0',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)', transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = '#fff0f0';
+                  e.currentTarget.style.color = '#990000';
+                  e.currentTarget.style.borderColor = '#ffcccc';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = '#f5f5f5';
+                  e.currentTarget.style.color = '#333';
+                  e.currentTarget.style.borderColor = '#e0e0e0';
+                }}
+              >
+                <Download size={14} /> Download PDF
+              </a>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  );
+}
+
 function ScheduleRenderer({ section, items, meta }) {
+  const isDirectPdf = meta?.meta_json?.is_direct_pdf || items?.[0]?.data_json?.pdf_mode;
+  if (isDirectPdf) {
+    const documentPath = meta?.meta_json?.document_path || items?.[0]?.data_json?.document_path;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api';
+    const pdfUrl = `${API_URL}/${documentPath}`;
+
+    return <PdfThumbnailViewer pdfUrl={pdfUrl} title={meta?.title} />;
+  }
+
   if (section === 'sunday_worship') {
     return <SundayWorshipTable items={items} />
   }

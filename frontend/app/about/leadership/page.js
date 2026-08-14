@@ -364,7 +364,7 @@ export default function LeadershipPage() {
             <div className="deacon-grid">
               {[
                 { name: "Mr. Sobhajan Pradhan", role: "Caretaker", image: "/images/support-staff/SP.png" },
-                { name: "Mr. Krushna Chandra Digal", role: "Assistant Caretaker", image: "/images/support-staff/KD.png" }
+                { name: "Mr. Raj Digal", role: "Caretaker", image: "/images/support-staff/RD.png" }
               ].map((staff, idx) => {
                 const imageSrc = staff.image || '/images/deacon-male-placeholder.png';
                 return (

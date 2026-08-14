@@ -2,6 +2,9 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -9,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once 'db_config.php';
 require_once 'jwt_helper.php';
-require_once 'speaking_schedule_parsers.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -86,8 +88,12 @@ if ($method === 'GET') {
         $stmt->execute([$upload_id]);
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Decode JSON fields
-        $upload['meta_json'] = json_decode($upload['meta_json'], true);
+        // Decode JSON fields and synthesize meta_json dynamically if missing
+        $upload['meta_json'] = json_decode($upload['meta_json'] ?? '{"is_direct_pdf":true}', true);
+        if (empty($upload['meta_json']['document_path']) && !empty($upload['pdf_file'])) {
+            $upload['meta_json']['document_path'] = $upload['pdf_file'];
+        }
+
         foreach ($items as &$item) {
             $item['data_json'] = json_decode($item['data_json'], true);
         }
@@ -102,8 +108,13 @@ if ($method === 'GET') {
         // Public endpoint: Fetch published items of a sub_section (Only future dates)
         $sub_section = $_GET['sub_section'] ?? null;
         if (!$sub_section) {
-            http_response_code(400);
-            echo json_encode(["error" => "Missing sub_section. Supported: 'Sunday Worships', 'Morning prayer', 'Monday Prayer', 'Prayer Wings', 'CE Union', 'Wednesday Prayer', 'Zoom Prayer', 'Quarterly Prayer'"]);
+            // If no sub_section is provided, return the latest 5 published schedules for the home page
+            $stmt = $pdo->query("SELECT * FROM speaking_schedule_uploads WHERE status = 'published' ORDER BY created_at DESC LIMIT 5");
+            $uploads = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($uploads as &$u) {
+                $u['meta_json'] = json_decode($u['meta_json'], true);
+            }
+            echo json_encode($uploads);
             exit;
         }
 
@@ -120,14 +131,21 @@ if ($method === 'GET') {
             exit;
         }
 
-        $today = date('Y-m-d');
-        // Fetch items that are published and date is >= today
-        $stmt = $pdo->prepare("SELECT * FROM speaking_schedule_items WHERE upload_id = ? AND is_published = 1 AND schedule_date >= ? ORDER BY schedule_date ASC, sort_order ASC");
-        $stmt->execute([$upload['id'], $today]);
-        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $upload['meta_json'] = json_decode($upload['meta_json'] ?? '{"is_direct_pdf":true}', true);
 
-        // Decode JSON fields
-        $upload['meta_json'] = json_decode($upload['meta_json'], true);
+        if (!empty($upload['meta_json']['is_direct_pdf'])) {
+            // For Direct PDFs, always return the items without filtering by date
+            $stmt = $pdo->prepare("SELECT * FROM speaking_schedule_items WHERE upload_id = ? AND is_published = 1 ORDER BY sort_order ASC");
+            $stmt->execute([$upload['id']]);
+            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $today = date('Y-m-d');
+            // Fetch items that are published and date is >= today
+            $stmt = $pdo->prepare("SELECT * FROM speaking_schedule_items WHERE upload_id = ? AND is_published = 1 AND schedule_date >= ? ORDER BY schedule_date ASC, sort_order ASC");
+            $stmt->execute([$upload['id'], $today]);
+            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
         foreach ($items as &$item) {
             $item['data_json'] = json_decode($item['data_json'], true);
         }
@@ -179,53 +197,7 @@ if ($method === 'GET') {
             exit;
         }
 
-        // Select parser dynamically
-        $parserFunc = '';
-        switch ($sub_section) {
-            case 'Sunday Worships':
-                $parserFunc = 'parseSundayWorshipPdf';
-                break;
-            case 'Morning prayer':
-                $parserFunc = 'parseMorningPrayerPdf';
-                break;
-            case 'Monday Prayer':
-                $parserFunc = 'parseMondayPrayerPdf';
-                break;
-            case 'CE Union':
-                $parserFunc = 'parseCEUnionPdf';
-                break;
-            case 'Wednesday Prayer':
-                $parserFunc = 'parseWednesdayBibleStudyPdf';
-                break;
-            case 'Zoom Prayer':
-                $parserFunc = 'parseEveningZoomPrayerPdf';
-                break;
-            case 'Quarterly Prayer':
-                $parserFunc = 'parseQuarterlyPrayerPdf';
-                break;
-            default:
-                http_response_code(400);
-                echo json_encode(["error" => "Unrecognized sub-section: " . $sub_section]);
-                exit;
-        }
-
-        // Run parser
-        $parsedData = null;
-        try {
-            $parsedData = $parserFunc($file['tmp_name']);
-        } catch (Exception $e) {
-            http_response_code(400);
-            echo json_encode(["error" => "Failed to parse PDF: " . $e->getMessage()]);
-            exit;
-        }
-
-        if ($parsedData === null || empty($parsedData['items'])) {
-            http_response_code(400);
-            echo json_encode(["error" => "Invalid PDF format: No valid schedule rows were found. Please check that you selected the correct subsection and uploaded a valid text-based PDF."]);
-            exit;
-        }
-
-        // Create upload directory if not exists
+        // Save it directly for display in the frontend PDF Grid.
         $uploadDir = __DIR__ . '/uploads/speaking_schedules/';
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
@@ -240,36 +212,52 @@ if ($method === 'GET') {
             exit;
         }
 
+        $title = $sub_section . ' Schedule';
+        $period_start = date('Y-m-d');
+        $period_end = date('Y-m-d', strtotime('+6 months'));
+        
+        $meta_json = [
+            "is_direct_pdf" => true, 
+            "document_path" => 'uploads/speaking_schedules/' . $destFileName
+        ];
+
         // Insert upload record as draft
         $stmt = $pdo->prepare("INSERT INTO speaking_schedule_uploads (sub_section, title, pdf_file, period_start, period_end, status, meta_json, uploaded_by) VALUES (?, ?, ?, ?, ?, 'draft', ?, ?)");
         $stmt->execute([
-            $parsedData['sub_section'],
-            $parsedData['title'],
+            $sub_section,
+            $title,
             'uploads/speaking_schedules/' . $destFileName,
-            $parsedData['period_start'],
-            $parsedData['period_end'],
-            json_encode($parsedData['meta_json']),
+            $period_start,
+            $period_end,
+            json_encode($meta_json),
             $payload['id']
         ]);
 
         $upload_id = $pdo->lastInsertId();
 
-        // Insert items
+        // Insert a single dummy item representing this PDF 
+        // to maintain compatibility with existing API response structure
         $stmtInsert = $pdo->prepare("INSERT INTO speaking_schedule_items (upload_id, sub_section, schedule_date, month_label, day_name, data_json, sort_order, is_published) VALUES (?, ?, ?, ?, ?, ?, ?, 0)");
-        foreach ($parsedData['items'] as $index => $item) {
-            $stmtInsert->execute([
-                $upload_id,
-                $parsedData['sub_section'],
-                $item['schedule_date'],
-                $item['month_label'],
-                $item['day_name'],
-                json_encode($item['data_json']),
-                $index
-            ]);
-        }
+        
+        $itemData = [
+            "schedule_date" => date('Y-m-d'),
+            "month_label" => date('F Y'),
+            "day_name" => date('l'),
+            "data_json" => ["pdf_mode" => true, "title" => $title, "document_path" => 'uploads/speaking_schedules/' . $destFileName]
+        ];
+
+        $stmtInsert->execute([
+            $upload_id,
+            $sub_section,
+            $itemData['schedule_date'],
+            $itemData['month_label'],
+            $itemData['day_name'],
+            json_encode($itemData['data_json']),
+            0
+        ]);
 
         if ($payload['designation'] === 'Developer') {
-            logDeveloperActionLocal($pdo, $payload['email'], 'UPLOAD', 'speaking_schedule_uploads', "Uploaded schedule PDF for {$sub_section}");
+            logDeveloperActionLocal($pdo, $payload['email'], 'UPLOAD', 'speaking_schedule_uploads', "Uploaded schedule PDF for {$sub_section} (Direct PDF Mode)");
         }
 
         // Return preview
@@ -283,10 +271,10 @@ if ($method === 'GET') {
         echo json_encode([
             "success" => true,
             "upload_id" => $upload_id,
-            "title" => $parsedData['title'],
-            "period_start" => $parsedData['period_start'],
-            "period_end" => $parsedData['period_end'],
-            "meta_json" => $parsedData['meta_json'],
+            "title" => $title,
+            "period_start" => $period_start,
+            "period_end" => $period_end,
+            "meta_json" => json_encode($meta_json),
             "preview_items" => $items
         ]);
         exit;

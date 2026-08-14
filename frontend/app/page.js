@@ -11,6 +11,7 @@ import ChatBotWidget from '@/components/ChatBotWidget'
 import SecretaryAnnouncements from '@/components/SecretaryAnnouncements'
 import StemScrollNav from '@/components/StemScrollNav'
 import DonationSection from '@/components/DonationSection'
+import YouthRetreatAd from '@/components/YouthRetreatAd'
 import styles from './page.module.css'
 
 export const metadata = {
@@ -22,6 +23,7 @@ export const metadata = {
 export default function Home() {
   return (
     <div>
+      <YouthRetreatAd />
       <div id="hero">
         <HeroSection />
       </div>

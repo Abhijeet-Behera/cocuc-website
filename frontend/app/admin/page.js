@@ -232,14 +232,21 @@ export default function AdminPortal() {
       </div>
 
       {user.designation === 'Developer' && (
-        <div style={{ marginBottom: '3rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-          <div onClick={() => router.push('/admin/pastor')} style={{ flex: 1, minWidth: '250px', background: 'var(--color-primary)', padding: '2rem', borderRadius: '20px', color: '#fff', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: '0 10px 30px rgba(139, 0, 0, 0.2)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 0, 0, 0.4)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 0, 0, 0.2)'; }}>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: '700' }}>Pastor Interface</h3>
-            <p style={{ opacity: 0.9, fontSize: '0.95rem' }}>Manage blogs and inspirational messages.</p>
+        <div style={{ marginBottom: '3rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+          <div onClick={() => router.push('/admin/pastor')} style={{ background: 'var(--color-primary)', padding: '2rem', borderRadius: '20px', color: '#fff', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: '0 10px 30px rgba(139, 0, 0, 0.2)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 0, 0, 0.4)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 0, 0, 0.2)'; }}>
+            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', fontWeight: '700' }}>Pastor Interface</h3>
+            <p style={{ opacity: 0.9, fontSize: '0.9rem' }}>Manage blogs and inspirational messages.</p>
           </div>
-          <div onClick={() => router.push('/admin/secretary')} style={{ flex: 1, minWidth: '250px', background: 'var(--color-primary)', padding: '2rem', borderRadius: '20px', color: '#fff', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: '0 10px 30px rgba(139, 0, 0, 0.2)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 0, 0, 0.4)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 0, 0, 0.2)'; }}>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: '700' }}>Secretary Interface</h3>
-            <p style={{ opacity: 0.9, fontSize: '0.95rem' }}>Manage notices, special programs, and arrangements.</p>
+          <div onClick={() => router.push('/admin/secretary')} style={{ background: 'var(--color-primary)', padding: '2rem', borderRadius: '20px', color: '#fff', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: '0 10px 30px rgba(139, 0, 0, 0.2)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 0, 0, 0.4)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 0, 0, 0.2)'; }}>
+            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', fontWeight: '700' }}>Secretary Interface</h3>
+            <p style={{ opacity: 0.9, fontSize: '0.9rem' }}>Manage notices, special programs, and arrangements.</p>
+          </div>
+          <div onClick={() => router.push('/admin/events')} style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', padding: '2rem', borderRadius: '20px', color: '#fff', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.25)', border: '1px solid rgba(255,255,255,0.1)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(15, 23, 42, 0.45)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(15, 23, 42, 0.25)'; }}>
+            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>Events & Wings</span>
+              <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '12px', background: '#3b82f6', color: '#fff', fontWeight: '700' }}>NEW</span>
+            </h3>
+            <p style={{ opacity: 0.9, fontSize: '0.9rem' }}>Upload wing events with Google Drive photo galleries & word count limits.</p>
           </div>
         </div>
       )}

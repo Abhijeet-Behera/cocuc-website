@@ -171,6 +171,7 @@ export default function Navbar() {
           {/* ── Nav links — equally spaced ── */}
           <div className={styles.navLinks}>
             <NavDropdown title="About" items={aboutMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
+            <NavLink href="/events" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Events</NavLink>
             <NavLink href="/gallery" scrolled={isNavSolid} onClick={() => setMobileMenuOpen(false)}>Gallery</NavLink>
             <NavDropdown title="Activities" items={activitiesMenu} scrolled={isNavSolid} openDropdown={openDropdown} setOpenDropdown={setOpenDropdown} setMobileMenuOpen={setMobileMenuOpen} />
             {/* Prayer Wings hidden temporarily */}

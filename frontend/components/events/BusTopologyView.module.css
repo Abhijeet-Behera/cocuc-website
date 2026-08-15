@@ -1,0 +1,598 @@
+/* ============================================================
+   BusTopologyView.module.css — Church of Christ Union Church
+   Matches the website's white/maroon classic theme
+   ============================================================ */
+
+.topologySection {
+  position: relative;
+  width: 100%;
+  padding: 4rem 0 5rem 0;
+  overflow: hidden;
+  background: #ffffff;
+  border-top: 1px solid rgba(128, 0, 0, 0.08);
+}
+
+.ambientGlow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70vw;
+  height: 300px;
+  background: radial-gradient(ellipse at center top, rgba(128, 0, 0, 0.05) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header & Controls ── */
+.headerContainer {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 2.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.topologyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  background: rgba(128, 0, 0, 0.06);
+  border: 1px solid rgba(128, 0, 0, 0.15);
+  border-radius: 50px;
+  color: var(--color-primary, #800000);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+}
+
+.pulseDot {
+  width: 7px;
+  height: 7px;
+  background-color: #800000;
+  border-radius: 50%;
+  animation: livePulse 2s infinite ease-in-out;
+}
+
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.35; }
+}
+
+.sectionTitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 3rem;
+  font-weight: 600;
+  color: var(--color-primary, #800000);
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.01em;
+}
+
+.sectionSubtitle {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 1rem;
+  color: var(--color-text-muted, #555555);
+  line-height: 1.7;
+  max-width: 660px;
+  margin: 0 auto 1.5rem auto;
+}
+
+/* ── Controls Bar ── */
+.controlsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto 1.5rem auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 5;
+}
+
+.viewModeToggle {
+  display: inline-flex;
+  align-items: center;
+  background: #fdfdfd;
+  padding: 0.3rem;
+  border-radius: 50px;
+  border: 1px solid rgba(128, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  color: #555555;
+  background: transparent;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.toggleBtn.active {
+  background: var(--color-primary, #800000);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(128, 0, 0, 0.2);
+}
+
+.scrollHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted, #555555);
+}
+
+/* ── Wing Quick Navigation Pills ── */
+.wingQuickNav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 2rem 1.25rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: relative;
+  z-index: 5;
+}
+
+.wingQuickNav::-webkit-scrollbar {
+  display: none;
+}
+
+.wingPill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  background: #ffffff;
+  border: 1px solid rgba(128, 0, 0, 0.12);
+  color: var(--color-text-muted, #555555);
+  box-shadow: var(--shadow-sm, 0 2px 6px rgba(0,0,0,0.04));
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.wingPill:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary, #800000);
+  color: var(--color-primary, #800000);
+  box-shadow: 0 5px 14px rgba(128, 0, 0, 0.1);
+}
+
+.wingPill.activePill {
+  background: var(--color-primary, #800000);
+  color: #ffffff;
+  border-color: var(--color-primary, #800000);
+  box-shadow: 0 5px 14px rgba(128, 0, 0, 0.25);
+}
+
+/* ── Viewport & Scroll Area ── */
+.viewportContainer {
+  position: relative;
+  width: 100%;
+}
+
+.busScrollArea {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4rem 3rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 0, 0, 0.25) rgba(0, 0, 0, 0.03);
+  cursor: default;
+  user-select: auto;
+  scroll-behavior: smooth;
+}
+
+.busScrollArea::-webkit-scrollbar {
+  height: 6px;
+}
+
+.busScrollArea::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+}
+
+.busScrollArea::-webkit-scrollbar-thumb {
+  background: rgba(128, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.busScrollArea::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary, #800000);
+}
+
+/* ── Topology Canvas ── */
+.topologyCanvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: max-content;
+  padding: 1rem 2rem;
+}
+
+/* ── Rows of Wing Nodes ── */
+.nodesRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 4.5rem;
+}
+
+.topRow {
+  align-items: flex-end;
+  margin-bottom: 0;
+}
+
+.bottomRow {
+  align-items: flex-start;
+  margin-top: 0;
+}
+
+.nodeSlot {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* ── Branch Lines ── */
+.branchLineTop {
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(180deg, rgba(128, 0, 0, 0.2) 0%, #800000 100%);
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+.branchLineBottom {
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(180deg, #800000 0%, rgba(128, 0, 0, 0.2) 100%);
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+/* ── T-Junction Connection ── */
+.tJunction {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border: 3px solid var(--color-primary, #800000);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(128, 0, 0, 0.25);
+  z-index: 6;
+}
+
+.junctionTop {
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.junctionBottom {
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nodeAddressLabel {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-muted, #555555);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ── Central Bus Cable ── */
+.centralBusLineWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  position: relative;
+  z-index: 3;
+  padding: 0 3rem;
+}
+
+.busTerminator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  background: var(--color-primary, #800000);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: 'Outfit', monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 4;
+  flex-shrink: 0;
+}
+
+.terminatorLeft {
+  border-radius: 6px 0 0 6px;
+}
+
+.terminatorRight {
+  border-radius: 0 6px 6px 0;
+}
+
+.terminatorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.terminatorDot.active {
+  background: #4ade80;
+  box-shadow: 0 0 6px #4ade80;
+  animation: livePulse 2s infinite ease-in-out;
+}
+
+.mainBusCable {
+  flex: 1;
+  height: 6px;
+  background: linear-gradient(90deg, #800000 0%, #a31f1f 50%, #800000 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(128, 0, 0, 0.2), 0 2px 6px rgba(128, 0, 0, 0.15);
+}
+
+.signalPacket {
+  position: absolute;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: signalFlow 3s linear infinite;
+}
+
+.signalPacket2 {
+  animation-delay: 1.5s;
+}
+
+@keyframes signalFlow {
+  0% { left: -60px; }
+  100% { left: 100%; }
+}
+
+/* ── Wing Card ── */
+.wingCard {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md, 0 10px 20px -3px rgba(0,0,0,0.06));
+  border: 1px solid rgba(128, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.wingCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px -8px rgba(128, 0, 0, 0.12), 0 0 0 1.5px var(--card-accent, #800000);
+}
+
+.cardGlowOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--card-accent, #800000);
+  opacity: 0.85;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.iconCircle {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(128, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.badgePill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  padding: 0.2rem 0.65rem;
+  border-radius: 30px;
+  background: rgba(128, 0, 0, 0.06);
+  color: var(--color-primary, #800000);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wingName {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text, #1a1a1a);
+  line-height: 1.25;
+  margin-bottom: 0.35rem;
+}
+
+.wingTagline {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.83rem;
+  color: var(--color-text-muted, #555555);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(128, 0, 0, 0.06);
+  margin-top: 0.85rem;
+}
+
+.eventCountBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #555555);
+}
+
+.activeIndicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #800000;
+  box-shadow: 0 0 6px rgba(128, 0, 0, 0.5);
+}
+
+.thumbnailStack {
+  display: flex;
+  align-items: center;
+}
+
+.stackImg {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  margin-left: -7px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+}
+
+.stackImg:first-child {
+  margin-left: 0;
+}
+
+.viewActionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  color: var(--color-primary, #800000);
+}
+
+.arrowIcon {
+  transition: transform 0.2s ease;
+}
+
+.wingCard:hover .arrowIcon {
+  transform: translateX(4px);
+}
+
+/* ── Floating Navigation Controls ── */
+.floatingNavControls {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  right: 1rem;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.navArrowBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(128, 0, 0, 0.15);
+  color: var(--color-primary, #800000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md, 0 10px 20px -3px rgba(0,0,0,0.06));
+  pointer-events: auto;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.navArrowBtn:hover {
+  background: var(--color-primary, #800000);
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(128, 0, 0, 0.25);
+}
+
+/* ── Grid View Alternative ── */
+.gridContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.75rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .sectionTitle { font-size: 2.5rem; }
+  .nodesRow { gap: 3rem; }
+  .nodeSlot { width: 260px; }
+}
+
+@media (max-width: 768px) {
+  .topologySection { padding: 2.5rem 0 3.5rem 0; }
+  .sectionTitle { font-size: 2rem; }
+  .sectionSubtitle { font-size: 0.95rem; }
+  .busScrollArea { padding: 2rem 1.5rem; }
+  .floatingNavControls { display: none; }
+  .gridContainer { grid-template-columns: 1fr; padding: 1rem; }
+}

@@ -141,3 +141,23 @@ CREATE TABLE IF NOT EXISTS donations (
     status ENUM('pending_payment', 'payment_details_submitted', 'verified') DEFAULT 'pending_payment',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    wing_id VARCHAR(100) NOT NULL,
+    wing_name VARCHAR(150),
+    description TEXT NOT NULL,
+    word_count INT DEFAULT 0,
+    folder_url VARCHAR(500) NOT NULL,
+    folder_id VARCHAR(255) NOT NULL,
+    images_json JSON,
+    cover_image VARCHAR(500),
+    event_date DATE,
+    location VARCHAR(255),
+    author_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_wing (wing_id)
+);
+

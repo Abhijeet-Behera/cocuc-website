@@ -1,0 +1,410 @@
+.quizSection {
+  padding-top: 5rem;
+  padding-bottom: 0rem;
+  width: 100%;
+}
+
+.quizContainer {
+  background: linear-gradient(135deg, var(--color-surface, #ffffff) 0%, #fff3f3 100%);
+  border: 1px solid rgba(128, 0, 0, 0.15);
+  border-radius: 32px;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  box-shadow: 0 20px 50px -15px rgba(128, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.5);
+  position: relative;
+  /* overflow: hidden removed to fix backdrop-filter bug */
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Animated Background Styles */
+.bgWrapper {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bgGlow1 {
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(128, 0, 0, 0.08) 0%, rgba(128, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  animation: float1 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.bgGlow2 {
+  position: absolute;
+  bottom: -30%;
+  right: -10%;
+  width: 70%;
+  height: 90%;
+  background: radial-gradient(circle, rgba(128, 0, 0, 0.08) 0%, rgba(128, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  animation: float2 18s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
+.bgPattern {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='100' height='60' viewBox='0 0 100 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30 Q 25 0, 50 30 T 100 30' fill='none' stroke='rgba(128,0,0,0.12)' stroke-width='2.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='200' height='120' viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60 Q 50 120, 100 60 T 200 60' fill='none' stroke='rgba(128,0,0,0.08)' stroke-width='3'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='150' height='90' viewBox='0 0 150 90' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 45 Q 37.5 0, 75 45 T 150 45' fill='none' stroke='rgba(128,0,0,0.06)' stroke-width='4'/%3E%3C/svg%3E");
+  background-size: 60px 36px, 120px 72px, 90px 54px;
+  z-index: 0;
+  opacity: 0.9;
+  animation: wavePan 30s linear infinite;
+  pointer-events: none;
+  transform: rotate(-5deg);
+}
+
+@keyframes float1 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+@keyframes float2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(-30px, 40px) scale(1.15);
+  }
+
+  66% {
+    transform: translate(20px, -20px) scale(0.85);
+  }
+}
+
+@keyframes wavePan {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+
+  100% {
+    background-position: 180px 108px, -240px -144px, 270px -162px;
+  }
+}
+
+/* End Animated Background Styles */
+
+@media (min-width: 768px) {
+  .quizContainer {
+    flex-direction: row;
+    padding: 3.5rem 4rem;
+  }
+}
+
+.textContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 2;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .textContent {
+    text-align: left;
+  }
+}
+
+.tagline {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+  display: inline-block;
+  background: linear-gradient(135deg, #800000 0%, #b30000 100%);
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  width: fit-content;
+  margin: 0 auto;
+  box-shadow: 0 4px 15px rgba(128, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 768px) {
+  .tagline {
+    margin: 0;
+  }
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-text, #333);
+  line-height: 1.1;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 2.8rem;
+  }
+}
+
+.titleAccent {
+  font-family: var(--font-serif, Georgia, serif);
+  font-style: italic;
+  font-weight: 400;
+  color: #800000;
+}
+
+.description {
+  color: var(--color-text-light, #666);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto 1rem auto;
+}
+
+@media (min-width: 768px) {
+  .description {
+    margin: 0 0 1rem 0;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .actions {
+    justify-content: flex-start;
+  }
+}
+
+.playButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #800000 0%, #990000 100%);
+  color: white;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 20px rgba(128, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid #660000;
+}
+
+.playButton:hover {
+  background: linear-gradient(135deg, #990000 0%, #b30000 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(128, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.aboutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  color: #800000;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(128, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.aboutButton:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(128, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.visualContent {
+  flex: 0 0 auto;
+  position: relative;
+  width: 140px;
+  height: 140px;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .visualContent {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+.decorativeBox {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #800000 0%, #4d0000 100%);
+  border-radius: 36px;
+  position: relative;
+  transform: rotate(-8deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 40px rgba(128, 0, 0, 0.35), inset 0 0 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.quizContainer:hover .decorativeBox {
+  transform: rotate(4deg) scale(1.08);
+  box-shadow: 0 25px 50px rgba(128, 0, 0, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.floatingElement {
+  font-size: 6.5rem;
+  font-weight: 900;
+  color: #fbbf24;
+  /* Gold */
+  opacity: 0.95;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(10deg);
+  animation: floatIcon 6s ease-in-out infinite;
+  text-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.floatingElement2 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  opacity: 0.95;
+  position: absolute;
+  top: -5%;
+  right: -5%;
+  transform: rotate(25deg);
+  animation: floatIcon 8s ease-in-out infinite reverse;
+  text-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes floatIcon {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotate(10deg) translateY(0);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) rotate(15deg) translateY(-10px);
+  }
+}
+
+/* Coming Soon Overlay */
+.comingSoonOverlayWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: not-allowed;
+  /* Strong frosted tint that hides content underneath */
+  background: rgba(255, 248, 248, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 32px;
+}
+
+.comingSoonBlurBox {
+  width: 95%;
+  height: 92%;
+
+  /* Glassmorphic card on top of the already-frosted overlay */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 235, 235, 0.4) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* Glass edge shine */
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 32px rgba(128, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(128, 0, 0, 0.15);
+
+  gap: 1.5rem;
+}
+
+.lockIconWrapper {
+  background: linear-gradient(135deg, #800000 0%, #b30000 100%);
+  color: white;
+  padding: 1.25rem;
+  border-radius: 50%;
+  box-shadow: 0 8px 25px rgba(128, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulseLock 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.comingSoonText {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #800000;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8);
+  margin: 0;
+  text-align: center;
+}
+
+@keyframes pulseLock {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 12px 30px rgba(128, 0, 0, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  }
+}

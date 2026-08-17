@@ -55,6 +55,7 @@ export default function WingDetailModal({
   events,
   isOpen,
   onClose,
+  onOpenAdminUpload,
 }: WingDetailModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
@@ -92,7 +93,12 @@ export default function WingDetailModal({
 
   // Filter events belonging to this wing and search query
   const wingEvents = events.filter((e) => {
-    const matchesWing = e.wingId.toLowerCase() === wing.id.toLowerCase();
+    const eWing = (e.wingId || '').toLowerCase();
+    const wId = wing.id.toLowerCase();
+    const matchesWing =
+      eWing === wId ||
+      (wId === 'womens-fellowship' && eWing === 'mahila-samiti') ||
+      (wId === 'mahila-samiti' && eWing === 'womens-fellowship');
     if (!matchesWing) return false;
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase().trim();
@@ -169,7 +175,7 @@ export default function WingDetailModal({
             </div>
           </div>
 
-          {/* Filter Bar (No analytics counters) */}
+          {/* Filter Bar */}
           <div className={styles.filterBar}>
             <div className={styles.searchBox}>
               <Search size={16} color="#94a3b8" />
@@ -191,22 +197,43 @@ export default function WingDetailModal({
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Link
-                href={`/admin?wing=${wing.id}#upload-event`}
-                className="btn-primary"
-                style={{
-                  fontSize: '0.8rem',
-                  padding: '0.45rem 1rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  borderRadius: '30px',
-                  textTransform: 'none',
-                }}
-              >
-                <PlusCircle size={15} />
-                <span>Upload Event</span>
-              </Link>
+              {onOpenAdminUpload ? (
+                <button
+                  onClick={() => onOpenAdminUpload(wing.id)}
+                  className="btn-primary"
+                  style={{
+                    fontSize: '0.8rem',
+                    padding: '0.45rem 1rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    borderRadius: '30px',
+                    textTransform: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <PlusCircle size={15} />
+                  <span>Upload Event</span>
+                </button>
+              ) : (
+                <Link
+                  href={`/admin?wing=${wing.id}#upload-event`}
+                  className="btn-primary"
+                  style={{
+                    fontSize: '0.8rem',
+                    padding: '0.45rem 1rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    borderRadius: '30px',
+                    textTransform: 'none',
+                  }}
+                >
+                  <PlusCircle size={15} />
+                  <span>Upload Event</span>
+                </Link>
+              )}
             </div>
           </div>
 

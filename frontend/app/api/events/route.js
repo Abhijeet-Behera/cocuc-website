@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
 import { getAllEvents, createEventItem, deleteEventItem } from '../../../lib/eventsStore';
 import { fetchGoogleDriveImages, countWords } from '../../../lib/googleDrive';
+import { getFolderIdForDomain } from '../../../lib/googleDriveService';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const wingId = searchParams.get('wingId') || undefined;
+    const domain = searchParams.get('domain') || searchParams.get('wingId') || undefined;
     const search = searchParams.get('search') || undefined;
 
-    const events = getAllEvents(wingId, search);
+    const events = getAllEvents(domain, search);
 
     return NextResponse.json({
       success: true,
@@ -27,7 +30,20 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { title, wingId, wingName, description, folderUrl, eventDate, location, authorName } = body;
+    const {
+      title,
+      date,
+      eventDate,
+      domain,
+      wingId,
+      wingName,
+      description,
+      imageUrls,
+      images,
+      folderUrl,
+      location,
+      authorName,
+    } = body;
 
     // Validation
     if (!title || !title.trim()) {
@@ -37,14 +53,16 @@ export async function POST(request) {
       );
     }
 
-    if (!wingId || !wingId.trim()) {
+    const effectiveDomain = domain || wingId;
+    if (!effectiveDomain || !effectiveDomain.trim()) {
       return NextResponse.json(
-        { success: false, error: 'Target wing selection is required.' },
+        { success: false, error: 'Domain / Wing selection is required.' },
         { status: 400 }
       );
     }
 
-    if (!description || !description.trim()) {
+    const safeDescription = description && description.trim() ? description.trim() : '';
+    if (!safeDescription) {
       return NextResponse.json(
         { success: false, error: 'Event description is required.' },
         { status: 400 }
@@ -52,7 +70,7 @@ export async function POST(request) {
     }
 
     // Live word count validation (up to 1000 words max)
-    const words = countWords(description);
+    const words = countWords(safeDescription);
     if (words > 1000) {
       return NextResponse.json(
         {
@@ -65,41 +83,42 @@ export async function POST(request) {
       );
     }
 
-    if (!folderUrl || !folderUrl.trim()) {
-      return NextResponse.json(
-        { success: false, error: 'Google Drive folder link is required.' },
-        { status: 400 }
-      );
+    // Process images
+    let finalImages = Array.isArray(imageUrls)
+      ? imageUrls
+      : Array.isArray(images)
+      ? images
+      : [];
+
+    let folderId = body.folderId || getFolderIdForDomain(effectiveDomain);
+
+    // If folderUrl was provided and no images were passed, try extracting from drive
+    if (finalImages.length === 0 && folderUrl && folderUrl.trim()) {
+      const driveResult = await fetchGoogleDriveImages(folderUrl, undefined, effectiveDomain);
+      finalImages = driveResult.images || [];
+      folderId = driveResult.folderId || folderId;
     }
 
-    // Fetch images from Google Drive API
-    let images = body.images || [];
-    let folderId = body.folderId;
-
-    if (!images || images.length === 0) {
-      const driveResult = await fetchGoogleDriveImages(folderUrl, undefined, wingId);
-      images = driveResult.images || [];
-      folderId = driveResult.folderId;
-    }
+    const effectiveDate = date || eventDate || new Date().toISOString().split('T')[0];
 
     const createdEvent = createEventItem({
-      title,
-      wingId,
-      wingName,
-      description,
-      folderUrl,
-      folderId,
-      images,
-      coverImage: images[0] || body.coverImage,
-      eventDate,
-      location,
-      authorName: authorName || 'Admin',
+      title: title.trim(),
+      wingId: effectiveDomain.trim(),
+      wingName: wingName || effectiveDomain,
+      description: safeDescription,
+      folderUrl: folderUrl ? folderUrl.trim() : '',
+      folderId: folderId || '',
+      images: finalImages,
+      coverImage: finalImages[0] || body.coverImage || '',
+      eventDate: effectiveDate,
+      location: location || 'Church Campus, Union Church Bhubaneswar',
+      authorName: authorName || 'Church Admin',
     });
 
     return NextResponse.json(
       {
         success: true,
-        message: 'Event uploaded and associated with wing successfully!',
+        message: 'Event added and associated with wing domain successfully!',
         data: createdEvent,
       },
       { status: 201 }

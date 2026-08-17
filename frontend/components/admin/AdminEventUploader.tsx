@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload,
-  FolderOpen,
   Image as ImageIcon,
   CheckCircle,
   AlertCircle,
@@ -13,16 +12,19 @@ import {
   MapPin,
   Trash2,
   Eye,
-  ExternalLink,
   Layers,
   Sparkles,
   RefreshCw,
   Search,
   PlusCircle,
-  Clock
+  X,
+  UploadCloud,
+  Clock,
+  Images,
+  FolderSync
 } from 'lucide-react';
 import { Wing, EventItem, DEFAULT_WINGS } from '../../types/events';
-import { extractFolderId, countWords } from '../../lib/googleDrive';
+import { countWords } from '../../lib/googleDrive';
 import styles from './AdminEventUploader.module.css';
 
 interface AdminEventUploaderProps {
@@ -31,6 +33,24 @@ interface AdminEventUploaderProps {
   onEventCreated?: (newEvent: EventItem) => void;
   onEventDeleted?: (eventId: string) => void;
 }
+
+interface StagedImageItem {
+  id: string;
+  file: File;
+  previewUrl: string;
+  name: string;
+  size: number;
+}
+
+// Exactly 6 Domain / Wing Options
+export const DOMAIN_OPTIONS = [
+  { id: 'general-church', label: 'General Church', envKey: 'DRIVE_FOLDER_GENERAL_CHURCH' },
+  { id: 'ce-union', label: 'CE Union', envKey: 'DRIVE_FOLDER_CE_UNION' },
+  { id: 'mahila-samiti', label: 'Mahila Samiti', envKey: 'DRIVE_FOLDER_MAHILA_SAMITI' },
+  { id: 'sunday-school', label: 'Sunday School', envKey: 'DRIVE_FOLDER_SUNDAY_SCHOOL' },
+  { id: 'youth-fellowship', label: 'Youth Fellowship', envKey: 'DRIVE_FOLDER_YOUTH_FELLOWSHIP' },
+  { id: 'elders-fellowship', label: 'Elders Fellowship', envKey: 'DRIVE_FOLDER_ELDERS_FELLOWSHIP' },
+];
 
 export default function AdminEventUploader({
   initialWingId,
@@ -43,20 +63,23 @@ export default function AdminEventUploader({
 
   // Form State
   const [title, setTitle] = useState('');
-  const [selectedWingId, setSelectedWingId] = useState(initialWingId || wings[0]?.id || 'youth-wing');
-  const [customWingName, setCustomWingName] = useState('');
-  const [eventDate, setEventDate] = useState(new Date().toISOString().split('T')[0]);
-  const [location, setLocation] = useState('Church Campus, Union Church Bhubaneswar');
-  const [authorName, setAuthorName] = useState('Church Administrator');
+  const [category, setCategory] = useState(
+    initialWingId && DOMAIN_OPTIONS.some((d) => d.id === initialWingId)
+      ? initialWingId
+      : ''
+  );
+  const [eventDate, setEventDate] = useState('');
+  const [location] = useState('Church Campus, Union Church Bhubaneswar');
+  const [authorName] = useState('Church Administrator');
   const [description, setDescription] = useState('');
-  const [folderUrl, setFolderUrl] = useState('');
 
-  // Extracted Images State
-  const [extractedFolderId, setExtractedFolderId] = useState<string | null>(null);
-  const [extractedImages, setExtractedImages] = useState<string[]>([]);
-  const [isExtracting, setIsExtracting] = useState(false);
-  const [extractStatus, setExtractStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [extractMessage, setExtractMessage] = useState('');
+  // Image Upload & Staging State (Max 20 images)
+  const [stagedImages, setStagedImages] = useState<StagedImageItem[]>([]);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'staged' | 'uploading' | 'uploaded' | 'error'>('idle');
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,16 +91,25 @@ export default function AdminEventUploader({
   const [manageFilterWing, setManageFilterWing] = useState<string>('all');
   const [manageSearch, setManageSearch] = useState<string>('');
 
-  // Live Word Count & 1000-Word Constraint
+  // Live Word Count
   const currentWordCount = useMemo(() => countWords(description), [description]);
   const maxWords = 1000;
   const isOverWordLimit = currentWordCount > maxWords;
   const wordPercentage = Math.min(100, Math.round((currentWordCount / maxWords) * 100));
 
-  // Determine active selected wing object
+  // Determine active selected domain / wing object
   const activeWing = useMemo(() => {
-    return wings.find((w) => w.id === selectedWingId) || wings[0];
-  }, [wings, selectedWingId]);
+    const selectedDomain = DOMAIN_OPTIONS.find((d) => d.id === category);
+    const matchedWing = wings.find(
+      (w) => w.id === category || (category === 'mahila-samiti' && w.id === 'womens-fellowship')
+    );
+    return matchedWing || {
+      id: selectedDomain?.id || 'general-church',
+      name: selectedDomain?.label || 'General Church',
+      accentColor: '#800000',
+      bgGlow: 'rgba(128, 0, 0, 0.08)',
+    };
+  }, [wings, category]);
 
   // Load existing events for Manage Tab
   const fetchEvents = useCallback(async () => {
@@ -99,61 +131,200 @@ export default function AdminEventUploader({
     fetchEvents();
   }, [fetchEvents]);
 
-  // Auto-parse Google Drive link and fetch images
-  const handleDriveUrlChange = async (url: string) => {
-    setFolderUrl(url);
-    const folderId = extractFolderId(url);
-    setExtractedFolderId(folderId);
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      stagedImages.forEach((item) => {
+        if (item.previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(item.previewUrl);
+        }
+      });
+    };
+  }, [stagedImages]);
 
-    if (!folderId) {
-      setExtractedImages([]);
-      setExtractStatus('idle');
-      setExtractMessage('');
+  // Handle File Selection (Max 20 Images Validation)
+  const processFiles = (incomingFiles: FileList | File[]) => {
+    const fileArray = Array.from(incomingFiles).filter((f) => f.type.startsWith('image/'));
+
+    if (fileArray.length === 0) {
+      setToast({ type: 'error', message: 'Please select valid image files (JPEG, PNG, WEBP, etc.).' });
       return;
     }
 
-    setIsExtracting(true);
-    setExtractStatus('loading');
-    setExtractMessage('Parsing folder & querying Google Drive API...');
+    const currentCount = stagedImages.length;
+    const availableSlots = 20 - currentCount;
 
-    try {
-      const res = await fetch('/api/fetch-drive-images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          folderUrl: url,
-          wingHint: selectedWingId,
-        }),
+    if (availableSlots <= 0) {
+      setToast({ type: 'error', message: 'Maximum limit of 20 images reached' });
+      return;
+    }
+
+    let filesToAdd = fileArray;
+    if (fileArray.length > availableSlots) {
+      filesToAdd = fileArray.slice(0, availableSlots);
+      setToast({
+        type: 'error',
+        message: `Maximum limit of 20 images reached. Only added ${availableSlots} image(s).`,
       });
+    } else {
+      setToast(null);
+    }
 
-      const data = await res.json();
-      if (data.success && data.images && data.images.length > 0) {
-        setExtractedImages(data.images);
-        setExtractStatus('success');
-        setExtractMessage(`Successfully retrieved ${data.count} image${data.count === 1 ? '' : 's'}.`);
-      } else {
-        setExtractStatus('error');
-        setExtractMessage(data.error || 'Could not fetch images from folder.');
-      }
-    } catch (err) {
-      setExtractStatus('error');
-      setExtractMessage('Network error while connecting to Google Drive API.');
-    } finally {
-      setIsExtracting(false);
+    const newStagedItems: StagedImageItem[] = filesToAdd.map((file, idx) => ({
+      id: `${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 7)}`,
+      file,
+      previewUrl: URL.createObjectURL(file),
+      name: file.name,
+      size: file.size,
+    }));
+
+    setStagedImages((prev) => [...prev, ...newStagedItems]);
+    setUploadStatus('staged');
+    setUploadedImageUrls([]);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(e.target.files);
+      e.target.value = '';
     }
   };
 
-  // Form Submit Handler
+  // Remove Individual Thumbnail
+  const handleRemoveThumbnail = (id: string) => {
+    setStagedImages((prev) => {
+      const target = prev.find((item) => item.id === id);
+      if (target && target.previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(target.previewUrl);
+      }
+      const updated = prev.filter((item) => item.id !== id);
+      if (updated.length === 0) {
+        setUploadStatus('idle');
+        setUploadedImageUrls([]);
+      } else if (uploadStatus === 'uploaded') {
+        setUploadStatus('staged');
+        setUploadedImageUrls([]);
+      }
+      return updated;
+    });
+  };
+
+  // Upload Staged Images to Google Drive Storage API
+  const handleUploadImages = async (): Promise<string[]> => {
+    if (stagedImages.length === 0) {
+      setToast({ type: 'error', message: 'Please add images before uploading.' });
+      return [];
+    }
+
+    if (!category) {
+      setToast({ type: 'error', message: 'Please select a Domain / Wing before uploading images to Google Drive.' });
+      return [];
+    }
+
+    if (uploadStatus === 'uploaded' && uploadedImageUrls.length === stagedImages.length) {
+      return uploadedImageUrls;
+    }
+
+    setIsUploadingImages(true);
+    setUploadStatus('uploading');
+    setToast(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('domain', category);
+      stagedImages.forEach((item) => {
+        formData.append('images', item.file);
+      });
+
+      const res = await fetch('/api/events/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success && Array.isArray(data.urls)) {
+        setUploadedImageUrls(data.urls);
+        setUploadStatus('uploaded');
+        setToast({
+          type: 'success',
+          message: `Successfully uploaded ${data.urls.length} image(s) to Google Drive folder!`,
+        });
+        return data.urls;
+      } else {
+        setUploadStatus('error');
+        setToast({
+          type: 'error',
+          message: data.error || 'Failed to upload images to Google Drive. Please try again.',
+        });
+        return [];
+      }
+    } catch (err) {
+      console.error('[AdminEventUploader] Drive upload error:', err);
+      setUploadStatus('error');
+      setToast({ type: 'error', message: 'Network error while uploading images to Google Drive.' });
+      return [];
+    } finally {
+      setIsUploadingImages(false);
+    }
+  };
+
+  // Drag and Drop
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
+  };
+
+  // Clear / Reset Form
+  const handleReset = () => {
+    setTitle('');
+    setEventDate('');
+    setCategory('');
+    setDescription('');
+    stagedImages.forEach((item) => {
+      if (item.previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(item.previewUrl);
+      }
+    });
+    setStagedImages([]);
+    setUploadedImageUrls([]);
+    setUploadStatus('idle');
+    setToast(null);
+  };
+
+  // Form Submit Handler ("Add Event")
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
-      setToast({ type: 'error', message: 'Please provide an Event Title.' });
+      setToast({ type: 'error', message: 'Please enter event title.' });
+      return;
+    }
+
+    if (!eventDate) {
+      setToast({ type: 'error', message: 'Please select an event date.' });
+      return;
+    }
+
+    if (!category) {
+      setToast({ type: 'error', message: 'Please select a Domain / Wing from the dropdown.' });
       return;
     }
 
     if (!description.trim()) {
-      setToast({ type: 'error', message: 'Please provide an Event Description.' });
+      setToast({ type: 'error', message: 'Please enter an event description.' });
       return;
     }
 
@@ -165,29 +336,36 @@ export default function AdminEventUploader({
       return;
     }
 
-    if (!folderUrl.trim() || !extractedFolderId) {
-      setToast({
-        type: 'error',
-        message: 'Please provide a valid Google Drive folder link.',
-      });
-      return;
-    }
-
     setIsSubmitting(true);
     setToast(null);
 
+    // Auto-upload staged images if not yet uploaded
+    let finalImageUrls = uploadedImageUrls;
+    if (stagedImages.length > 0 && (uploadStatus !== 'uploaded' || finalImageUrls.length === 0)) {
+      finalImageUrls = await handleUploadImages();
+      if (finalImageUrls.length === 0 && stagedImages.length > 0) {
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+    const domainOption = DOMAIN_OPTIONS.find((d) => d.id === category);
+    const domainName = domainOption ? domainOption.label : category;
+
     const payload = {
       title: title.trim(),
-      wingId: selectedWingId === 'custom' ? customWingName.toLowerCase().replace(/\s+/g, '-') : selectedWingId,
-      wingName: selectedWingId === 'custom' ? customWingName : activeWing?.name || selectedWingId,
-      description: description.trim(),
-      folderUrl: folderUrl.trim(),
-      folderId: extractedFolderId,
-      images: extractedImages,
-      coverImage: extractedImages[0],
+      date: eventDate,
       eventDate,
+      domain: category,
+      wingId: category,
+      wingName: domainName,
+      description: description.trim(),
+      images: finalImageUrls,
+      imageUrls: finalImageUrls,
+      coverImage: finalImageUrls[0] || '',
       location,
       authorName,
+      createdAt: new Date().toISOString(),
     };
 
     try {
@@ -202,16 +380,11 @@ export default function AdminEventUploader({
       if (res.ok && result.success) {
         setToast({
           type: 'success',
-          message: `Event "${payload.title}" created & mapped to ${payload.wingName} successfully!`,
+          message: `Event "${payload.title}" published & saved under ${domainName} successfully!`,
         });
 
         // Reset form
-        setTitle('');
-        setDescription('');
-        setFolderUrl('');
-        setExtractedImages([]);
-        setExtractedFolderId(null);
-        setExtractStatus('idle');
+        handleReset();
 
         // Refresh list
         fetchEvents();
@@ -221,7 +394,7 @@ export default function AdminEventUploader({
       } else {
         setToast({
           type: 'error',
-          message: result.error || 'Failed to upload event.',
+          message: result.error || 'Failed to add event.',
         });
       }
     } catch (err) {
@@ -257,11 +430,11 @@ export default function AdminEventUploader({
 
   // Filtered list for manage tab
   const filteredEvents = eventsList.filter((e) => {
-    const matchesWing = manageFilterWing === 'all' || e.wingId.toLowerCase() === manageFilterWing.toLowerCase();
+    const matchesWing = manageFilterWing === 'all' || e.wingId?.toLowerCase() === manageFilterWing.toLowerCase();
     if (!matchesWing) return false;
     if (!manageSearch.trim()) return true;
     const q = manageSearch.toLowerCase().trim();
-    return e.title.toLowerCase().includes(q) || e.wingName.toLowerCase().includes(q);
+    return e.title.toLowerCase().includes(q) || (e.wingName && e.wingName.toLowerCase().includes(q));
   });
 
   return (
@@ -270,13 +443,12 @@ export default function AdminEventUploader({
       <div className={styles.adminHeader}>
         <div className={styles.headerTitleWrapper}>
           <div className={styles.headerBadge}>
-            <Sparkles size={13} />
-            <span>Church Events Engine</span>
+            <FolderSync size={13} />
+            <span>Google Drive Event Portal</span>
           </div>
           <h2 className={styles.adminTitle}>Events & Wing Management Portal</h2>
           <p className={styles.adminSubtitle}>
-            Upload event announcements, associate with ministry wings, enforce 1000-word descriptions,
-            and auto-extract Google Drive photo galleries.
+            Publish church events with Google Drive subfolder integration, 20-image staging, and dynamic wing association.
           </p>
         </div>
 
@@ -308,7 +480,7 @@ export default function AdminEventUploader({
       )}
 
       {/* ========================================================= */}
-      {/* TAB 1: UPLOAD & LIVE ASSOCIATION FORM                    */}
+      {/* TAB 1: UPLOAD & GOOGLE DRIVE STAGING FORM                 */}
       {/* ========================================================= */}
       {activeTab === 'upload' && (
         <div className={styles.formGrid}>
@@ -316,21 +488,21 @@ export default function AdminEventUploader({
           <div className={styles.formCard}>
             <h3 className={styles.formCardTitle}>Upload New Wing Event</h3>
             <p className={styles.formCardDesc}>
-              Fill in the event information and provide the public Google Drive folder URL.
+              Fill in all event fields and attach up to 20 images to upload into Google Drive.
             </p>
 
             <form onSubmit={handleSubmit}>
               {/* Event Title */}
               <div className={styles.inputGroup}>
                 <label className={styles.inputLabel}>
-                  <span>Event Title <span className={styles.requiredStar}>*</span></span>
+                  <span>Title <span className={styles.requiredStar}>*</span></span>
                   <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>
                     {title.length}/100 chars
                   </span>
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. IGNITE: Annual Youth Winter Retreat 2025"
+                  placeholder="Enter event title"
                   value={title}
                   maxLength={100}
                   onChange={(e) => setTitle(e.target.value)}
@@ -339,115 +511,84 @@ export default function AdminEventUploader({
                 />
               </div>
 
-              {/* Target Wing Selector */}
-              <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>
-                  <span>Target Wing Association <span className={styles.requiredStar}>*</span></span>
-                  <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                    Maps directly to Bus Topology
-                  </span>
-                </label>
-                <select
-                  value={selectedWingId}
-                  onChange={(e) => setSelectedWingId(e.target.value)}
-                  className={styles.selectInput}
-                  required
-                >
-                  {wings.map((wing) => (
-                    <option key={wing.id} value={wing.id}>
-                      {wing.name} ({wing.tagline.substring(0, 45)}...)
-                    </option>
-                  ))}
-                  <option value="custom">+ Add Custom Ministry Wing...</option>
-                </select>
-              </div>
-
-              {/* Custom Wing Name input (if chosen) */}
-              {selectedWingId === 'custom' && (
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>
-                    <span>Custom Wing Name <span className={styles.requiredStar}>*</span></span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Senior Citizens Fellowship"
-                    value={customWingName}
-                    onChange={(e) => setCustomWingName(e.target.value)}
-                    className={styles.textInput}
-                    required
-                  />
-                </div>
-              )}
-
-              {/* Date & Location */}
+              {/* Date & Domain Dropdown */}
               <div className={styles.rowInputs}>
                 <div className={styles.inputGroup}>
                   <label className={styles.inputLabel}>
-                    <span>Event Date</span>
+                    <span>Date <span className={styles.requiredStar}>*</span></span>
                   </label>
                   <input
                     type="date"
                     value={eventDate}
                     onChange={(e) => setEventDate(e.target.value)}
                     className={styles.textInput}
+                    required
                   />
                 </div>
 
                 <div className={styles.inputGroup}>
                   <label className={styles.inputLabel}>
-                    <span>Venue / Location</span>
+                    <span>Domain / Wing Dropdown <span className={styles.requiredStar}>*</span></span>
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Main Sanctuary"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className={styles.textInput}
-                  />
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className={styles.selectInput}
+                    required
+                  >
+                    <option value="" disabled>Choose domain / wing</option>
+                    {DOMAIN_OPTIONS.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              {/* Description & Real-time Live Word Counter */}
+              {/* Description */}
               <div className={styles.inputGroup}>
                 <div className={styles.inputLabel}>
-                  <span>Full Event Description <span className={styles.requiredStar}>*</span></span>
+                  <span>Description <span className={styles.requiredStar}>*</span></span>
 
                   {/* Word Counter Indicator */}
-                  <div className={styles.wordCounterWrapper}>
-                    <div
-                      className={`${styles.wordCountPill} ${
-                        isOverWordLimit
-                          ? styles.danger
-                          : currentWordCount > 900
-                          ? styles.warning
-                          : styles.safe
-                      }`}
-                    >
-                      <FileText size={12} />
-                      <span>
-                        {currentWordCount} / {maxWords} words
-                      </span>
-                    </div>
-
-                    <div className={styles.wordProgressBar}>
+                  {description.trim() && (
+                    <div className={styles.wordCounterWrapper}>
                       <div
-                        className={styles.wordProgressFill}
-                        style={{
-                          width: `${wordPercentage}%`,
-                          backgroundColor: isOverWordLimit
-                            ? '#ef4444'
+                        className={`${styles.wordCountPill} ${
+                          isOverWordLimit
+                            ? styles.danger
                             : currentWordCount > 900
-                            ? '#f59e0b'
-                            : '#0ea5e9',
-                        }}
-                      />
+                            ? styles.warning
+                            : styles.safe
+                        }`}
+                      >
+                        <FileText size={12} />
+                        <span>
+                          {currentWordCount} / {maxWords} words
+                        </span>
+                      </div>
+
+                      <div className={styles.wordProgressBar}>
+                        <div
+                          className={styles.wordProgressFill}
+                          style={{
+                            width: `${wordPercentage}%`,
+                            backgroundColor: isOverWordLimit
+                              ? '#ef4444'
+                              : currentWordCount > 900
+                              ? '#f59e0b'
+                              : '#0ea5e9',
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <textarea
-                  rows={7}
-                  placeholder="Write full event details, sermon notes, keynote speakers, highlights, and testimonies (supports up to 1000 words)..."
+                  rows={4}
+                  placeholder="Enter event description..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className={styles.textareaInput}
@@ -459,92 +600,187 @@ export default function AdminEventUploader({
 
                 {isOverWordLimit && (
                   <p style={{ fontSize: '0.82rem', color: '#ef4444', marginTop: '0.25rem', fontWeight: 600 }}>
-                    ⚠️ Description is {currentWordCount - maxWords} words over the 1000-word limit. Please shorten to proceed.
+                    ⚠️ Description is {currentWordCount - maxWords} words over the 1000-word limit. Please shorten.
                   </p>
                 )}
               </div>
 
-              {/* Google Drive Public Folder URL */}
+              {/* Image Upload & Google Drive Staging Section */}
               <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>
-                  <span>Google Drive Public Folder URL <span className={styles.requiredStar}>*</span></span>
+                <div className={styles.inputLabel}>
+                  <span>Google Drive Image Staging <span style={{ fontWeight: 'normal', color: '#64748b', fontSize: '0.8rem' }}>(Max 20 Images)</span></span>
                   <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                    Auto-extracts photo gallery
+                    {stagedImages.length} / 20 Selected
                   </span>
-                </label>
+                </div>
 
-                <div className={styles.driveInputWrapper}>
+                <div className={styles.imageUploadSection}>
+                  {/* Hidden File Input */}
                   <input
-                    type="url"
-                    placeholder="https://drive.google.com/drive/folders/1ABC_xyz-12345?usp=sharing"
-                    value={folderUrl}
-                    onChange={(e) => handleDriveUrlChange(e.target.value)}
-                    className={styles.textInput}
-                    style={{ paddingRight: '9rem' }}
-                    required
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileInputChange}
+                    style={{ display: 'none' }}
                   />
 
-                  {extractStatus !== 'idle' && (
-                    <div
-                      className={`${styles.driveStatusBadge} ${styles[extractStatus]}`}
-                    >
-                      {extractStatus === 'loading' && <RefreshCw size={12} className="animate-spin" />}
-                      {extractStatus === 'success' && <CheckCircle size={12} />}
-                      {extractStatus === 'error' && <AlertCircle size={12} />}
-                      <span>
-                        {extractStatus === 'loading'
-                          ? 'Parsing...'
-                          : extractStatus === 'success'
-                          ? `${extractedImages.length} Photos`
-                          : 'Invalid URL'}
-                      </span>
+                  {/* Dropzone Trigger */}
+                  <div
+                    className={`${styles.dropzone} ${isDragOver ? styles.dragOver : ''}`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className={styles.dropzoneIconWrapper}>
+                      <UploadCloud size={28} />
                     </div>
+                    <div className={styles.dropzoneTitle}>
+                      {stagedImages.length === 0 ? 'Click to select or drag & drop images here' : 'Add more images'}
+                    </div>
+                    <div className={styles.dropzoneSub}>
+                      PNG, JPG, JPEG, WEBP, GIF (Max 20 photos total)
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.dropzoneBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
+                    >
+                      <PlusCircle size={15} />
+                      <span>Add Images</span>
+                    </button>
+                  </div>
+
+                  {/* Staged Images Header & Controls */}
+                  {stagedImages.length > 0 && (
+                    <>
+                      <div className={styles.stagedHeaderRow}>
+                        <div className={styles.stagedCountInfo}>
+                          <Images size={18} color="#0284c7" />
+                          <span>Staged Images ({stagedImages.length})</span>
+
+                          {/* Visual Status Badges */}
+                          {uploadStatus === 'staged' && (
+                            <span className={`${styles.uploadStatusBadge} ${styles.staged}`}>
+                              <Clock size={12} />
+                              <span>Ready to upload</span>
+                            </span>
+                          )}
+
+                          {uploadStatus === 'uploading' && (
+                            <span className={`${styles.uploadStatusBadge} ${styles.uploading}`}>
+                              <RefreshCw size={12} className="animate-spin" />
+                              <span>Uploading to Google Drive...</span>
+                            </span>
+                          )}
+
+                          {uploadStatus === 'uploaded' && (
+                            <span className={`${styles.uploadStatusBadge} ${styles.uploaded}`}>
+                              <CheckCircle size={12} />
+                              <span>Uploaded to Drive ✓</span>
+                            </span>
+                          )}
+
+                          {uploadStatus === 'error' && (
+                            <span className={`${styles.uploadStatusBadge} ${styles.error}`}>
+                              <AlertCircle size={12} />
+                              <span>Upload Failed</span>
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Upload Images Action Button */}
+                        <button
+                          type="button"
+                          onClick={handleUploadImages}
+                          disabled={isUploadingImages || uploadStatus === 'uploaded' || !category}
+                          className={styles.uploadActionBtn}
+                          title={!category ? 'Select a domain above first' : 'Upload to Google Drive'}
+                        >
+                          {isUploadingImages ? (
+                            <>
+                              <RefreshCw size={14} className="animate-spin" />
+                              <span>Uploading...</span>
+                            </>
+                          ) : uploadStatus === 'uploaded' ? (
+                            <>
+                              <CheckCircle size={14} />
+                              <span>Uploaded to Drive</span>
+                            </>
+                          ) : (
+                            <>
+                              <Upload size={14} />
+                              <span>Upload Images ({stagedImages.length})</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Staged Thumbnails Preview Grid */}
+                      <div className={styles.stagedThumbnailsGrid}>
+                        {stagedImages.map((item, idx) => (
+                          <div key={item.id} className={styles.stagedThumbCard}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={item.previewUrl}
+                              alt={item.name}
+                              className={styles.stagedThumbImg}
+                            />
+                            {/* Number Badge */}
+                            <span className={styles.thumbNumberBadge}>#{idx + 1}</span>
+
+                            {/* Remove (❌) Action Button */}
+                            <button
+                              type="button"
+                              className={styles.removeThumbBtn}
+                              onClick={() => handleRemoveThumbnail(item.id)}
+                              title="Remove image"
+                              aria-label={`Remove ${item.name}`}
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   )}
                 </div>
-
-                {extractedFolderId && (
-                  <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.35rem' }}>
-                    Parsed Folder ID: <code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{extractedFolderId}</code>
-                  </p>
-                )}
               </div>
 
-              {/* Extracted Photos Preview Grid */}
-              {extractedImages.length > 0 && (
-                <div className={styles.extractedPhotosCard}>
-                  <div className={styles.extractedHeader}>
-                    <span>Dynamic Photos Extracted ({extractedImages.length})</span>
-                    <span style={{ color: '#15803d', fontSize: '0.78rem' }}>✓ Ready to attach</span>
-                  </div>
-                  <div className={styles.extractedGrid}>
-                    {extractedImages.slice(0, 8).map((imgUrl, i) => (
-                      <div key={i} className={styles.previewThumb}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={imgUrl} alt={`Extracted ${i + 1}`} className={styles.previewImg} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || isOverWordLimit || !title.trim() || !eventDate || !category || !description.trim()}
+                  className={styles.submitBtn}
+                  style={{ margin: 0, flex: 2, minWidth: '200px' }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw size={18} className="animate-spin" />
+                      <span>Publishing Event...</span>
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircle size={18} />
+                      <span>Add Event</span>
+                    </>
+                  )}
+                </button>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting || isOverWordLimit || !title.trim() || !description.trim()}
-                className={styles.submitBtn}
-              >
-                {isSubmitting ? (
-                  <>
-                    <RefreshCw size={18} className="animate-spin" />
-                    <span>Publishing & Mapping to Wing...</span>
-                  </>
-                ) : (
-                  <>
-                    <Upload size={18} />
-                    <span>Publish Event to {activeWing?.name || 'Wing'}</span>
-                  </>
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className={styles.resetBtn}
+                  style={{ flex: 1, minWidth: '120px' }}
+                >
+                  Clear Form
+                </button>
+              </div>
             </form>
           </div>
 
@@ -552,7 +788,7 @@ export default function AdminEventUploader({
           <div className={styles.previewColumn}>
             <div className={styles.previewStickyCard}>
               <div className={styles.previewHeaderTag}>
-                <span className={styles.previewBadge}>Live Wing Card Preview</span>
+                <span className={styles.previewBadge}>Live Domain Card Preview</span>
                 <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
                   Target: <strong>{activeWing?.name}</strong>
                 </span>
@@ -567,6 +803,48 @@ export default function AdminEventUploader({
                   background: '#ffffff',
                 }}
               >
+                {/* Cover Image Preview if images exist */}
+                {stagedImages.length > 0 && (
+                  <div
+                    style={{
+                      position: 'relative',
+                      width: '100%',
+                      height: '180px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      marginBottom: '1rem',
+                      background: '#f1f5f9',
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={stagedImages[0].previewUrl}
+                      alt="Cover Preview"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '8px',
+                        right: '8px',
+                        background: 'rgba(15, 23, 42, 0.75)',
+                        color: '#ffffff',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        padding: '3px 8px',
+                        borderRadius: '20px',
+                        backdropFilter: 'blur(4px)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      <ImageIcon size={12} />
+                      <span>📸 {stagedImages.length} Photo{stagedImages.length === 1 ? '' : 's'}</span>
+                    </div>
+                  </div>
+                )}
+
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
                   <span
                     style={{
@@ -583,7 +861,7 @@ export default function AdminEventUploader({
 
                   <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '3px' }}>
                     <Calendar size={11} />
-                    {eventDate}
+                    {eventDate || 'YYYY-MM-DD'}
                   </span>
                 </div>
 
@@ -610,16 +888,16 @@ export default function AdminEventUploader({
                 <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '0.75rem' }}>
                   <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.5rem' }}>
                     <ImageIcon size={12} color={activeWing?.accentColor} />
-                    Drive Gallery ({extractedImages.length > 0 ? extractedImages.length : 0} Images)
+                    Google Drive Photos ({stagedImages.length} Staged)
                   </span>
 
-                  {extractedImages.length > 0 ? (
+                  {stagedImages.length > 0 ? (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px' }}>
-                      {extractedImages.slice(0, 4).map((url, i) => (
+                      {stagedImages.slice(0, 4).map((item, i) => (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           key={i}
-                          src={url}
+                          src={item.previewUrl}
                           alt="Preview"
                           style={{ width: '100%', height: '50px', objectFit: 'cover', borderRadius: '6px' }}
                         />
@@ -637,7 +915,7 @@ export default function AdminEventUploader({
                         color: '#94a3b8',
                       }}
                     >
-                      Paste a Google Drive folder link to preview parsed photos
+                      Add images to stage Google Drive upload
                     </div>
                   )}
                 </div>
@@ -672,115 +950,143 @@ export default function AdminEventUploader({
                 value={manageFilterWing}
                 onChange={(e) => setManageFilterWing(e.target.value)}
                 className={styles.selectInput}
-                style={{ width: '180px', padding: '0.45rem 0.75rem' }}
+                style={{ width: '200px', padding: '0.45rem 0.75rem' }}
               >
-                <option value="all">All Wings ({eventsList.length})</option>
-                {wings.map((w) => (
-                  <option key={w.id} value={w.id}>
-                    {w.name}
+                <option value="all">All Domains ({eventsList.length})</option>
+                {DOMAIN_OPTIONS.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.label}
                   </option>
                 ))}
               </select>
             </div>
 
             <button
-              onClick={() => setActiveTab('upload')}
-              className="btn-primary"
+              onClick={fetchEvents}
+              disabled={isLoadingEvents}
               style={{
-                fontSize: '0.85rem',
-                padding: '0.5rem 1.25rem',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.4rem',
-                borderRadius: '30px',
-                textTransform: 'none',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: '#475569',
+                cursor: 'pointer',
               }}
             >
-              <PlusCircle size={15} />
-              <span>New Event</span>
+              <RefreshCw size={14} className={isLoadingEvents ? 'animate-spin' : ''} />
+              <span>Refresh</span>
             </button>
           </div>
 
-          {/* Table */}
+          {/* Table Content */}
           {isLoadingEvents ? (
-            <div style={{ textAlign: 'center', padding: '3rem' }}>
-              <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto', color: '#800000' }} />
-              <p style={{ marginTop: '0.75rem', color: '#64748b' }}>Loading uploaded events...</p>
+            <div style={{ textAlign: 'center', padding: '4rem' }}>
+              <RefreshCw size={32} className="animate-spin" color="#800000" style={{ margin: '0 auto' }} />
+              <p style={{ marginTop: '1rem', color: '#64748b' }}>Loading existing events...</p>
             </div>
           ) : filteredEvents.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-              <FolderOpen size={40} style={{ margin: '0 auto' }} />
-              <p style={{ marginTop: '0.5rem', fontSize: '0.95rem' }}>No events found matching your criteria.</p>
+            <div style={{ textAlign: 'center', padding: '4rem', color: '#94a3b8' }}>
+              <FileText size={40} style={{ margin: '0 auto 0.5rem auto' }} />
+              <p>No events found matching your criteria.</p>
             </div>
           ) : (
-            <table className={styles.eventsTable}>
-              <thead>
-                <tr>
-                  <th>Event Title</th>
-                  <th>Wing</th>
-                  <th>Date</th>
-                  <th>Photos</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEvents.map((evt) => (
-                  <tr key={evt.id}>
-                    <td>
-                      <strong>{evt.title}</strong>
-                      <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '2px' }}>
-                        {evt.location || 'Church Campus'}
-                      </div>
-                    </td>
-                    <td>
-                      <span
-                        style={{
-                          fontSize: '0.78rem',
-                          fontWeight: 700,
-                          padding: '2px 8px',
-                          borderRadius: '12px',
-                          background: 'rgba(128,0,0,0.08)',
-                          color: '#800000',
-                        }}
-                      >
-                        {evt.wingName}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                      {evt.eventDate || evt.createdAt?.split('T')[0]}
-                    </td>
-                    <td>
-                      <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <ImageIcon size={13} color="#2563eb" />
-                        {evt.images?.length || 0} Photos
-                      </span>
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <a
-                          href={`/events/${evt.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.tableActionBtn}
-                          title="View Event Page"
+            <div className={styles.tableWrapper}>
+              <table className={styles.eventsTable}>
+                <thead>
+                  <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Domain</th>
+                    <th>Event Date</th>
+                    <th>Photos</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEvents.map((evt) => (
+                    <tr key={evt.id}>
+                      <td style={{ width: '60px' }}>
+                        {evt.coverImage || (evt.images && evt.images[0]) ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={evt.coverImage || evt.images[0]}
+                            alt=""
+                            style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px' }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: '48px',
+                              height: '48px',
+                              background: '#f1f5f9',
+                              borderRadius: '8px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <ImageIcon size={18} color="#94a3b8" />
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 700, color: '#0f172a' }}>{evt.title}</div>
+                        <div style={{ fontSize: '0.8rem', color: '#64748b', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {evt.description}
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          style={{
+                            fontSize: '0.78rem',
+                            fontWeight: 700,
+                            padding: '3px 9px',
+                            borderRadius: '20px',
+                            background: 'rgba(128,0,0,0.08)',
+                            color: '#800000',
+                          }}
                         >
-                          <Eye size={13} />
-                          <span>View Page</span>
-                        </a>
+                          {evt.wingName}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: '0.85rem', color: '#475569' }}>
+                        {evt.eventDate || 'N/A'}
+                      </td>
+                      <td>
+                        <span
+                          style={{
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            color: '#0284c7',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                          }}
+                        >
+                          <ImageIcon size={13} />
+                          {evt.images?.length || 0}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
                         <button
                           onClick={() => handleDeleteEvent(evt.id, evt.title)}
-                          className={`${styles.tableActionBtn} ${styles.delete}`}
-                          title="Delete this event"
+                          className={styles.deleteActionBtn}
+                          title="Delete event"
+                          aria-label={`Delete ${evt.title}`}
                         >
-                          <Trash2 size={13} />
-                          <span>Delete</span>
+                          <Trash2 size={16} />
                         </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

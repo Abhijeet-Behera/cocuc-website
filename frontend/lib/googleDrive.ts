@@ -54,7 +54,7 @@ export function buildThumbnailUrl(fileId: string, width = 400): string {
  * 20 High-Resolution Distinct Ministry Photos per Wing
  */
 export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
-  'youth-wing': [
+  'youth-fellowship': [
     'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
@@ -76,7 +76,7 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80'
   ],
-  'cultural-wing': [
+  'general-church': [
     'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80',
@@ -98,7 +98,7 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1518173946687-a4c8a383392e?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&w=1200&q=80'
   ],
-  'sports-wing': [
+  'ce-union': [
     'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=1200&q=80',
@@ -120,7 +120,7 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80'
   ],
-  'technical-wing': [
+  'sunday-school': [
     'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80',
@@ -142,7 +142,7 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1526976668912-1a811878dd37?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=80'
   ],
-  'women-wing': [
+  'womens-fellowship': [
     'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80',
@@ -164,7 +164,7 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80'
   ],
-  'sunday-school-wing': [
+  'elders-fellowship': [
     'https://images.unsplash.com/photo-1485546246426-74dc88dec4d9?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
@@ -260,7 +260,7 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
 export async function fetchGoogleDriveImages(
   folderUrlOrId: string,
   apiKey?: string,
-  wingHint = 'youth-wing'
+  wingHint = 'general-church'
 ): Promise<FetchDriveImagesResponse> {
   const folderId = extractFolderId(folderUrlOrId);
 

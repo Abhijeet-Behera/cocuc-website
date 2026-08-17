@@ -41,7 +41,7 @@ function MapController({ activeChurchId, churches }) {
 }
 
 export default function MapComponent({ churches = [], activeChurchId, onMarkerClick, onClosePopup }) {
-  const odishaCenter = [20.8, 85.3]; // Adjusted center for a better fit of Odisha
+  const defaultCenter = [20.26, 85.79]; // Centered around Bhubaneswar for satellite churches
   const [geoData, setGeoData] = useState(null);
   const markerRefs = useRef({});
 
@@ -147,8 +147,8 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
     <div className={styles.mapContainer}>
       {geoData ? (
         <MapContainer 
-          center={[20.8, 85.3]} 
-          zoom={7.6} 
+          center={[20.26, 85.79]} 
+          zoom={11} 
           scrollWheelZoom={true} 
           style={{ height: '100%', width: '100%', zIndex: 1, backgroundColor: '#f8f9fa' }}
           minZoom={6}

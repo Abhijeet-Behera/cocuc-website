@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
         <h1 className="section-title" style={{ marginBottom: '2rem', textAlign: 'left' }}>Privacy Policy</h1>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', opacity: 0.9 }}>
-          <p><strong>Last Updated: June 2026</strong></p>
+          <p><strong>Last Updated: July, 2026</strong></p>
           
           <p>
             Welcome to the Church of Christ (Union Church) website. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights.

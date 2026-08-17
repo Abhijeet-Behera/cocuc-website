@@ -378,7 +378,7 @@ export default function SecretaryPortal() {
     e.preventDefault()
 
     if (!speakingSection) return showToast('error', 'Please select a schedule subsection.')
-    if (!speakingFile) return showToast('error', 'Please select one fixed-format text-based PDF to upload.')
+    if (!speakingFile) return showToast('error', 'Please select a PDF to upload.')
 
     if (speakingFile.type !== 'application/pdf' && !speakingFile.name.toLowerCase().endsWith('.pdf')) {
       return showToast('error', 'Only PDF files are allowed for speaking schedules.')
@@ -406,7 +406,7 @@ export default function SecretaryPortal() {
       }
 
       if (!uploadRes.ok) {
-        throw new Error(uploadData.error || uploadData.message || 'Failed to upload and parse schedule PDF.')
+        throw new Error(uploadData.error || uploadData.message || 'Failed to upload schedule PDF.')
       }
 
       const uploadId = uploadData.upload_id || uploadData.id || uploadData.upload?.id
@@ -431,11 +431,11 @@ export default function SecretaryPortal() {
             publishData = {}
           }
 
-          throw new Error(publishData.error || publishData.message || 'PDF parsed, but publishing failed.')
+          throw new Error(publishData.error || publishData.message || 'PDF uploaded, but publishing failed.')
         }
       }
 
-      showToast('success', 'PDF schedule uploaded, parsed, and published successfully!')
+      showToast('success', 'PDF schedule uploaded and published successfully!')
 
       setSpeakingFile(null)
       setParsedPreview(null)
@@ -544,7 +544,7 @@ export default function SecretaryPortal() {
   }
 
   const handleCancelDraft = async (uploadId) => {
-    if (!confirm("Are you sure you want to discard this draft? This will delete the parsed items permanently.")) return
+    if (!confirm("Are you sure you want to discard this draft? This will delete the uploaded items permanently.")) return
 
     try {
       const res = await fetch(`${API_URL}/speaking_schedules.php?upload_id=${uploadId}`, {
@@ -642,7 +642,7 @@ export default function SecretaryPortal() {
     }
   }
 
-  const parseScheduleData = (value) => {
+  const parseData = (value) => {
     if (!value) return {}
     if (typeof value === 'object') return value
 
@@ -894,7 +894,7 @@ export default function SecretaryPortal() {
             <form onSubmit={handleSpeakingUpload} style={{ position: 'relative', zIndex: 1 }}>
               <h2 style={{ fontSize: '1.8rem', color: '#111', fontWeight: '800', marginBottom: '0.6rem' }}>Upload Speaking Schedule PDF</h2>
               <p style={{ color: '#666', marginBottom: '2rem', lineHeight: 1.6 }}>
-                Select the schedule subsection and attach one fixed-format text-based PDF. The PDF will be read, parsed, and published on the Speaking Arrangements page.
+                Select the schedule subsection and attach a PDF. The PDF will be uploaded and published on the Speaking Arrangements page.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -1044,7 +1044,7 @@ export default function SecretaryPortal() {
         {activeTab === 'speaking' && parsedPreview && (
           <div id="preview-section" style={{ background: '#fff', borderRadius: '16px', border: '1px solid #f0f0f0', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', overflow: 'hidden', marginTop: '2rem' }}>
             <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid #f5f5f5' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#111', margin: '0 0 0.35rem 0', fontWeight: 800 }}>Parsed PDF Preview</h3>
+              <h3 style={{ fontSize: '1.25rem', color: '#111', margin: '0 0 0.35rem 0', fontWeight: 800 }}>Uploaded PDF Preview</h3>
               <p style={{ color: '#777', margin: 0, fontSize: '0.9rem' }}>
                 {parsedPreview.title || 'Schedule PDF'}
                 {parsedPreview.period_start && parsedPreview.period_end ? ` | ${displayDate(parsedPreview.period_start)} - ${displayDate(parsedPreview.period_end)}` : ''}
@@ -1062,7 +1062,7 @@ export default function SecretaryPortal() {
                   </thead>
                   <tbody>
                     {parsedPreview.preview_items.map((item, index) => {
-                      const data = parseScheduleData(item.data_json)
+                      const data = parseData(item.data_json)
 
                       return (
                         <tr key={item.id || index}>
@@ -1089,7 +1089,7 @@ export default function SecretaryPortal() {
                   </tbody>
                 </table>
               ) : (
-                <p style={{ color: '#aaa', textAlign: 'center', padding: '2rem' }}>No parsed rows found.</p>
+                <p style={{ color: '#aaa', textAlign: 'center', padding: '2rem' }}>No rows found.</p>
               )}
 
               <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', justifyContent: 'flex-end', marginTop: '1.5rem' }}>

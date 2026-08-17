@@ -103,7 +103,7 @@ export default function Navbar() {
     { name: 'Leadership Team & Support Staff', href: '/about/leadership' },
     { name: 'Secretary’s Corner', href: '/about/secretary' },
     { name: 'Pastor’s Note', href: '/pastors-note' },
-    { name: 'Celebrations', href: '#' },
+    // { name: 'Celebrations', href: '#' },
     { name: 'Service Timing', href: '/about/service-times' },
     { name: 'Contact Us', href: '/contact-us' },
   ]

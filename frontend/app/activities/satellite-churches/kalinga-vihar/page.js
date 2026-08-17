@@ -98,7 +98,7 @@ export default function KalingaViharPage() {
                 fontWeight: 500,
               }}
             >
-              ⚠️ <strong>Kindly Note:</strong> On Christmas and Good Friday, there is no Service in the Kalinga Vihar Worship center as the Special Service is held only in the main Church of Christ (Union Church).
+              <strong>Kindly Note:</strong> On Christmas and Good Friday, there is no Service in the Kalinga Vihar Worship center as the Special Service is held only in the main Church of Christ (Union Church).
             </div>
           </div>
 

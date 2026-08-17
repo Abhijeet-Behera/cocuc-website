@@ -44,10 +44,14 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export default function BusTopologyView({
   wings = DEFAULT_WINGS,
   events = [],
+  onSelectWing,
+  selectedWingId,
 }: BusTopologyViewProps) {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<'topology' | 'grid'>('topology');
-  const [activeWingId, setActiveWingId] = useState<string>(wings[0]?.id || 'youth-wing');
+  const [activeWingId, setActiveWingId] = useState<string>(
+    selectedWingId || wings[0]?.id || 'general-church'
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Smooth Pan Controls
@@ -68,14 +72,19 @@ export default function BusTopologyView({
     }
   };
 
-  // Direct navigation to dedicated Wing Page (No popup modal)
+  // Wing click handler (triggers custom callback if provided, else navigates to wing page)
   const handleWingClick = (wing: Wing) => {
-    router.push(`/events/wing/${wing.slug || wing.id}`);
+    setActiveWingId(wing.id);
+    if (onSelectWing) {
+      onSelectWing(wing);
+    } else {
+      router.push(`/events/wing/${wing.slug || wing.id}`);
+    }
   };
 
   // Get events mapped to a specific wing
   const getWingEvents = (wingId: string) => {
-    return events.filter((e) => e.wingId.toLowerCase() === wingId.toLowerCase());
+    return events.filter((e) => e.wingId?.toLowerCase() === wingId.toLowerCase());
   };
 
   return (

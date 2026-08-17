@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "jsx": "preserve",
     "paths": {
       "@/*": ["./*"]
     }
-  }
+  },
+  "exclude": ["node_modules", ".next"]
 }

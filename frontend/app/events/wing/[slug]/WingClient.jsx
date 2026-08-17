@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { Wing, EventItem, DEFAULT_WINGS } from '../../../../types/events';
 import { INITIAL_EVENTS } from '../../../../lib/eventsStore';
+import WingEventCard from '../../../../components/events/WingEventCard';
 import styles from './WingPage.module.css';
 
 const ICON_MAP = {
@@ -71,10 +72,18 @@ export default function WingClient({ slug }) {
     loadEvents();
   }, []);
 
-  // Filter events belonging to this wing
-  const wingEvents = allEvents.filter(
-    (e) => e.wingId.toLowerCase() === wing.id.toLowerCase() || e.wingId.toLowerCase() === wing.slug.toLowerCase()
-  );
+  // Filter events belonging to this wing / domain
+  const wingEvents = allEvents.filter((e) => {
+    const eWing = (e.wingId || '').toLowerCase();
+    const wId = wing.id.toLowerCase();
+    const wSlug = (wing.slug || '').toLowerCase();
+    return (
+      eWing === wId ||
+      eWing === wSlug ||
+      (wId === 'womens-fellowship' && eWing === 'mahila-samiti') ||
+      (wId === 'mahila-samiti' && eWing === 'womens-fellowship')
+    );
+  });
 
   // Automatically select the first event card on initial load
   useEffect(() => {
@@ -197,66 +206,23 @@ export default function WingClient({ slug }) {
                 <div>
                   <h2 className={styles.sectionTitle}>Programmes & Event Cards</h2>
                   <p className={styles.sectionSubtitle}>
-                    Click any title card below to reveal the full programme description and Google Drive photo gallery.
+                    Click any event card below to reveal the full event details and high-resolution photo gallery.
                   </p>
                 </div>
               </div>
 
-              {/* Grid of Title Cards */}
+              {/* Dynamic Grid of Event Cards */}
               <div className={styles.titleCardsGrid}>
-                {wingEvents.map((event) => {
-                  const isSelected = selectedEventId === event.id;
-
-                  return (
-                    <motion.div
-                      key={event.id}
-                      className={`${styles.titleCard} ${isSelected ? styles.selectedCard : ''}`}
-                      onClick={() => handleCardClick(event.id)}
-                      style={{ '--card-accent': wing.accentColor }}
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                    >
-                      {/* Active Checkmark Indicator */}
-                      {isSelected && (
-                        <div className={styles.activeIndicatorDot}>
-                          <CheckCircle2 size={12} />
-                          <span>Active View</span>
-                        </div>
-                      )}
-
-                      {/* Card Content */}
-                      <div>
-                        {/* Meta strip */}
-                        <div className={styles.cardMetaRow}>
-                          {event.eventDate && (
-                            <span className={styles.cardMetaTag}>
-                              <Calendar size={12} />
-                              <span>{new Date(event.eventDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                            </span>
-                          )}
-
-                          {event.location && (
-                            <span className={styles.cardMetaTag}>
-                              <MapPin size={12} />
-                              <span>{event.location}</span>
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Exact Event Title Name from Upload */}
-                        <h3 className={styles.cardEventTitle}>
-                          {event.title}
-                        </h3>
-                      </div>
-
-                      {/* Card Action Footer */}
-                      <div className={styles.cardActionFooter}>
-                        <span>{isSelected ? 'Viewing Content Below ↓' : 'Click to View Content & Photos →'}</span>
-                        <ArrowRight size={15} />
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                {wingEvents.map((event) => (
+                  <WingEventCard
+                    key={event.id}
+                    event={event}
+                    wing={wing}
+                    isSelected={selectedEventId === event.id}
+                    onClick={() => handleCardClick(event.id)}
+                    accentColor={wing.accentColor}
+                  />
+                ))}
               </div>
             </section>
 

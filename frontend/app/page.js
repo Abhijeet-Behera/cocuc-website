@@ -11,7 +11,8 @@ import ChatBotWidget from '@/components/ChatBotWidget'
 import SecretaryAnnouncements from '@/components/SecretaryAnnouncements'
 import StemScrollNav from '@/components/StemScrollNav'
 import DonationSection from '@/components/DonationSection'
-import YouthRetreatAd from '@/components/YouthRetreatAd'
+// import YouthRetreatAd from '@/components/YouthRetreatAd'
+// import AazadiQuizAd from '@/components/AazadiQuizAd'
 import styles from './page.module.css'
 
 export const metadata = {
@@ -23,13 +24,15 @@ export const metadata = {
 export default function Home() {
   return (
     <div>
-      <YouthRetreatAd />
+      {/* <YouthRetreatAd /> */}
       <div id="hero">
         <HeroSection />
       </div>
 
       <div style={{ position: 'relative' }}>
         <StemScrollNav />
+
+        {/* <AazadiQuizAd /> */}
 
         {/* Secretary Announcements Proxy */}
         <div id="church-updates">

@@ -241,6 +241,21 @@ export default function AdminPortal() {
             <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: '700' }}>Secretary Interface</h3>
             <p style={{ opacity: 0.9, fontSize: '0.95rem' }}>Manage notices, special programs, and arrangements.</p>
           </div>
+          {/* <div style={{ flex: 1, minWidth: '250px', background: 'var(--color-primary)', padding: '2rem', borderRadius: '20px', color: '#fff', transition: 'all 0.3s ease', boxShadow: '0 10px 30px rgba(139, 0, 0, 0.2)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 0, 0, 0.4)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 0, 0, 0.2)'; }}>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: '700' }}>Aazadi Quiz</h3>
+            <p style={{ opacity: 0.9, fontSize: '0.95rem', marginBottom: '1.25rem' }}>Welcome host! Here you can control the quiz being the game admin. Cheers!</p>
+            <a
+              href="https://churchquiz-player.onrender.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              style={{ display: 'inline-block', padding: '0.6rem 1.25rem', background: 'rgba(255,255,255,0.2)', color: '#fff', borderRadius: '10px', fontWeight: '700', fontSize: '0.9rem', textDecoration: 'none', border: '1.5px solid rgba(255,255,255,0.5)', transition: 'all 0.2s ease' }}
+              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.35)'; }}
+              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; }}
+            >
+              Game Link
+            </a>
+          </div> */}
         </div>
       )}
 

@@ -445,13 +445,12 @@
   cursor: pointer;
 
   /*
-   * Hidden in the normal state.
-   * The button stays in the layout to prevent layout movement.
+   * Visible in the normal state, but resting slightly back in 3D space.
    */
-  opacity: 0;
-  pointer-events: none;
+  opacity: 1;
+  pointer-events: auto;
 
-  transform: translate3d(0, 12px, 42px);
+  transform: translate3d(0, 12px, 36px);
 
   transition:
     opacity 0.28s ease,
@@ -807,7 +806,6 @@
   font-size: 1.1rem;
 }
 
-/* --- Program Card within Overlay --- */
 .progCard {
   background: #fff;
   border-radius: 16px;
@@ -818,25 +816,56 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  height: 380px;
-  min-height: 380px;
-  transition:
-    height 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
-    min-height 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
-    transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
-    box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
   align-self: flex-start;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  height: 100%;
 }
 
 .progCard:hover {
-  height: 560px;
-  min-height: 560px;
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-6px) scale(1.02);
   box-shadow:
     0 22px 46px rgba(128, 0, 0, 0.14),
     0 10px 22px rgba(0, 0, 0, 0.06);
   z-index: 5;
+}
+
+.progCardHoverOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 20;
+}
+
+.progCardHoverText {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  background: rgba(128, 0, 0, 0.8);
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  transform: translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.progCard:hover .progCardHoverOverlay {
+  opacity: 1;
+}
+
+.progCard:hover .progCardHoverText {
+  transform: translateY(0);
 }
 
 .progCardImageContainer {
@@ -849,11 +878,6 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: height 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.progCard:hover .progCardImageContainer {
-  height: 155px;
 }
 
 .progCardImage {
@@ -948,52 +972,7 @@
   opacity: 0.85;
 }
 
-.progDetailsExpanded {
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition:
-    opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
-    max-height 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
-    margin-top 0.4s ease,
-    padding-top 0.4s ease;
-  flex-grow: 1;
-}
-
-.progCard:hover .progDetailsExpanded {
-  opacity: 1;
-  max-height: 300px;
-  margin-top: 0.9rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  padding-top: 0.9rem;
-}
-
-.progDetailsContent {
-  font-size: 0.9rem;
-  color: var(--color-text);
-  line-height: 1.6;
-  margin: 0 0 0.85rem 0;
-  overflow-y: auto;
-  max-height: 145px;
-  flex-grow: 1;
-  padding-right: 8px;
-}
-
-/* Custom scrollbar for expanded details */
-.progDetailsContent::-webkit-scrollbar {
-  width: 4px;
-}
-
-.progDetailsContent::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.progDetailsContent::-webkit-scrollbar-thumb {
-  background: rgba(128, 0, 0, 0.22);
-  border-radius: 10px;
-}
+/* Removed .progDetailsExpanded classes as we use a full screen modal instead */
 
 .progUploadDate {
   font-size: 0.74rem;
@@ -1239,6 +1218,40 @@
   text-align: center;
 }
 
+.speakingArrangementsBtn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 12px 27px;
+  border-radius: 999px;
+  background: #990000;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  box-shadow: 0 10px 22px rgba(153, 0, 0, 0.22);
+  transition: all 0.4s cubic-bezier(.03, .98, .52, .99);
+  transform: translate3d(0, 12px, 36px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.churchUpdateCard:hover .speakingArrangementsBtn,
+.churchUpdateCard:focus-within .speakingArrangementsBtn {
+  transform: translate3d(0, 0, 48px);
+}
+
+.speakingArrangementsBtn:hover {
+  background: #7a0000;
+  box-shadow: 0 14px 28px rgba(153, 0, 0, 0.35);
+}
+
 .speakingMotivationCard::after {
   content: 'SPEAKING';
   position: absolute;
@@ -1349,5 +1362,283 @@
   .speakingMotivationButton {
     width: 100%;
     max-width: 240px;
+  }
+}
+/* ============================================
+   Full Screen Detail Modal (Secretary & Updates)
+   ============================================ */
+.detailOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.detailModal {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 90vh;
+}
+
+.detailCloseBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+  color: #555;
+}
+
+.detailCloseBtn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+  color: #000;
+}
+
+.detailPosterColumn {
+  flex: 0 0 45%;
+  background: #2a2a2a;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgba(0,0,0,0.05);
+}
+
+.detailPosterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  inset: 0;
+}
+
+.detailContentColumn {
+  flex: 1;
+  padding: 3rem 3rem 3rem 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.detailTagline {
+  display: inline-block;
+  color: var(--color-primary);
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.detailTitle {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.2;
+  margin: 0 0 1.5rem 0;
+}
+
+.detailInfoGrid {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.detailInfoCard {
+  background: #f8f9fa;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.03);
+  min-width: 140px;
+}
+
+.detailInfoLabel {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
+}
+
+.detailInfoValue {
+  display: block;
+  font-size: 1rem;
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+.detailDescription {
+  color: #444;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  white-space: pre-wrap;
+}
+
+/* ============================================
+   Full Screen PDF Viewer Modal (Scribd-like)
+   ============================================ */
+
+.pdfOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.pdfModal {
+  position: relative;
+  width: 95%;
+  height: 95%;
+  background: #222;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pdfCloseBtn {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.pdfCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.pdfIframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+
+.detailActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.detailBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.detailBtn:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(128, 0, 0, 0.2);
+}
+
+.detailBtnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.detailBtnOutline:hover {
+  background: rgba(128, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .detailOverlay {
+    padding: 1rem;
+  }
+  
+  .detailModal {
+    flex-direction: column;
+    max-height: calc(100vh - 2rem);
+    border-radius: 20px;
+  }
+  
+  .detailPosterColumn {
+    flex: none;
+    height: 200px;
+    border-right: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  
+  .detailContentColumn {
+    padding: 1.5rem;
+  }
+  
+  .detailTitle {
+    font-size: 1.6rem;
+  }
+  
+  .detailActions {
+    flex-direction: column;
   }
 }

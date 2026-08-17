@@ -21,16 +21,38 @@ export default function Preloader() {
   useEffect(() => {
     if (pathname === '/feedback' || pathname === '/feedback/' || hasPreloaded) {
       setVisible(false)
+      if (typeof window !== 'undefined') {
+        window.__preloaderDone = true
+        window.dispatchEvent(new Event('preloader-complete'))
+      }
       return
     }
     hasPreloaded = true
 
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.pointerEvents = 'none'
+
+    const preventScroll = (e) => {
+      e.preventDefault();
+    };
+
+    // Prevent wheel and touch scrolling forcefully (especially for mobile/iOS)
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
     
     const tl = gsap.timeline({
       onComplete: () => {
         document.body.style.overflow = ''
+        document.documentElement.style.overflow = ''
+        document.body.style.pointerEvents = ''
+        window.removeEventListener('wheel', preventScroll);
+        window.removeEventListener('touchmove', preventScroll);
         setVisible(false)
+        if (typeof window !== 'undefined') {
+          window.__preloaderDone = true
+          window.dispatchEvent(new Event('preloader-complete'))
+        }
       }
     })
 
@@ -107,6 +129,10 @@ export default function Preloader() {
 
     return () => {
       document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
+      document.body.style.pointerEvents = ''
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
       tl.kill()
     }
   }, [pathname])

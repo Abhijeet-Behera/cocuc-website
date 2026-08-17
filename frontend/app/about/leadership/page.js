@@ -89,19 +89,19 @@ export default function LeadershipPage() {
                   name: "Rev. Dr. Ayub Chhinchani",
                   role: "Pastor",
                   phone: "9437418423",
-                  image: "/images/pastors-note/ayub-chhinchani.png"
+                  image: "/images/pastors-note/ayub-chhinchani-final.png"
                 },
                 {
                   name: "Rev. Songram Keshari Singh",
                   role: "Pastor",
                   phone: "9437284415",
-                  image: "/images/pastors-note/songram-keshari-singh.png"
+                  image: "/images/pastors-note/songram-singh-final.png"
                 },
                 {
                   name: "Rev. Satish Kumar Pani",
                   role: "Pastor",
                   phone: "9438518776",
-                  image: "/images/pastors-note/satish-kumar-pani.png"
+                  image: "/images/pastors-note/satish-pani-final.png"
                 },
 
               ].map((pastor, index) => (
@@ -363,10 +363,10 @@ export default function LeadershipPage() {
 
             <div className="deacon-grid">
               {[
-                { name: "Mr. Sobhajan Pradhan", role: "Caretaker" },
-                { name: "Mr. Krushna Chandra Digal", role: "Assistant Caretaker" }
+                { name: "Mr. Sobhajan Pradhan", role: "Caretaker", image: "/images/support-staff/SP.png" },
+                { name: "Mr. Raj Digal", role: "Caretaker", image: "/images/support-staff/RD.png" }
               ].map((staff, idx) => {
-                const imageSrc = '/images/deacon-male-placeholder.png';
+                const imageSrc = staff.image || '/images/deacon-male-placeholder.png';
                 return (
                   <div key={idx} className="deacon-card">
                     <div className="deacon-img-container">

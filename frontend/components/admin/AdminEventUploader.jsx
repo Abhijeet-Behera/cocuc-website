@@ -23,24 +23,9 @@ import {
   Images,
   FolderSync
 } from 'lucide-react';
-import { Wing, EventItem, DEFAULT_WINGS } from '../../types/events';
+import { DEFAULT_WINGS } from '../../types/events';
 import { countWords } from '../../lib/googleDrive';
 import styles from './AdminEventUploader.module.css';
-
-interface AdminEventUploaderProps {
-  initialWingId?: string;
-  wings?: Wing[];
-  onEventCreated?: (newEvent: EventItem) => void;
-  onEventDeleted?: (eventId: string) => void;
-}
-
-interface StagedImageItem {
-  id: string;
-  file: File;
-  previewUrl: string;
-  name: string;
-  size: number;
-}
 
 // Exactly 6 Domain / Wing Options
 export const DOMAIN_OPTIONS = [
@@ -57,9 +42,9 @@ export default function AdminEventUploader({
   wings = DEFAULT_WINGS,
   onEventCreated,
   onEventDeleted,
-}: AdminEventUploaderProps) {
+}) {
   // Tabs: 'upload' | 'manage'
-  const [activeTab, setActiveTab] = useState<'upload' | 'manage'>('upload');
+  const [activeTab, setActiveTab] = useState('upload');
 
   // Form State
   const [title, setTitle] = useState('');
@@ -74,22 +59,22 @@ export default function AdminEventUploader({
   const [description, setDescription] = useState('');
 
   // Image Upload & Staging State (Max 20 images)
-  const [stagedImages, setStagedImages] = useState<StagedImageItem[]>([]);
-  const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
-  const [uploadStatus, setUploadStatus] = useState<'idle' | 'staged' | 'uploading' | 'uploaded' | 'error'>('idle');
+  const [stagedImages, setStagedImages] = useState([]);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState('idle');
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef(null);
 
   // Form Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [toast, setToast] = useState(null);
 
   // Events List for Manage Tab
-  const [eventsList, setEventsList] = useState<EventItem[]>([]);
+  const [eventsList, setEventsList] = useState([]);
   const [isLoadingEvents, setIsLoadingEvents] = useState(false);
-  const [manageFilterWing, setManageFilterWing] = useState<string>('all');
-  const [manageSearch, setManageSearch] = useState<string>('');
+  const [manageFilterWing, setManageFilterWing] = useState('all');
+  const [manageSearch, setManageSearch] = useState('');
 
   // Live Word Count
   const currentWordCount = useMemo(() => countWords(description), [description]);
@@ -135,7 +120,7 @@ export default function AdminEventUploader({
   useEffect(() => {
     return () => {
       stagedImages.forEach((item) => {
-        if (item.previewUrl.startsWith('blob:')) {
+        if (item.previewUrl && item.previewUrl.startsWith('blob:')) {
           URL.revokeObjectURL(item.previewUrl);
         }
       });
@@ -143,7 +128,7 @@ export default function AdminEventUploader({
   }, [stagedImages]);
 
   // Handle File Selection (Max 20 Images Validation)
-  const processFiles = (incomingFiles: FileList | File[]) => {
+  const processFiles = (incomingFiles) => {
     const fileArray = Array.from(incomingFiles).filter((f) => f.type.startsWith('image/'));
 
     if (fileArray.length === 0) {
@@ -170,7 +155,7 @@ export default function AdminEventUploader({
       setToast(null);
     }
 
-    const newStagedItems: StagedImageItem[] = filesToAdd.map((file, idx) => ({
+    const newStagedItems = filesToAdd.map((file, idx) => ({
       id: `${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 7)}`,
       file,
       previewUrl: URL.createObjectURL(file),
@@ -183,7 +168,7 @@ export default function AdminEventUploader({
     setUploadedImageUrls([]);
   };
 
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       processFiles(e.target.files);
       e.target.value = '';
@@ -191,10 +176,10 @@ export default function AdminEventUploader({
   };
 
   // Remove Individual Thumbnail
-  const handleRemoveThumbnail = (id: string) => {
+  const handleRemoveThumbnail = (id) => {
     setStagedImages((prev) => {
       const target = prev.find((item) => item.id === id);
-      if (target && target.previewUrl.startsWith('blob:')) {
+      if (target && target.previewUrl && target.previewUrl.startsWith('blob:')) {
         URL.revokeObjectURL(target.previewUrl);
       }
       const updated = prev.filter((item) => item.id !== id);
@@ -210,7 +195,7 @@ export default function AdminEventUploader({
   };
 
   // Upload Staged Images to Google Drive Storage API
-  const handleUploadImages = async (): Promise<string[]> => {
+  const handleUploadImages = async () => {
     if (stagedImages.length === 0) {
       setToast({ type: 'error', message: 'Please add images before uploading.' });
       return [];
@@ -270,7 +255,7 @@ export default function AdminEventUploader({
   };
 
   // Drag and Drop
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragOver(true);
   };
@@ -279,7 +264,7 @@ export default function AdminEventUploader({
     setIsDragOver(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -294,7 +279,7 @@ export default function AdminEventUploader({
     setCategory('');
     setDescription('');
     stagedImages.forEach((item) => {
-      if (item.previewUrl.startsWith('blob:')) {
+      if (item.previewUrl && item.previewUrl.startsWith('blob:')) {
         URL.revokeObjectURL(item.previewUrl);
       }
     });
@@ -305,7 +290,7 @@ export default function AdminEventUploader({
   };
 
   // Form Submit Handler ("Add Event")
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -406,7 +391,7 @@ export default function AdminEventUploader({
   };
 
   // Delete Event Handler
-  const handleDeleteEvent = async (id: string, eventTitle: string) => {
+  const handleDeleteEvent = async (id, eventTitle) => {
     if (!window.confirm(`Are you sure you want to delete event "${eventTitle}"?`)) return;
 
     try {

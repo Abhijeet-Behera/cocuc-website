@@ -1,7 +1,6 @@
-import { EventItem, CreateEventPayload } from '../types/events';
 import { extractFolderId, countWords, SAMPLE_FALLBACK_IMAGES } from './googleDrive';
 
-export const INITIAL_EVENTS: EventItem[] = [
+export const INITIAL_EVENTS = [
   // ── YOUTH FELLOWSHIP EVENTS ──────────────────────────────────────
   {
     id: 'evt-youth-01',
@@ -201,9 +200,9 @@ The sanctuary was filled with an atmosphere of reverent adoration and tears of t
   }
 ];
 
-let globalEventsMemory: EventItem[] = [...INITIAL_EVENTS];
+let globalEventsMemory = [...INITIAL_EVENTS];
 
-export function getAllEvents(wingIdOrDomain?: string, search?: string): EventItem[] {
+export function getAllEvents(wingIdOrDomain, search) {
   let list = [...globalEventsMemory];
 
   if (wingIdOrDomain && wingIdOrDomain !== 'all') {
@@ -260,7 +259,7 @@ export function getAllEvents(wingIdOrDomain?: string, search?: string): EventIte
       (e) =>
         e.title.toLowerCase().includes(q) ||
         e.description.toLowerCase().includes(q) ||
-        e.wingName.toLowerCase().includes(q) ||
+        (e.wingName && e.wingName.toLowerCase().includes(q)) ||
         (e.location && e.location.toLowerCase().includes(q))
     );
   }
@@ -272,7 +271,7 @@ export function getAllEvents(wingIdOrDomain?: string, search?: string): EventIte
   });
 }
 
-export function createEventItem(payload: CreateEventPayload): EventItem {
+export function createEventItem(payload) {
   const folderId = payload.folderId || (payload.folderUrl ? extractFolderId(payload.folderUrl) : '') || '';
   const images =
     payload.images && payload.images.length > 0
@@ -281,7 +280,7 @@ export function createEventItem(payload: CreateEventPayload): EventItem {
 
   const wordCount = countWords(payload.description || '');
 
-  const newEvent: EventItem = {
+  const newEvent = {
     id: `evt-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
     title: (payload.title || '').trim(),
     wingId: payload.wingId,
@@ -303,7 +302,7 @@ export function createEventItem(payload: CreateEventPayload): EventItem {
   return newEvent;
 }
 
-export function deleteEventItem(id: string): boolean {
+export function deleteEventItem(id) {
   const initialLength = globalEventsMemory.length;
   globalEventsMemory = globalEventsMemory.filter((e) => e.id !== id);
   return globalEventsMemory.length < initialLength;

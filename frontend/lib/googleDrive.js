@@ -1,9 +1,13 @@
-import { DriveImageFile, FetchDriveImagesResponse } from '../types/events';
+/**
+ * Google Drive URL Extraction & Photo Fetch Utilities
+ */
 
 /**
  * Extracts Google Drive Folder ID from various URL patterns or raw ID strings.
+ * @param {string} input
+ * @returns {string|null}
  */
-export function extractFolderId(input: string): string | null {
+export function extractFolderId(input) {
   if (!input || typeof input !== 'string') return null;
 
   const trimmed = input.trim();
@@ -37,8 +41,11 @@ export function extractFolderId(input: string): string | null {
 /**
  * Generates direct high-resolution Google UserContent rendering URL.
  * Format: https://lh3.googleusercontent.com/d/{FILE_ID}=w{width}
+ * @param {string} fileId
+ * @param {number} [width=1200]
+ * @returns {string}
  */
-export function buildDirectImageUrl(fileId: string, width = 1200): string {
+export function buildDirectImageUrl(fileId, width = 1200) {
   if (!fileId) return '';
   if (fileId.startsWith('http://') || fileId.startsWith('https://') || fileId.startsWith('/')) {
     return fileId;
@@ -46,14 +53,14 @@ export function buildDirectImageUrl(fileId: string, width = 1200): string {
   return `https://lh3.googleusercontent.com/d/${fileId}=w${width}`;
 }
 
-export function buildThumbnailUrl(fileId: string, width = 400): string {
+export function buildThumbnailUrl(fileId, width = 400) {
   return buildDirectImageUrl(fileId, width);
 }
 
 /**
  * 20 High-Resolution Distinct Ministry Photos per Wing
  */
-export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
+export const SAMPLE_FALLBACK_IMAGES = {
   'youth-fellowship': [
     'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80',
@@ -149,7 +156,7 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=1200&q=80',
@@ -256,12 +263,16 @@ export const SAMPLE_FALLBACK_IMAGES: Record<string, string[]> = {
 
 /**
  * Fetches images from Google Drive folder via Google Drive API v3.
+ * @param {string} folderUrlOrId
+ * @param {string} [apiKey]
+ * @param {string} [wingHint='general-church']
+ * @returns {Promise<{success: boolean, folderId: string, images: string[], files?: any[], count: number, message?: string, error?: string}>}
  */
 export async function fetchGoogleDriveImages(
-  folderUrlOrId: string,
-  apiKey?: string,
+  folderUrlOrId,
+  apiKey,
   wingHint = 'general-church'
-): Promise<FetchDriveImagesResponse> {
+) {
   const folderId = extractFolderId(folderUrlOrId);
 
   if (!folderId) {
@@ -292,7 +303,7 @@ export async function fetchGoogleDriveImages(
 
       if (res.ok) {
         const data = await res.json();
-        const files: DriveImageFile[] = (data.files || []).map((f: { id: string; name: string; mimeType: string; size?: number }) => ({
+        const files = (data.files || []).map((f) => ({
           id: f.id,
           name: f.name,
           mimeType: f.mimeType,
@@ -330,7 +341,12 @@ export async function fetchGoogleDriveImages(
   };
 }
 
-export function countWords(text: string): number {
+/**
+ * Counts words in a string.
+ * @param {string} text
+ * @returns {number}
+ */
+export function countWords(text) {
   if (!text || typeof text !== 'string') return 0;
   const cleaned = text.trim().replace(/\s+/g, ' ');
   if (!cleaned) return 0;

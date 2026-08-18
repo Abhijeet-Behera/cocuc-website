@@ -1,79 +1,8 @@
-export interface Wing {
-  id: string;
-  name: string;
-  slug: string;
-  tagline: string;
-  description: string;
-  icon: string; // Lucide icon name
-  accentColor: string; // Hex or CSS color
-  secondaryColor?: string;
-  gradient: string;
-  bgGlow: string;
-  badge?: string;
-  order: number;
-}
+/**
+ * Church of Christ Union Church - Wing and Event Definitions
+ */
 
-export interface EventItem {
-  id: string;
-  title: string;
-  wingId: string;
-  wingName: string;
-  description: string;
-  wordCount: number;
-  folderUrl?: string;
-  folderId?: string;
-  images: string[];
-  coverImage?: string;
-  eventDate?: string;
-  location?: string;
-  authorName?: string;
-  createdAt: string;
-  updatedAt?: string;
-  isFeatured?: boolean;
-}
-
-export interface DriveImageFile {
-  id: string;
-  name: string;
-  mimeType: string;
-  directUrl: string;
-  thumbnailUrl?: string;
-  downloadUrl?: string;
-  size?: number;
-}
-
-export interface FetchDriveImagesResponse {
-  success: boolean;
-  folderId: string;
-  images: string[];
-  files?: DriveImageFile[];
-  count: number;
-  message?: string;
-  error?: string;
-}
-
-export interface EventsApiResponse {
-  success: boolean;
-  data: EventItem[];
-  count: number;
-  error?: string;
-}
-
-export interface CreateEventPayload {
-  title: string;
-  wingId: string;
-  wingName?: string;
-  description?: string;
-  folderUrl?: string;
-  folderId?: string;
-  images?: string[];
-  coverImage?: string;
-  eventDate?: string;
-  location?: string;
-  authorName?: string;
-}
-
-export const DEFAULT_WINGS: Wing[] = [
+export const DEFAULT_WINGS = [
   {
     id: 'general-church',
     name: 'General Church',
@@ -93,7 +22,7 @@ export const DEFAULT_WINGS: Wing[] = [
     name: 'Christian Endeavour (CE Union)',
     slug: 'ce-union',
     tagline: 'Fostering fellowship, discipleship, and service for teenagers and young people',
-    description: 'A historic young people\'s movement dedicated to nurturing active spiritual growth, missions, and leadership skills.',
+    description: "A historic young people's movement dedicated to nurturing active spiritual growth, missions, and leadership skills.",
     icon: 'Sparkles',
     accentColor: '#3b82f6',
     secondaryColor: '#60a5fa',
@@ -104,7 +33,7 @@ export const DEFAULT_WINGS: Wing[] = [
   },
   {
     id: 'womens-fellowship',
-    name: 'Women\'s Fellowship (Mahila Samiti)',
+    name: "Women's Fellowship (Mahila Samiti)",
     slug: 'womens-fellowship',
     tagline: 'Encouraging women through intercessory prayer and compassionate service',
     description: 'Bringing together the women of the congregation for weekly cottage prayers, fasting prayers, and charitable outreach initiatives.',
@@ -120,7 +49,7 @@ export const DEFAULT_WINGS: Wing[] = [
     id: 'sunday-school',
     name: 'Sunday School',
     slug: 'sunday-school',
-    tagline: 'Nurturing children in the knowledge of God\'s Word',
+    tagline: "Nurturing children in the knowledge of God's Word",
     description: 'Dedicated to teaching biblical truths, moral values, and gospel action songs to children from toddler to high school age.',
     icon: 'BookOpen',
     accentColor: '#06b6d4',
@@ -146,7 +75,7 @@ export const DEFAULT_WINGS: Wing[] = [
   },
   {
     id: 'elders-fellowship',
-    name: 'Elder\'s Fellowship',
+    name: "Elder's Fellowship",
     slug: 'elders-fellowship',
     tagline: 'Sharing wisdom, prayer, and supportive fellowship in the golden years',
     description: 'A fellowship for seniors and elders of the church focusing on pastoral visits, prayer support, and community care.',

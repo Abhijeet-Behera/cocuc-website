@@ -3,16 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, ArrowRight, Image as ImageIcon } from 'lucide-react';
-import { EventItem, Wing } from '../../types/events';
 import styles from './WingEventCard.module.css';
-
-interface WingEventCardProps {
-  event: EventItem;
-  wing?: Wing;
-  isSelected?: boolean;
-  onClick?: () => void;
-  accentColor?: string;
-}
 
 export default function WingEventCard({
   event,
@@ -20,12 +11,12 @@ export default function WingEventCard({
   isSelected = false,
   onClick,
   accentColor = '#800000',
-}: WingEventCardProps) {
-  const coverImg = event.coverImage || (event.images && event.images[0]);
-  const imageCount = event.images?.length || (coverImg ? 1 : 0);
+}) {
+  const coverImg = event?.coverImage || (event?.images && event.images[0]);
+  const imageCount = event?.images?.length || (coverImg ? 1 : 0);
   const color = wing?.accentColor || accentColor;
 
-  const formattedDate = event.eventDate
+  const formattedDate = event?.eventDate
     ? new Date(event.eventDate).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -37,7 +28,7 @@ export default function WingEventCard({
     <motion.div
       className={`${styles.eventCard} ${isSelected ? styles.selectedCard : ''}`}
       onClick={onClick}
-      style={{ '--card-accent': color } as React.CSSProperties}
+      style={{ '--card-accent': color }}
       whileHover={{ y: -4 }}
       transition={{ type: 'spring', stiffness: 350, damping: 25 }}
     >
@@ -47,7 +38,7 @@ export default function WingEventCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={coverImg}
-            alt={event.title}
+            alt={event?.title || 'Event image'}
             className={styles.coverImage}
             loading="lazy"
           />
@@ -60,7 +51,7 @@ export default function WingEventCard({
 
         {/* Domain Tag / Category Badge */}
         <span className={styles.categoryBadge} style={{ color }}>
-          {event.wingName || wing?.name || 'Church Wing'}
+          {event?.wingName || wing?.name || 'Church Wing'}
         </span>
 
         {/* Image Count Badge: e.g. "📸 12 Photos" */}
@@ -82,7 +73,7 @@ export default function WingEventCard({
             </span>
           )}
 
-          {event.location && (
+          {event?.location && (
             <span className={styles.locationTag} title={event.location}>
               <MapPin size={13} color="#64748b" />
               <span>{event.location}</span>
@@ -92,12 +83,12 @@ export default function WingEventCard({
 
         {/* 3. Event Title */}
         <h3 className={styles.eventTitle}>
-          {event.title}
+          {event?.title}
         </h3>
 
         {/* 4. Formatted Description Snippet */}
         <p className={styles.descriptionSnippet}>
-          {event.description}
+          {event?.description}
         </p>
 
         {/* 5. Card Footer */}

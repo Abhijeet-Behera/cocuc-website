@@ -26,7 +26,7 @@ import {
   CheckCircle2,
   Share2
 } from 'lucide-react';
-import { Wing, EventItem, DEFAULT_WINGS } from '../../../../types/events';
+import { DEFAULT_WINGS } from '../../../../types/events';
 import { INITIAL_EVENTS } from '../../../../lib/eventsStore';
 import WingEventCard from '../../../../components/events/WingEventCard';
 import styles from './WingPage.module.css';

@@ -18,7 +18,7 @@ import {
   BookOpen,
   FolderOpen
 } from 'lucide-react';
-import { EventItem, DEFAULT_WINGS } from '../../../types/events';
+import { DEFAULT_WINGS } from '../../../types/events';
 import { INITIAL_EVENTS } from '../../../lib/eventsStore';
 import styles from './EventDetail.module.css';
 

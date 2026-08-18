@@ -19,17 +19,10 @@ import {
   Layers,
   LayoutGrid,
 } from 'lucide-react';
-import { Wing, EventItem, DEFAULT_WINGS } from '../../types/events';
+import { DEFAULT_WINGS } from '../../types/events';
 import styles from './BusTopologyView.module.css';
 
-interface BusTopologyViewProps {
-  wings?: Wing[];
-  events?: EventItem[];
-  onSelectWing?: (wing: Wing) => void;
-  selectedWingId?: string | null;
-}
-
-const ICON_MAP: Record<string, React.ElementType> = {
+const ICON_MAP = {
   Sparkles,
   Palette,
   Trophy,
@@ -46,23 +39,23 @@ export default function BusTopologyView({
   events = [],
   onSelectWing,
   selectedWingId,
-}: BusTopologyViewProps) {
+}) {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<'topology' | 'grid'>('topology');
-  const [activeWingId, setActiveWingId] = useState<string>(
+  const [viewMode, setViewMode] = useState('topology');
+  const [activeWingId, setActiveWingId] = useState(
     selectedWingId || wings[0]?.id || 'general-church'
   );
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef(null);
 
   // Smooth Pan Controls
-  const panBy = (offset: number) => {
+  const panBy = (offset) => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
     }
   };
 
   // Jump to specific Wing
-  const jumpToWing = (wing: Wing) => {
+  const jumpToWing = (wing) => {
     setActiveWingId(wing.id);
     if (scrollRef.current) {
       const targetCard = scrollRef.current.querySelector(`[data-wing-id="${wing.id}"]`);
@@ -73,7 +66,7 @@ export default function BusTopologyView({
   };
 
   // Wing click handler (triggers custom callback if provided, else navigates to wing page)
-  const handleWingClick = (wing: Wing) => {
+  const handleWingClick = (wing) => {
     setActiveWingId(wing.id);
     if (onSelectWing) {
       onSelectWing(wing);
@@ -83,7 +76,7 @@ export default function BusTopologyView({
   };
 
   // Get events mapped to a specific wing
-  const getWingEvents = (wingId: string) => {
+  const getWingEvents = (wingId) => {
     return events.filter((e) => e.wingId?.toLowerCase() === wingId.toLowerCase());
   };
 
@@ -352,11 +345,6 @@ function WingCardItem({
   events,
   onClick,
   IconComponent,
-}: {
-  wing: Wing;
-  events: EventItem[];
-  onClick: () => void;
-  IconComponent: React.ElementType;
 }) {
   const latestImages = events.flatMap((e) => e.images || []).slice(0, 4);
 
@@ -364,7 +352,7 @@ function WingCardItem({
     <div
       className={styles.wingCard}
       onClick={onClick}
-      style={{ ['--card-accent' as string]: wing.accentColor, cursor: 'pointer' }}
+      style={{ '--card-accent': wing.accentColor, cursor: 'pointer' }}
     >
       <div className={styles.cardGlowOverlay} style={{ backgroundColor: wing.accentColor }} />
 

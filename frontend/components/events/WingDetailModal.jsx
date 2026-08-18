@@ -27,18 +27,9 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Wing, EventItem } from '../../types/events';
 import styles from './WingDetailModal.module.css';
 
-interface WingDetailModalProps {
-  wing: Wing | null;
-  events: EventItem[];
-  isOpen: boolean;
-  onClose: () => void;
-  onOpenAdminUpload?: (wingId: string) => void;
-}
-
-const ICON_MAP: Record<string, React.ElementType> = {
+const ICON_MAP = {
   Sparkles,
   Palette,
   Trophy,
@@ -52,19 +43,19 @@ const ICON_MAP: Record<string, React.ElementType> = {
 
 export default function WingDetailModal({
   wing,
-  events,
+  events = [],
   isOpen,
   onClose,
   onOpenAdminUpload,
-}: WingDetailModalProps) {
+}) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
-  const [lightboxImageIndex, setLightboxImageIndex] = useState<number | null>(null);
-  const [lightboxImages, setLightboxImages] = useState<string[]>([]);
+  const [expandedCards, setExpandedCards] = useState({});
+  const [lightboxImageIndex, setLightboxImageIndex] = useState(null);
+  const [lightboxImages, setLightboxImages] = useState([]);
 
   // Close on ESC key
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         if (lightboxImageIndex !== null) {
           setLightboxImageIndex(null);
@@ -109,23 +100,23 @@ export default function WingDetailModal({
     );
   });
 
-  const toggleExpand = (id: string) => {
+  const toggleExpand = (id) => {
     setExpandedCards((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const openLightbox = (images: string[], index: number) => {
+  const openLightbox = (images, index) => {
     setLightboxImages(images);
     setLightboxImageIndex(index);
   };
 
-  const nextLightboxImage = (e: React.MouseEvent) => {
+  const nextLightboxImage = (e) => {
     e.stopPropagation();
     if (lightboxImageIndex !== null && lightboxImages.length > 0) {
       setLightboxImageIndex((lightboxImageIndex + 1) % lightboxImages.length);
     }
   };
 
-  const prevLightboxImage = (e: React.MouseEvent) => {
+  const prevLightboxImage = (e) => {
     e.stopPropagation();
     if (lightboxImageIndex !== null && lightboxImages.length > 0) {
       setLightboxImageIndex((lightboxImageIndex - 1 + lightboxImages.length) % lightboxImages.length);
@@ -259,7 +250,7 @@ export default function WingDetailModal({
             ) : (
               wingEvents.map((event) => {
                 const isExpanded = !!expandedCards[event.id];
-                const isLongText = event.description.length > 280;
+                const isLongText = event.description && event.description.length > 280;
 
                 return (
                   <motion.div

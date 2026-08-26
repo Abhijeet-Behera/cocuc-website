@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { DEFAULT_WINGS } from '../../types/events';
 import { countWords } from '../../lib/googleDrive';
+import { compressImageInBrowser } from '../../lib/imageCompressor';
 import styles from './AdminEventUploader.module.css';
 
 // Exactly 6 Domain / Wing Options
@@ -100,7 +101,8 @@ export default function AdminEventUploader({
   const fetchEvents = useCallback(async () => {
     setIsLoadingEvents(true);
     try {
-      const res = await fetch('/api/events');
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/events.php`);
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setEventsList(data.data);
@@ -194,65 +196,6 @@ export default function AdminEventUploader({
     });
   };
 
-  // Upload Staged Images to Google Drive Storage API
-  const handleUploadImages = async () => {
-    if (stagedImages.length === 0) {
-      setToast({ type: 'error', message: 'Please add images before uploading.' });
-      return [];
-    }
-
-    if (!category) {
-      setToast({ type: 'error', message: 'Please select a Domain / Wing before uploading images to Google Drive.' });
-      return [];
-    }
-
-    if (uploadStatus === 'uploaded' && uploadedImageUrls.length === stagedImages.length) {
-      return uploadedImageUrls;
-    }
-
-    setIsUploadingImages(true);
-    setUploadStatus('uploading');
-    setToast(null);
-
-    try {
-      const formData = new FormData();
-      formData.append('domain', category);
-      stagedImages.forEach((item) => {
-        formData.append('images', item.file);
-      });
-
-      const res = await fetch('/api/events/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success && Array.isArray(data.urls)) {
-        setUploadedImageUrls(data.urls);
-        setUploadStatus('uploaded');
-        setToast({
-          type: 'success',
-          message: `Successfully uploaded ${data.urls.length} image(s) to Google Drive folder!`,
-        });
-        return data.urls;
-      } else {
-        setUploadStatus('error');
-        setToast({
-          type: 'error',
-          message: data.error || 'Failed to upload images to Google Drive. Please try again.',
-        });
-        return [];
-      }
-    } catch (err) {
-      console.error('[AdminEventUploader] Drive upload error:', err);
-      setUploadStatus('error');
-      setToast({ type: 'error', message: 'Network error while uploading images to Google Drive.' });
-      return [];
-    } finally {
-      setIsUploadingImages(false);
-    }
-  };
 
   // Drag and Drop
   const handleDragOver = (e) => {
@@ -293,30 +236,15 @@ export default function AdminEventUploader({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      setToast({ type: 'error', message: 'Please enter event title.' });
-      return;
-    }
-
-    if (!eventDate) {
-      setToast({ type: 'error', message: 'Please select an event date.' });
-      return;
-    }
-
-    if (!category) {
-      setToast({ type: 'error', message: 'Please select a Domain / Wing from the dropdown.' });
-      return;
-    }
-
-    if (!description.trim()) {
-      setToast({ type: 'error', message: 'Please enter an event description.' });
+    if (!title.trim() || !eventDate || !category || !description.trim()) {
+      setToast({ type: 'error', message: 'Please fill all required fields.' });
       return;
     }
 
     if (isOverWordLimit) {
       setToast({
         type: 'error',
-        message: `Description exceeds the 1000-word limit (${currentWordCount}/1000 words). Please shorten your text.`,
+        message: `Description exceeds the 1000-word limit. Please shorten your text.`,
       });
       return;
     }
@@ -324,40 +252,42 @@ export default function AdminEventUploader({
     setIsSubmitting(true);
     setToast(null);
 
-    // Auto-upload staged images if not yet uploaded
-    let finalImageUrls = uploadedImageUrls;
-    if (stagedImages.length > 0 && (uploadStatus !== 'uploaded' || finalImageUrls.length === 0)) {
-      finalImageUrls = await handleUploadImages();
-      if (finalImageUrls.length === 0 && stagedImages.length > 0) {
-        setIsSubmitting(false);
-        return;
-      }
-    }
-
-    const domainOption = DOMAIN_OPTIONS.find((d) => d.id === category);
-    const domainName = domainOption ? domainOption.label : category;
-
-    const payload = {
-      title: title.trim(),
-      date: eventDate,
-      eventDate,
-      domain: category,
-      wingId: category,
-      wingName: domainName,
-      description: description.trim(),
-      images: finalImageUrls,
-      imageUrls: finalImageUrls,
-      coverImage: finalImageUrls[0] || '',
-      location,
-      authorName,
-      createdAt: new Date().toISOString(),
-    };
-
     try {
-      const res = await fetch('/api/events', {
+      const domainOption = DOMAIN_OPTIONS.find((d) => d.id === category);
+      const domainName = domainOption ? domainOption.label : category;
+
+      // 1. Create FormData
+      const formData = new FormData();
+      formData.append('title', title.trim());
+      formData.append('date', eventDate);
+      formData.append('eventDate', eventDate);
+      formData.append('domain', category);
+      formData.append('wingId', category);
+      formData.append('wingName', domainName);
+      formData.append('description', description.trim());
+      formData.append('location', location);
+      formData.append('authorName', authorName);
+
+      // 2. Compress images sequentially and append
+      if (stagedImages.length > 0) {
+        for (let i = 0; i < stagedImages.length; i++) {
+          const item = stagedImages[i];
+          try {
+            const compressedFile = await compressImageInBrowser(item.file, 1200, 0.7);
+            formData.append('images[]', compressedFile);
+          } catch (compressErr) {
+            console.error('Image compression failed for', item.name, compressErr);
+            // Fallback to uncompressed if compression fails
+            formData.append('images[]', item.file);
+          }
+        }
+      }
+
+      // 3. Post to PHP Backend
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/events.php`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: formData, // fetch will automatically set the correct multipart boundary
       });
 
       const result = await res.json();
@@ -365,13 +295,9 @@ export default function AdminEventUploader({
       if (res.ok && result.success) {
         setToast({
           type: 'success',
-          message: `Event "${payload.title}" published & saved under ${domainName} successfully!`,
+          message: `Event "${title.trim()}" published & saved under ${domainName} successfully!`,
         });
-
-        // Reset form
         handleReset();
-
-        // Refresh list
         fetchEvents();
         if (onEventCreated && result.data) {
           onEventCreated(result.data);
@@ -395,7 +321,8 @@ export default function AdminEventUploader({
     if (!window.confirm(`Are you sure you want to delete event "${eventTitle}"?`)) return;
 
     try {
-      const res = await fetch(`/api/events?id=${id}`, {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/events.php?id=${id}`, {
         method: 'DELETE',
       });
       const data = await res.json();

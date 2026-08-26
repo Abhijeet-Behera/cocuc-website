@@ -27,7 +27,6 @@ import {
   Share2
 } from 'lucide-react';
 import { DEFAULT_WINGS } from '../../../../types/events';
-import { INITIAL_EVENTS } from '../../../../lib/eventsStore';
 import WingEventCard from '../../../../components/events/WingEventCard';
 import styles from './WingPage.module.css';
 
@@ -44,7 +43,7 @@ const ICON_MAP = {
 };
 
 export default function WingClient({ slug }) {
-  const [allEvents, setAllEvents] = useState(INITIAL_EVENTS);
+  const [allEvents, setAllEvents] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [copiedShare, setCopiedShare] = useState(false);
@@ -58,7 +57,8 @@ export default function WingClient({ slug }) {
   useEffect(() => {
     async function loadEvents() {
       try {
-        const res = await fetch('/api/events');
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const res = await fetch(`${backendUrl}/events.php`);
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.data)) {
@@ -193,11 +193,8 @@ export default function WingClient({ slug }) {
               No Programmes Published Yet for {wing.name}
             </h3>
             <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>
-              Upload an event for this wing via the Admin Portal.
+              It will be available here once it has been updated. Thanks.
             </p>
-            <Link href="/admin" className="btn-primary">
-              Go to Admin Upload
-            </Link>
           </div>
         ) : (
           <>

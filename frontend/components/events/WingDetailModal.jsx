@@ -287,7 +287,7 @@ export default function WingDetailModal({
                       {/* Clickable Title navigating to dedicated Event Page */}
                       <h3 className={styles.eventTitle}>
                         <Link
-                          href={`/events/${event.id}`}
+                          href={`/events/detail?id=${event.id}`}
                           style={{
                             color: 'inherit',
                             textDecoration: 'none',
@@ -328,7 +328,7 @@ export default function WingDetailModal({
                         )}
 
                         <Link
-                          href={`/events/${event.id}`}
+                          href={`/events/detail?id=${event.id}`}
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',

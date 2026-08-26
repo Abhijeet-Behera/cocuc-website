@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar,
@@ -19,12 +20,13 @@ import {
   FolderOpen
 } from 'lucide-react';
 import { DEFAULT_WINGS } from '../../../types/events';
-import { INITIAL_EVENTS } from '../../../lib/eventsStore';
 import styles from './EventDetail.module.css';
 
-export default function EventDetailClient({ eventId }) {
+export default function EventDetailClient() {
+  const searchParams = useSearchParams();
+  const eventId = searchParams.get('id');
   const [event, setEvent] = useState(null);
-  const [allEvents, setAllEvents] = useState(INITIAL_EVENTS);
+  const [allEvents, setAllEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [copiedShare, setCopiedShare] = useState(false);
@@ -33,7 +35,8 @@ export default function EventDetailClient({ eventId }) {
   useEffect(() => {
     async function loadEvent() {
       try {
-        const res = await fetch('/api/events');
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const res = await fetch(`${backendUrl}/events.php`);
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.data)) {
@@ -50,9 +53,8 @@ export default function EventDetailClient({ eventId }) {
         console.warn('[EventDetailClient] Fallback to cache:', err);
       }
 
-      // Fallback to initial events
-      const fallback = INITIAL_EVENTS.find((e) => e.id === eventId) || INITIAL_EVENTS[0];
-      setEvent(fallback || null);
+      // Fallback to null if API fails
+      setEvent(null);
       setLoading(false);
     }
 
@@ -124,7 +126,7 @@ export default function EventDetailClient({ eventId }) {
             <span>/</span>
             <Link href="/events" className={styles.breadcrumbLink}>Events</Link>
             <span>/</span>
-            <Link href={`/events/wing/${wingMeta.slug || event.wingId}`} className={styles.breadcrumbLink}>
+            <Link href={`/events/detail?id=wing/${wingMeta.slug || event.wingId}`} className={styles.breadcrumbLink}>
               {wingMeta.name}
             </Link>
             <span>/</span>
@@ -144,7 +146,7 @@ export default function EventDetailClient({ eventId }) {
           <div className={styles.heroContent}>
             {/* Wing Tag */}
             <Link
-              href={`/events/wing/${wingMeta.slug || event.wingId}`}
+              href={`/events/detail?id=wing/${wingMeta.slug || event.wingId}`}
               className={styles.wingTag}
             >
               <Sparkles size={13} color="#800000" />
@@ -220,7 +222,7 @@ export default function EventDetailClient({ eventId }) {
       <div className={styles.mainBodyContainer}>
         {/* Back Link */}
         <Link
-          href={`/events/wing/${wingMeta.slug || event.wingId}`}
+          href={`/events/detail?id=wing/${wingMeta.slug || event.wingId}`}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -316,7 +318,7 @@ export default function EventDetailClient({ eventId }) {
               {relatedEvents.map((rel) => (
                 <Link
                   key={rel.id}
-                  href={`/events/${rel.id}`}
+                  href={`/events/detail?id=${rel.id}`}
                   className={styles.relatedCard}
                 >
                   <h4 className={styles.relatedTitle}>{rel.title}</h4>

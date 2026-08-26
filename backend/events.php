@@ -94,27 +94,16 @@ if ($method === 'GET') {
 // -------------------------------------------------------------
 if ($method === 'POST') {
     try {
-        $raw = file_get_contents('php://input');
-        $body = json_decode($raw, true);
+        $title = trim($_POST['title'] ?? '');
+        $wingId = trim($_POST['wingId'] ?? $_POST['wing_id'] ?? '');
+        $wingName = trim($_POST['wingName'] ?? $_POST['wing_name'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $eventDate = !empty($_POST['eventDate']) ? $_POST['eventDate'] : date('Y-m-d');
+        $location = trim($_POST['location'] ?? 'Church Campus');
 
-        if (!$body) {
+        if (empty($title) || empty($wingId) || empty($description)) {
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Invalid JSON body']);
-            exit;
-        }
-
-        $title = trim($body['title'] ?? '');
-        $wingId = trim($body['wingId'] ?? $body['wing_id'] ?? '');
-        $wingName = trim($body['wingName'] ?? $body['wing_name'] ?? '');
-        $description = trim($body['description'] ?? '');
-        $folderUrl = trim($body['folderUrl'] ?? $body['folder_url'] ?? '');
-        $eventDate = !empty($body['eventDate']) ? $body['eventDate'] : date('Y-m-d');
-        $location = trim($body['location'] ?? 'Church Campus');
-        $images = $body['images'] ?? [];
-
-        if (empty($title) || empty($wingId) || empty($description) || empty($folderUrl)) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Title, wing, description, and Google Drive URL are required.']);
+            echo json_encode(['success' => false, 'error' => 'Title, wing, and description are required.']);
             exit;
         }
 
@@ -129,8 +118,148 @@ if ($method === 'POST') {
             exit;
         }
 
-        $folderId = extractFolderId($folderUrl);
-        $coverImage = !empty($images[0]) ? $images[0] : null;
+        // Get Google Drive Folder ID from ENV
+        $envKeyMap = [
+            'general-church' => 'DRIVE_FOLDER_GENERAL_CHURCH',
+            'ce-union' => 'DRIVE_FOLDER_CE_UNION',
+            'mahila-samiti' => 'DRIVE_FOLDER_MAHILA_SAMITI',
+            'sunday-school' => 'DRIVE_FOLDER_SUNDAY_SCHOOL',
+            'youth-fellowship' => 'DRIVE_FOLDER_YOUTH_FELLOWSHIP',
+            'elders-fellowship' => 'DRIVE_FOLDER_ELDERS_FELLOWSHIP',
+        ];
+        $envKey = $envKeyMap[$wingId] ?? null;
+        $folderId = $envKey ? ($_ENV[$envKey] ?? null) : null;
+        
+        $imagesUrls = [];
+        
+        // Helper function for Google Auth
+        if (!function_exists('getGoogleAccessToken')) {
+            function getGoogleAccessToken($credentialsPath) {
+                if (!file_exists($credentialsPath)) return null;
+                $creds = json_decode(file_get_contents($credentialsPath), true);
+                if (!$creds) return null;
+            
+                $header = json_encode(['alg' => 'RS256', 'typ' => 'JWT']);
+                $now = time();
+                $payload = json_encode([
+                    'iss' => $creds['client_email'],
+                    'scope' => 'https://www.googleapis.com/auth/drive.file',
+                    'aud' => $creds['token_uri'],
+                    'exp' => $now + 3600,
+                    'iat' => $now
+                ]);
+            
+                $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+                $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+                
+                $signature = '';
+                openssl_sign($base64UrlHeader . "." . $base64UrlPayload, $signature, $creds['private_key'], OPENSSL_ALGO_SHA256);
+                $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+            
+                $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
+            
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $creds['token_uri']);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                    'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                    'assertion' => $jwt
+                ]));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                curl_close($ch);
+            
+                $tokenData = json_decode($response, true);
+                return $tokenData['access_token'] ?? null;
+            }
+        }
+
+        // Process File Uploads
+        if (!empty($_FILES['images']) && is_array($_FILES['images']['name'])) {
+            $token = null;
+            if ($folderId) {
+                $CREDENTIALS_PATH = __DIR__ . '/google-credentials.json';
+                $token = getGoogleAccessToken($CREDENTIALS_PATH);
+            }
+
+            $count = count($_FILES['images']['name']);
+            for ($i = 0; $i < $count; $i++) {
+                if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {
+                    $tmpName = $_FILES['images']['tmp_name'][$i];
+                    $fileName = $_FILES['images']['name'][$i];
+                    $mimeType = $_FILES['images']['type'][$i];
+
+                    $uploadSuccess = false;
+
+                    // 1. Try Google Drive if token and folder ID exist
+                    if ($token && $folderId) {
+                        $metadata = json_encode([
+                            'name' => $fileName,
+                            'parents' => [$folderId]
+                        ]);
+
+                        $boundary = "-------314159265358979323846";
+                        $body = "--$boundary
+"
+                              . "Content-Type: application/json; charset=UTF-8
+
+"
+                              . "$metadata
+"
+                              . "--$boundary
+"
+                              . "Content-Type: $mimeType
+
+"
+                              . file_get_contents($tmpName) . "
+"
+                              . "--$boundary--";
+
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink,webContentLink');
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                            "Authorization: Bearer $token",
+                            "Content-Type: multipart/related; boundary=$boundary",
+                            "Content-Length: " . strlen($body)
+                        ]);
+
+                        $res = curl_exec($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        curl_close($ch);
+
+                        if ($httpCode === 200) {
+                            $driveData = json_decode($res, true);
+                            if (!empty($driveData['webContentLink'])) {
+                                $imagesUrls[] = $driveData['webContentLink'];
+                                $uploadSuccess = true;
+                            }
+                        }
+                    }
+
+                    // 2. Fallback to Local Storage if Drive fails or isn't configured
+                    if (!$uploadSuccess) {
+                        $targetDir = __DIR__ . "/../uploads/events/$wingId/";
+                        if (!file_exists($targetDir)) {
+                            mkdir($targetDir, 0777, true);
+                        }
+                        
+                        $safeFileName = time() . '_' . preg_replace("/[^a-zA-Z0-9.]/", "", basename($fileName));
+                        $targetFilePath = $targetDir . $safeFileName;
+                        
+                        if (move_uploaded_file($tmpName, $targetFilePath)) {
+                            // Construct relative URL for frontend
+                            $imagesUrls[] = "/uploads/events/$wingId/$safeFileName";
+                        }
+                    }
+                }
+            }
+        }
+
+        $coverImage = !empty($imagesUrls[0]) ? $imagesUrls[0] : null;
+        $folderUrl = $folderId ? "https://drive.google.com/drive/folders/$folderId" : '';
 
         $stmt = $pdo->prepare("
             INSERT INTO events (title, wing_id, wing_name, description, word_count, folder_url, folder_id, images_json, cover_image, event_date, location)
@@ -145,7 +274,7 @@ if ($method === 'POST') {
             ':word_count' => $words,
             ':folder_url' => $folderUrl,
             ':folder_id' => $folderId,
-            ':images_json' => json_encode($images),
+            ':images_json' => json_encode($imagesUrls),
             ':cover_image' => $coverImage,
             ':event_date' => $eventDate,
             ':location' => $location
@@ -160,8 +289,7 @@ if ($method === 'POST') {
                 'id' => (string)$newId,
                 'title' => $title,
                 'wingId' => $wingId,
-                'folderId' => $folderId,
-                'images' => $images
+                'images' => $imagesUrls
             ]
         ]);
     } catch (Exception $e) {
@@ -170,6 +298,7 @@ if ($method === 'POST') {
     }
     exit;
 }
+
 
 // -------------------------------------------------------------
 // DELETE: Delete event by ID

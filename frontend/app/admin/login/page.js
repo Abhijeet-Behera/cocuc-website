@@ -45,6 +45,13 @@ export default function LoginRegister() {
   const [devOtp, setDevOtp] = useState('');
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const allowedDevEmails = process.env.NEXT_PUBLIC_ALLOWED_DEV_EMAILS ? process.env.NEXT_PUBLIC_ALLOWED_DEV_EMAILS.split(',') : [];
+
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+      console.warn("reCAPTCHA sitekey is missing; bypassing reCAPTCHA in LoginRegister.");
+      setRecaptchaToken("bypass-token");
+    }
+  }, []);
   
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -505,14 +512,20 @@ export default function LoginRegister() {
           </AnimatePresence>
 
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-            <ReCAPTCHA
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-              onChange={setRecaptchaToken}
-              onErrored={() => {
-                console.warn('reCAPTCHA timed out or failed to load.');
-                setRecaptchaToken(null);
-              }}
-            />
+            {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                onChange={setRecaptchaToken}
+                onErrored={() => {
+                  console.warn('reCAPTCHA timed out or failed to load.');
+                  setRecaptchaToken(null);
+                }}
+              />
+            ) : (
+              <div style={{ color: '#aaa', fontSize: '0.85rem', textAlign: 'center', margin: '0.5rem 0' }}>
+                reCAPTCHA is disabled (missing sitekey)
+              </div>
+            )}
           </div>
 
           <motion.button 

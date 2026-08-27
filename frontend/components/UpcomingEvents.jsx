@@ -24,19 +24,25 @@ export default function UpcomingEvents() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL
         const res = await fetch(`${API_URL}/upcoming.php`)
+        if (!res.ok) {
+          console.warn('[UpcomingEvents] Failed to fetch: HTTP ' + res.status)
+          setError(true)
+          setEvents([])
+          return
+        }
         const data = await res.json()
 
         if (Array.isArray(data)) {
           setEvents(data)
         } else if (data && data.error) {
-          console.error('[UpcomingEvents] API error:', data.message)
+          console.warn('[UpcomingEvents] API error:', data.message)
           setError(true)
           setEvents([])
         } else {
           setEvents([])
         }
       } catch (err) {
-        console.error('[UpcomingEvents] Failed to fetch:', err)
+        console.warn('[UpcomingEvents] Failed to fetch:', err)
         setError(true)
         setEvents([])
       } finally {

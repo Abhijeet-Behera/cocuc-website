@@ -16,6 +16,11 @@ export default function LatestBlogs() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
         const res = await fetch(`${API_URL}/announcements.php`)
+        if (!res.ok) {
+          console.warn("Failed to load blogs: HTTP " + res.status)
+          setBlogs([])
+          return
+        }
         const text = await res.text()
         try {
           const data = JSON.parse(text)
@@ -26,11 +31,11 @@ export default function LatestBlogs() {
             setBlogs([])
           }
         } catch (e) {
-          console.error("Failed to parse blogs JSON:", text)
+          console.warn("Failed to parse blogs JSON:", text)
           setBlogs([])
         }
       } catch (err) {
-        console.error("Failed to load blogs")
+        console.warn("Failed to load blogs", err)
         setBlogs([])
       } finally {
         setLoading(false)

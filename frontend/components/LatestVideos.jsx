@@ -19,15 +19,20 @@ export default function LatestVideos() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL
         const res = await fetch(`${API_URL}/youtube.php`)
+        if (!res.ok) {
+          console.warn('[LatestVideos] Failed to load videos: HTTP ' + res.status)
+          setResults([])
+          return
+        }
         const data = await res.json()
         if (Array.isArray(data)) {
           setResults(data)
         } else {
-          console.error('[LatestVideos] Unexpected response:', data)
+          console.warn('[LatestVideos] Unexpected response:', data)
           setResults([])
         }
       } catch (err) {
-        console.error('[LatestVideos] Failed to load videos:', err)
+        console.warn('[LatestVideos] Failed to load videos:', err)
         setResults([])
       } finally {
         setLoading(false)

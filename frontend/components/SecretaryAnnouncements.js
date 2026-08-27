@@ -206,19 +206,19 @@ export default function SecretaryAnnouncements() {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
 
     fetch(`${API_URL}/weekly_notices.php`, { cache: 'no-store' })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => { if (Array.isArray(data)) setWeeklyNotices(data) })
-      .catch(err => console.error('Failed to load weekly notices', err))
+      .catch(err => console.warn('Failed to load weekly notices', err))
       
     fetch(`${API_URL}/special_programmes.php`, { cache: 'no-store' })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => { if (Array.isArray(data)) setSpecialProgrammes(data) })
-      .catch(err => console.error('Failed to load special programmes', err))
+      .catch(err => console.warn('Failed to load special programmes', err))
       
     fetch(`${API_URL}/speaking_schedules.php`, { cache: 'no-store' })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => { if (Array.isArray(data)) setSpeakingArrangements(data) })
-      .catch(err => console.error('Failed to load speaking schedules', err))
+      .catch(err => console.warn('Failed to load speaking schedules', err))
       .finally(() => setLoading(false))
   }, [])
 

@@ -103,16 +103,76 @@ export default function AdminEventUploader({
     try {
       const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const res = await fetch(`${backendUrl}/events.php`);
+      if (!res.ok) throw new Error('Failed to fetch events');
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setEventsList(data.data);
       }
     } catch (err) {
-      console.error('[AdminEventUploader] Error fetching events:', err);
+      console.warn('[AdminEventUploader] Error fetching events:', err);
     } finally {
       setIsLoadingEvents(false);
     }
   }, []);
+
+  // Upload staged images to Google Drive via backend
+  const handleUploadImages = useCallback(async () => {
+    if (stagedImages.length === 0) {
+      setToast({ type: 'error', message: 'No images staged. Please select images first.' });
+      return;
+    }
+    if (!category) {
+      setToast({ type: 'error', message: 'Please select a Domain / Wing before uploading images.' });
+      return;
+    }
+
+    setIsUploadingImages(true);
+    setUploadStatus('uploading');
+    setToast(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('domain', category);
+
+      for (let i = 0; i < stagedImages.length; i++) {
+        try {
+          const compressed = await compressImageInBrowser(stagedImages[i].file, 1200, 0.75);
+          formData.append('images[]', compressed);
+        } catch {
+          formData.append('images[]', stagedImages[i].file);
+        }
+      }
+
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/drive-upload.php`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const data = await res.json();
+
+      if (data.success && Array.isArray(data.urls)) {
+        setUploadedImageUrls(data.urls);
+        setUploadStatus('uploaded');
+        setToast({
+          type: 'success',
+          message: `${data.urls.length} image(s) uploaded to Google Drive successfully!`,
+        });
+      } else {
+        throw new Error(data.error || 'Upload failed with no URLs returned.');
+      }
+    } catch (err) {
+      console.warn('[AdminEventUploader] Image upload error:', err);
+      setUploadStatus('error');
+      setToast({
+        type: 'error',
+        message: `Image upload failed: ${err.message}. You can still submit the event — images will be attached directly.`,
+      });
+    } finally {
+      setIsUploadingImages(false);
+    }
+  }, [stagedImages, category]);
 
   useEffect(() => {
     fetchEvents();

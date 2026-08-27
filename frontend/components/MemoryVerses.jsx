@@ -150,7 +150,14 @@ export default function MemoryVerses() {
         const spreadsheetId = process.env.NEXT_PUBLIC_MEMORY_VERSE_SPREADSHEET_ID;
 
         if (!apiKey || !spreadsheetId) {
-          throw new Error("Missing Google Sheets API keys");
+          console.warn("Missing Google Sheets API keys");
+          setVerses({
+            daily: { type: "Daily", reference: "Psalm 118:24", scripture: "This is the day that the LORD has made; let us rejoice and be glad in it." },
+            weekly: { type: "Weekly", reference: "Proverbs 3:5-6", scripture: "Trust in the LORD with all your heart, and do not lean on your own understanding." },
+            monthly: { type: "Monthly", reference: "Joshua 1:9", scripture: "Be strong and courageous. Do not be frightened, and do not be dismayed, for the LORD your God is with you wherever you go." }
+          });
+          setLoading(false);
+          return;
         }
 
         const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Verses!A2:E?key=${apiKey}`;
@@ -197,7 +204,7 @@ export default function MemoryVerses() {
         });
 
       } catch (error) {
-        console.error('Failed to fetch memory verses:', error);
+        console.warn('Failed to fetch memory verses:', error);
       } finally {
         setLoading(false)
       }

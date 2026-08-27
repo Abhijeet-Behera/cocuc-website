@@ -13,15 +13,20 @@ export default function YouTubeFeed() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL
         const res = await fetch(`${API_URL}/youtube.php`)
+        if (!res.ok) {
+          console.warn("Failed to load videos: HTTP " + res.status)
+          setVideos([])
+          return
+        }
         const data = await res.json()
         if (Array.isArray(data)) {
           setVideos(data)
         } else {
-          console.error('API did not return an array:', data)
+          console.warn('API did not return an array:', data)
           setVideos([])
         }
       } catch (err) {
-        console.error("Failed to load videos")
+        console.warn("Failed to load videos", err)
         setVideos([])
       } finally {
         setLoading(false)

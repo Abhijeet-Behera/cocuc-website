@@ -37,6 +37,11 @@ export default function BlogInspiration() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://unionchurch.in/api'
         const res = await fetch(`${API_URL}/blogs.php`)
+        if (!res.ok) {
+          console.warn("Failed to load blogs: HTTP " + res.status)
+          setBlogs([])
+          return
+        }
         const data = await res.json()
         if (Array.isArray(data)) {
           setBlogs(data)
@@ -44,7 +49,7 @@ export default function BlogInspiration() {
           setBlogs([])
         }
       } catch (err) {
-        console.error("Failed to load blogs")
+        console.warn("Failed to load blogs", err)
         setBlogs([])
       } finally {
         setLoading(false)

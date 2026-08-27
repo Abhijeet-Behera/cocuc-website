@@ -444,7 +444,7 @@ export default function SecretaryPortal() {
       }
       fetchAllData()
     } catch (e) {
-      console.error('Speaking PDF upload failed:', e)
+      console.warn('Speaking PDF upload failed:', e)
       showToast('error', e.message || 'Network error while uploading PDF.')
     } finally {
       setSubmitLoading(false)

@@ -294,7 +294,7 @@ export default function SpeakingArrangementsPage() {
           setMeta(finalMeta)
         }
       } catch (err) {
-        console.error('Failed to load speaking schedules', err)
+        console.warn('Failed to load speaking schedules', err)
 
         if (!cancelled) {
           setError(err.message)
@@ -538,7 +538,7 @@ function PdfThumbnailViewer({ pdfUrl, title }) {
         
         if (isMounted) setLoading(false);
       } catch (err) {
-        console.error('Error rendering PDF preview:', err);
+        console.warn('Error rendering PDF preview:', err);
         if (isMounted) {
           setError(true);
           setLoading(false);

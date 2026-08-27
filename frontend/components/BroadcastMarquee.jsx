@@ -11,6 +11,10 @@ export default function BroadcastMarquee() {
     const fetchBroadcast = async () => {
       try {
         const res = await fetch(`${API_URL}/broadcast.php`)
+        if (!res.ok) {
+          console.warn('Failed to fetch broadcast: HTTP ' + res.status)
+          return
+        }
         const data = await res.json()
         if (Array.isArray(data) && data.length > 0) {
           // Check if broadcast is not older than 7 days (optional, but good practice)
@@ -25,7 +29,7 @@ export default function BroadcastMarquee() {
           }
         }
       } catch (e) {
-        console.error('Failed to fetch broadcast', e)
+        console.warn('Failed to fetch broadcast', e)
       }
     }
     fetchBroadcast()

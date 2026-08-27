@@ -37,10 +37,14 @@ export default function PastorPortal() {
   const fetchBlogs = async () => {
     try {
       const res = await fetch(`${API_URL}/blogs.php`)
+      if (!res.ok) {
+        console.warn("Failed to load blogs: HTTP " + res.status)
+        return
+      }
       const data = await res.json()
       if (Array.isArray(data)) setBlogs(data)
     } catch (err) {
-      console.error("Failed to load blogs")
+      console.warn("Failed to load blogs", err)
     }
   }
 

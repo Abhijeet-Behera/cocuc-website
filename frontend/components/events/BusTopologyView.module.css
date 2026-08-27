@@ -1,8 +1,9 @@
 /* ============================================================
    BusTopologyView.module.css — Church of Christ Union Church
-   Matches the website's white/maroon classic theme
+   Unified maroon/white classic theme — fully consistent UX
    ============================================================ */
 
+/* ── Section Wrapper ── */
 .topologySection {
   position: relative;
   width: 100%;
@@ -18,13 +19,13 @@
   left: 50%;
   transform: translateX(-50%);
   width: 70vw;
-  height: 300px;
-  background: radial-gradient(ellipse at center top, rgba(128, 0, 0, 0.05) 0%, transparent 65%);
+  height: 320px;
+  background: radial-gradient(ellipse at center top, rgba(128, 0, 0, 0.06) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ── Header & Controls ── */
+/* ── Header ── */
 .headerContainer {
   position: relative;
   z-index: 2;
@@ -40,10 +41,10 @@
   gap: 0.5rem;
   padding: 0.35rem 1rem;
   background: rgba(128, 0, 0, 0.06);
-  border: 1px solid rgba(128, 0, 0, 0.15);
+  border: 1px solid rgba(128, 0, 0, 0.18);
   border-radius: 50px;
-  color: var(--color-primary, #800000);
-  font-size: 0.8rem;
+  color: #800000;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -67,7 +68,7 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 3rem;
   font-weight: 600;
-  color: var(--color-primary, #800000);
+  color: #800000;
   line-height: 1.15;
   margin-bottom: 0.75rem;
   letter-spacing: 0.01em;
@@ -76,7 +77,7 @@
 .sectionSubtitle {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-size: 1rem;
-  color: var(--color-text-muted, #555555);
+  color: #555555;
   line-height: 1.7;
   max-width: 660px;
   margin: 0 auto 1.5rem auto;
@@ -86,7 +87,7 @@
 .controlsBar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
   max-width: 1200px;
@@ -123,17 +124,9 @@
 }
 
 .toggleBtn.active {
-  background: var(--color-primary, #800000);
+  background: #800000;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(128, 0, 0, 0.2);
-}
-
-.scrollHint {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.82rem;
-  color: var(--color-text-muted, #555555);
 }
 
 /* ── Wing Quick Navigation Pills ── */
@@ -166,25 +159,25 @@
   font-weight: 600;
   font-family: var(--font-heading, 'Outfit', sans-serif);
   background: #ffffff;
-  border: 1px solid rgba(128, 0, 0, 0.12);
-  color: var(--color-text-muted, #555555);
-  box-shadow: var(--shadow-sm, 0 2px 6px rgba(0,0,0,0.04));
+  border: 1px solid rgba(128, 0, 0, 0.15);
+  color: #555555;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .wingPill:hover {
   transform: translateY(-2px);
-  border-color: var(--color-primary, #800000);
-  color: var(--color-primary, #800000);
-  box-shadow: 0 5px 14px rgba(128, 0, 0, 0.1);
+  border-color: #800000;
+  color: #800000;
+  box-shadow: 0 5px 14px rgba(128, 0, 0, 0.12);
 }
 
 .wingPill.activePill {
-  background: var(--color-primary, #800000);
+  background: #800000;
   color: #ffffff;
-  border-color: var(--color-primary, #800000);
-  box-shadow: 0 5px 14px rgba(128, 0, 0, 0.25);
+  border-color: #800000;
+  box-shadow: 0 5px 14px rgba(128, 0, 0, 0.28);
 }
 
 /* ── Viewport & Scroll Area ── */
@@ -198,16 +191,14 @@
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 4rem 3rem;
+  padding: 3rem 3rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(128, 0, 0, 0.25) rgba(0, 0, 0, 0.03);
-  cursor: default;
-  user-select: auto;
   scroll-behavior: smooth;
 }
 
 .busScrollArea::-webkit-scrollbar {
-  height: 6px;
+  height: 5px;
 }
 
 .busScrollArea::-webkit-scrollbar-track {
@@ -216,12 +207,12 @@
 }
 
 .busScrollArea::-webkit-scrollbar-thumb {
-  background: rgba(128, 0, 0, 0.25);
+  background: rgba(128, 0, 0, 0.3);
   border-radius: 10px;
 }
 
 .busScrollArea::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary, #800000);
+  background: #800000;
 }
 
 /* ── Topology Canvas ── */
@@ -237,8 +228,8 @@
 /* ── Rows of Wing Nodes ── */
 .nodesRow {
   display: flex;
-  align-items: flex-end;
-  gap: 4.5rem;
+  align-items: stretch;
+  gap: 2.5rem;
 }
 
 .topRow {
@@ -251,8 +242,10 @@
   margin-top: 0;
 }
 
+/* Fixed, uniform card slot size */
 .nodeSlot {
-  width: 280px;
+  width: 230px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -262,55 +255,59 @@
 /* ── Branch Lines ── */
 .branchLineTop {
   width: 2px;
-  height: 60px;
+  height: 52px;
   background: linear-gradient(180deg, rgba(128, 0, 0, 0.2) 0%, #800000 100%);
   position: relative;
   margin-top: 0.5rem;
+  flex-shrink: 0;
 }
 
 .branchLineBottom {
   width: 2px;
-  height: 60px;
+  height: 52px;
   background: linear-gradient(180deg, #800000 0%, rgba(128, 0, 0, 0.2) 100%);
   position: relative;
   margin-bottom: 0.5rem;
+  flex-shrink: 0;
 }
 
 /* ── T-Junction Connection ── */
 .tJunction {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   background: #ffffff;
-  border: 3px solid var(--color-primary, #800000);
+  border: 3px solid #800000;
   border-radius: 50%;
   box-shadow: 0 0 8px rgba(128, 0, 0, 0.25);
   z-index: 6;
 }
 
 .junctionTop {
-  bottom: -7px;
+  bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .junctionBottom {
-  top: -7px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .nodeAddressLabel {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  color: var(--color-text-muted, #555555);
+  color: #800000;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* ── Central Bus Cable ── */
@@ -318,21 +315,21 @@
   display: flex;
   align-items: center;
   width: 100%;
-  height: 48px;
+  height: 44px;
   position: relative;
   z-index: 3;
-  padding: 0 3rem;
+  padding: 0 2rem;
 }
 
 .busTerminator {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
   border-radius: 6px;
-  background: var(--color-primary, #800000);
+  background: #800000;
   color: #ffffff;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   font-family: 'Outfit', monospace;
   letter-spacing: 1.5px;
@@ -354,7 +351,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
 }
 
 .terminatorDot.active {
@@ -365,7 +363,7 @@
 
 .mainBusCable {
   flex: 1;
-  height: 6px;
+  height: 5px;
   background: linear-gradient(90deg, #800000 0%, #a31f1f 50%, #800000 100%);
   position: relative;
   overflow: hidden;
@@ -376,7 +374,7 @@
   position: absolute;
   width: 60px;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
   animation: signalFlow 3s linear infinite;
 }
 
@@ -385,89 +383,99 @@
 }
 
 @keyframes signalFlow {
-  0% { left: -60px; }
+  0%   { left: -60px; }
   100% { left: 100%; }
 }
 
-/* ── Wing Card ── */
+/* ── Wing Card — uniform height with flex column ── */
 .wingCard {
   width: 100%;
+  /* Fixed uniform height for all cards */
+  height: 260px;
   background: #ffffff;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-md, 0 10px 20px -3px rgba(0,0,0,0.06));
-  border: 1px solid rgba(128, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 16px rgba(128, 0, 0, 0.07), 0 1px 4px rgba(0,0,0,0.04);
+  border: 1px solid rgba(128, 0, 0, 0.1);
+  transition: all 0.28s cubic-bezier(0.165, 0.84, 0.44, 1);
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .wingCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 35px -8px rgba(128, 0, 0, 0.12), 0 0 0 1.5px var(--card-accent, #800000);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px rgba(128, 0, 0, 0.14), 0 0 0 1.5px #800000;
 }
 
+/* Top accent bar — always maroon */
 .cardGlowOverlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: var(--card-accent, #800000);
-  opacity: 0.85;
+  height: 3px;
+  background: #800000;
+  opacity: 1;
 }
 
 .cardHeader {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  flex-shrink: 0;
 }
 
 .iconCircle {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(128, 0, 0, 0.2);
+  background: linear-gradient(135deg, #800000 0%, #a31f1f 100%);
+  box-shadow: 0 4px 10px rgba(128, 0, 0, 0.22);
   flex-shrink: 0;
 }
 
 .badgePill {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   font-family: var(--font-heading, 'Outfit', sans-serif);
-  padding: 0.2rem 0.65rem;
+  padding: 0.18rem 0.55rem;
   border-radius: 30px;
-  background: rgba(128, 0, 0, 0.06);
-  color: var(--color-primary, #800000);
+  background: rgba(128, 0, 0, 0.08);
+  color: #800000;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+  line-height: 1.4;
 }
 
 .wingName {
   font-family: var(--font-heading, 'Outfit', sans-serif);
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--color-text, #1a1a1a);
+  color: #1a1a1a;
   line-height: 1.25;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
+  flex-shrink: 0;
 }
 
 .wingTagline {
   font-family: var(--font-body, 'Inter', sans-serif);
-  font-size: 0.83rem;
-  color: var(--color-text-muted, #555555);
+  font-size: 0.8rem;
+  color: #555555;
   line-height: 1.5;
-  margin-bottom: 1rem;
+  flex: 1;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -476,26 +484,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 0.85rem;
-  border-top: 1px solid rgba(128, 0, 0, 0.06);
-  margin-top: 0.85rem;
-}
-
-.eventCountBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--color-text-muted, #555555);
-}
-
-.activeIndicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #800000;
-  box-shadow: 0 0 6px rgba(128, 0, 0, 0.5);
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(128, 0, 0, 0.07);
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .thumbnailStack {
@@ -504,32 +496,35 @@
 }
 
 .stackImg {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ffffff;
-  margin-left: -7px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+  margin-left: -6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .stackImg:first-child {
   margin-left: 0;
 }
 
+/* ── View Action Footer — always maroon ── */
 .viewActionRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1rem;
-  font-size: 0.83rem;
-  font-weight: 600;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
   font-family: var(--font-heading, 'Outfit', sans-serif);
-  color: var(--color-primary, #800000);
+  color: #800000;
+  flex-shrink: 0;
 }
 
 .arrowIcon {
   transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .wingCard:hover .arrowIcon {
@@ -540,8 +535,8 @@
 .floatingNavControls {
   position: absolute;
   top: 50%;
-  left: 1rem;
-  right: 1rem;
+  left: 0.75rem;
+  right: 0.75rem;
   transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
@@ -550,50 +545,60 @@
 }
 
 .navArrowBtn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #ffffff;
-  border: 1px solid rgba(128, 0, 0, 0.15);
-  color: var(--color-primary, #800000);
+  border: 1px solid rgba(128, 0, 0, 0.18);
+  color: #800000;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-md, 0 10px 20px -3px rgba(0,0,0,0.06));
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
   pointer-events: auto;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .navArrowBtn:hover {
-  background: var(--color-primary, #800000);
+  background: #800000;
   color: #ffffff;
   transform: scale(1.08);
   box-shadow: 0 8px 20px rgba(128, 0, 0, 0.25);
 }
 
-/* ── Grid View Alternative ── */
+/* ── Grid View ── */
 .gridContainer {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* In grid view, cards stretch to fill column but remain a fixed min-height */
+.gridContainer .wingCard {
+  height: auto;
+  min-height: 260px;
 }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  .sectionTitle { font-size: 2.5rem; }
-  .nodesRow { gap: 3rem; }
-  .nodeSlot { width: 260px; }
+  .sectionTitle { font-size: 2.4rem; }
+  .nodesRow { gap: 2rem; }
+  .nodeSlot { width: 210px; }
+  .wingCard { height: 260px; }
 }
 
 @media (max-width: 768px) {
   .topologySection { padding: 2.5rem 0 3.5rem 0; }
   .sectionTitle { font-size: 2rem; }
-  .sectionSubtitle { font-size: 0.95rem; }
+  .sectionSubtitle { font-size: 0.93rem; }
   .busScrollArea { padding: 2rem 1.5rem; }
   .floatingNavControls { display: none; }
-  .gridContainer { grid-template-columns: 1fr; padding: 1rem; }
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    padding: 1rem;
+  }
 }

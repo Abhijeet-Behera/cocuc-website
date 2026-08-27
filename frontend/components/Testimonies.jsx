@@ -37,6 +37,13 @@ export default function Testimonies() {
   const [wordCount, setWordCount] = useState(0)
   const [recaptchaToken, setRecaptchaToken] = useState(null)
 
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+      console.warn("reCAPTCHA sitekey is missing; bypassing reCAPTCHA in Testimonies.");
+      setRecaptchaToken("bypass-token");
+    }
+  }, [])
+
   const containerRef = useRef(null)
   const headerRef = useRef(null)
   const subtitleRef = useRef(null)
@@ -72,11 +79,11 @@ export default function Testimonies() {
           if (Array.isArray(data)) setTestimonies(data)
           else setTestimonies([])
         } catch (e) {
-          console.error("Failed to parse testimonies JSON:", text)
+          console.warn("Failed to parse testimonies JSON:", text)
           setTestimonies([])
         }
       } catch (err) {
-        console.error("Failed to load testimonies", err)
+        console.warn("Failed to load testimonies", err)
       } finally {
         setLoading(false)
       }
@@ -984,14 +991,20 @@ export default function Testimonies() {
               )}
 
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <ReCAPTCHA
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                  onChange={setRecaptchaToken}
-                  onErrored={() => {
-                    console.warn('reCAPTCHA timed out or failed to load.');
-                    setRecaptchaToken(null);
-                  }}
-                />
+                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                  <ReCAPTCHA
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                    onChange={setRecaptchaToken}
+                    onErrored={() => {
+                      console.warn('reCAPTCHA timed out or failed to load.');
+                      setRecaptchaToken(null);
+                    }}
+                  />
+                ) : (
+                  <div style={{ color: '#aaa', fontSize: '0.85rem', textAlign: 'center', margin: '0.5rem 0' }}>
+                    reCAPTCHA is disabled (missing sitekey)
+                  </div>
+                )}
               </div>
 
               <button

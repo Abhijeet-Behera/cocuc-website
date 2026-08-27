@@ -65,7 +65,7 @@ export default function BusTopologyView({
     }
   };
 
-  // Wing click handler (triggers custom callback if provided, else navigates to wing page)
+  // Wing click handler
   const handleWingClick = (wing) => {
     setActiveWingId(wing.id);
     if (onSelectWing) {
@@ -95,7 +95,7 @@ export default function BusTopologyView({
             <span className={styles.pulseDot} />
             Interactive Wing Topology
           </div>
-          <h2 className={styles.sectionTitle}>Explore Church Wings & Events</h2>
+          <h2 className={styles.sectionTitle}>Explore Church Wings &amp; Events</h2>
           <p className={styles.sectionSubtitle}>
             Click any ministry wing along the horizontal bus backbone to open its dedicated page, view programmes, and explore full Google Drive photo galleries.
           </p>
@@ -109,10 +109,10 @@ export default function BusTopologyView({
           <button
             className={`${styles.toggleBtn} ${viewMode === 'topology' ? styles.active : ''}`}
             onClick={() => setViewMode('topology')}
-            title="Interactive Bus Topology View"
+            title="Interactive Wing View"
           >
             <Layers size={16} />
-            <span>Bus Topology</span>
+            <span>Wing View</span>
           </button>
           <button
             className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.active : ''}`}
@@ -122,11 +122,6 @@ export default function BusTopologyView({
             <LayoutGrid size={16} />
             <span>Grid View</span>
           </button>
-        </div>
-
-        {/* Navigation Quick Help */}
-        <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span>Click any card to open its dedicated page</span>
         </div>
       </div>
 
@@ -145,7 +140,7 @@ export default function BusTopologyView({
                 handleWingClick(wing);
               }}
             >
-              <IconComponent size={14} color={isActive ? '#ffffff' : wing.accentColor} />
+              <IconComponent size={14} />
               <span>{wing.name}</span>
             </button>
           );
@@ -179,7 +174,7 @@ export default function BusTopologyView({
 
           <div ref={scrollRef} className={styles.busScrollArea}>
             <div className={styles.topologyCanvas}>
-              {/* TOP ROW OF WINGS (Even indices: 0, 2, 4, 6) */}
+              {/* TOP ROW OF WINGS (Even indices: 0, 2, 4) */}
               <div className={`${styles.nodesRow} ${styles.topRow}`}>
                 {wings.map((wing, index) => {
                   const isTop = index % 2 === 0;
@@ -202,10 +197,10 @@ export default function BusTopologyView({
                     >
                       {/* Node Branch Label */}
                       <div className={styles.nodeAddressLabel}>
-                        <span style={{ color: wing.accentColor }}>●</span> {wing.name}
+                        <span style={{ color: '#800000' }}>●</span> {wing.name}
                       </div>
 
-                      {/* Wing Card (Direct click navigates to Wing Page) */}
+                      {/* Wing Card */}
                       <WingCardItem
                         wing={wing}
                         events={wingEvents}
@@ -216,13 +211,11 @@ export default function BusTopologyView({
                       {/* Vertical Branch Line dropping to Central Bus */}
                       <div
                         className={styles.branchLineTop}
-                        style={{
-                          background: `linear-gradient(180deg, ${wing.accentColor} 0%, rgba(128,0,0,0.8) 100%)`,
-                        }}
+                        style={{ background: 'linear-gradient(180deg, rgba(128,0,0,0.2) 0%, rgba(128,0,0,0.9) 100%)' }}
                       >
                         <div
                           className={`${styles.tJunction} ${styles.junctionTop}`}
-                          style={{ borderColor: wing.accentColor }}
+                          style={{ borderColor: '#800000' }}
                         />
                       </div>
                     </motion.div>
@@ -235,7 +228,6 @@ export default function BusTopologyView({
                 {/* Left Bus Terminator */}
                 <div className={`${styles.busTerminator} ${styles.terminatorLeft}`}>
                   <span className={`${styles.terminatorDot} ${styles.active}`} />
-                  <span>BUS_LINE</span>
                 </div>
 
                 {/* Glowing Horizontal Wire */}
@@ -246,12 +238,11 @@ export default function BusTopologyView({
 
                 {/* Right Bus Terminator */}
                 <div className={`${styles.busTerminator} ${styles.terminatorRight}`}>
-                  <span>BUS_END</span>
                   <span className={styles.terminatorDot} />
                 </div>
               </div>
 
-              {/* BOTTOM ROW OF WINGS (Odd indices: 1, 3, 5, 7) */}
+              {/* BOTTOM ROW OF WINGS (Odd indices: 1, 3, 5) */}
               <div className={`${styles.nodesRow} ${styles.bottomRow}`}>
                 {wings.map((wing, index) => {
                   const isBottom = index % 2 === 1;
@@ -275,22 +266,20 @@ export default function BusTopologyView({
                       {/* Vertical Branch Line rising from Central Bus */}
                       <div
                         className={styles.branchLineBottom}
-                        style={{
-                          background: `linear-gradient(180deg, rgba(128,0,0,0.8) 0%, ${wing.accentColor} 100%)`,
-                        }}
+                        style={{ background: 'linear-gradient(180deg, rgba(128,0,0,0.9) 0%, rgba(128,0,0,0.2) 100%)' }}
                       >
                         <div
                           className={`${styles.tJunction} ${styles.junctionBottom}`}
-                          style={{ borderColor: wing.accentColor }}
+                          style={{ borderColor: '#800000' }}
                         />
                       </div>
 
                       {/* Node Branch Label */}
                       <div className={styles.nodeAddressLabel}>
-                        <span style={{ color: wing.accentColor }}>●</span> {wing.name}
+                        <span style={{ color: '#800000' }}>●</span> {wing.name}
                       </div>
 
-                      {/* Wing Card (Direct click navigates to Wing Page) */}
+                      {/* Wing Card */}
                       <WingCardItem
                         wing={wing}
                         events={wingEvents}
@@ -340,30 +329,21 @@ export default function BusTopologyView({
 // -------------------------------------------------------------
 // Subcomponent: Individual Wing Card Item
 // -------------------------------------------------------------
-function WingCardItem({
-  wing,
-  events,
-  onClick,
-  IconComponent,
-}) {
-  const latestImages = events.flatMap((e) => e.images || []).slice(0, 4);
+function WingCardItem({ wing, events, onClick, IconComponent }) {
+  const latestImages = events.flatMap((e) => e.images || []).slice(0, 3);
 
   return (
     <div
       className={styles.wingCard}
       onClick={onClick}
-      style={{ '--card-accent': wing.accentColor, cursor: 'pointer' }}
+      style={{ cursor: 'pointer' }}
     >
-      <div className={styles.cardGlowOverlay} style={{ backgroundColor: wing.accentColor }} />
+      {/* Top accent bar */}
+      <div className={styles.cardGlowOverlay} />
 
       <div className={styles.cardHeader}>
-        <div
-          className={styles.iconCircle}
-          style={{
-            background: `linear-gradient(135deg, ${wing.accentColor} 0%, ${wing.secondaryColor || '#111827'} 100%)`,
-          }}
-        >
-          <IconComponent size={24} />
+        <div className={styles.iconCircle}>
+          <IconComponent size={22} />
         </div>
         {wing.badge && <span className={styles.badgePill}>{wing.badge}</span>}
       </div>
@@ -371,15 +351,14 @@ function WingCardItem({
       <h3 className={styles.wingName}>{wing.name}</h3>
       <p className={styles.wingTagline}>{wing.tagline}</p>
 
-      {/* Meta row with preview thumbnails */}
+      {/* Meta row */}
       <div className={styles.cardMeta}>
-        <div style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 600 }}>
+        <div style={{ fontSize: '0.78rem', color: '#666666', fontWeight: 600 }}>
           {wing.name} Events
         </div>
-
         {latestImages.length > 0 && (
           <div className={styles.thumbnailStack}>
-            {latestImages.slice(0, 3).map((imgUrl, i) => (
+            {latestImages.map((imgUrl, i) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 key={i}
@@ -393,10 +372,10 @@ function WingCardItem({
         )}
       </div>
 
-      {/* View Action Footer */}
-      <div className={styles.viewActionRow} style={{ color: wing.accentColor }}>
-        <span>View Wing & Drive Gallery</span>
-        <ArrowRight size={16} className={styles.arrowIcon} />
+      {/* Footer action */}
+      <div className={styles.viewActionRow}>
+        <span>View Wing &amp; Drive Gallery</span>
+        <ArrowRight size={15} className={styles.arrowIcon} />
       </div>
     </div>
   );

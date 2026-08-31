@@ -88,12 +88,15 @@ export default function BhubaneswarMapComponent({ zones = [], activeZoneId, onMa
 
   const activeZone = zones.find(z => z.id === activeZoneId);
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
   return (
     <div className={styles.mapContainer}>
       <MapContainer
         center={bhubaneswarCenter}
         zoom={12}
-        scrollWheelZoom={true}
+        scrollWheelZoom={!isMobile}
+        dragging={!isMobile}
         style={{ height: '100%', width: '100%', zIndex: 1, backgroundColor: '#f8f9fa' }}
         minZoom={11}
         zoomControl={true}

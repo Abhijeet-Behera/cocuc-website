@@ -672,6 +672,10 @@
 
   .itemLink {
     font-size: 0.75rem;
+    min-height: 44px;
+    padding: 0.5rem 1.2rem;
+    display: inline-flex;
+    align-items: center;
   }
 
   .itemTitle {

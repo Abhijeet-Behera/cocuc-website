@@ -143,13 +143,16 @@ export default function MapComponent({ churches = [], activeChurchId, onMarkerCl
     }
   };
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
   return (
     <div className={styles.mapContainer}>
       {geoData ? (
         <MapContainer 
           center={[20.26, 85.79]} 
           zoom={11} 
-          scrollWheelZoom={true} 
+          scrollWheelZoom={!isMobile} 
+          dragging={!isMobile}
           style={{ height: '100%', width: '100%', zIndex: 1, backgroundColor: '#f8f9fa' }}
           minZoom={6}
           zoomControl={true}

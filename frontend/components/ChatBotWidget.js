@@ -431,10 +431,15 @@ export default function ChatBotWidget() {
         @media (max-width: 768px) {
           .ezer-bot-wrapper { bottom: 16px; right: 16px; }
           .ezer-bot-window { 
-            width: calc(100vw - 32px); 
-            height: calc(100vh - 130px); 
-            max-height: 520px; 
-            bottom: 72px; 
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 100vw;
+            height: 85dvh;
+            max-height: 85dvh;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
           }
           .ezer-bot-btn { width: 56px; height: 56px; }
         }

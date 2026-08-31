@@ -521,10 +521,10 @@
   }
 
   .closeBtn {
-    top: 0.7rem;
-    right: 0.7rem;
-    width: 32px;
-    height: 32px;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 44px;
+    height: 44px;
   }
 
   .title {

@@ -314,19 +314,21 @@ function MobileSidebarNav({ activeIndex, inBounds, isIdle, setIsIdle, isHovered,
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -15 }}
             transition={{ duration: 0.3 }}
+            role="button"
+            aria-label="Quick section navigation menu"
             style={{
               position: 'fixed',
-              top: '30%',
+              top: '35%',
               left: 0,
-              width: 12,
-              height: 80,
-              background: 'rgba(128, 0, 0, 0.45)',
-              borderTopRightRadius: 15,
-              borderBottomRightRadius: 15,
+              width: 16,
+              height: 84,
+              background: 'rgba(128, 0, 0, 0.55)',
+              borderTopRightRadius: 16,
+              borderBottomRightRadius: 16,
               zIndex: 9000,
-              cursor: 'grab',
+              cursor: 'pointer',
               touchAction: 'none',
-              boxShadow: '2px 0 8px rgba(0,0,0,0.1)'
+              boxShadow: '2px 0 10px rgba(0,0,0,0.15)'
             }}
             onClick={openSidebar}
             onPanEnd={(e, info) => {

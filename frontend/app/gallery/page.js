@@ -438,7 +438,7 @@ export default function GalleryPage() {
           }
 
           .galleryImage {
-            filter: grayscale(100%);
+            filter: none !important;
           }
         }
 

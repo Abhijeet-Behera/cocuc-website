@@ -11,7 +11,7 @@
 
 @media (max-width: 768px) {
   .mapContainer {
-    height: 550px; /* Increased from 400px so tall popups don't crop */
+    height: 380px;
   }
 }
 

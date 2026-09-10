@@ -1,0 +1,39 @@
+name: Saturday Evening Weekly Prayer PDF Generation
+
+on:
+  schedule:
+    # Runs at 13:00 UTC every Saturday (18:30 IST / 6:30 PM Saturday evening in Bhubaneswar)
+    - cron: '0 13 * * 6'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force run outside of standard Saturday evening window (true/false)'
+        required: false
+        default: 'true'
+
+jobs:
+  generate-weekly-pdf:
+    name: Generate and Dispatch Weekly Prayer PDF
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Saturday Weekly Prayer Report Webhook
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          CHURCH_URL: ${{ secrets.CHURCH_BACKEND_URL || 'https://unionchurch.in/backend' }}
+          FORCE_RUN: ${{ github.event.inputs.force || 'false' }}
+        run: |
+          echo "Triggering Saturday Weekly Prayer PDF generation..."
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X GET "${CHURCH_URL}/generate_weekly_prayer_pdf.php?key=${CRON_SECRET}&force=${FORCE_RUN}")
+          HTTP_BODY=$(echo "$RESPONSE" | sed '$d')
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
+
+          echo "HTTP Response Status: $HTTP_CODE"
+          echo "Response Body:"
+          echo "$HTTP_BODY"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "Weekly PDF generation and dispatch completed successfully."
+          else
+            echo "Failed with HTTP status $HTTP_CODE"
+            exit 1
+          fi

@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "period_start": "2026-08-30",
+        "period_end": "2026-09-05",
+        "pdf_filename": "weekly-prayer-requests-2026-09-05.pdf",
+        "pdf_path": "C:\\Users\\NABNIT\\Desktop\\cocuc-web\\cocuc-website\\backend\/uploads\/prayer_reports\/weekly-prayer-requests-2026-09-05.pdf",
+        "request_count": 0,
+        "email_sent": 0,
+        "generated_at": "2026-09-09 20:09:24"
+    }
+]

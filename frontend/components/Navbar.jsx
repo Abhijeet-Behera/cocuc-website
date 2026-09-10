@@ -117,6 +117,7 @@ export default function Navbar() {
     { name: 'Baptism Classes', href: '/activities/baptism-classes' },
     { name: 'Youth Fellowship', href: '/activities/youth-fellowship' },
     { name: 'Worship Team', href: '/activities/worship-team' },
+    { name: 'Prayer Zones', href: '/activities/prayer-zones' },
   ]
 
 

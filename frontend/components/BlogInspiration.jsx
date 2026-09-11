@@ -378,9 +378,7 @@ export default function BlogInspiration() {
                 ) : (
                   <div className={styles.fallbackImage}>
                     <span className={styles.fallbackTitle}>
-                      {blog.author_role.toUpperCase() === blog.author_name.toUpperCase()
-                        ? blog.author_role
-                        : blog.author_role}
+                      {blog.custom_author || 'Pastor'}
                     </span>
                   </div>
                 )}
@@ -389,9 +387,7 @@ export default function BlogInspiration() {
               {/* Meta details */}
               <div className={styles.meta} draggable="false">
                 <span className={styles.author}>
-                  {blog.author_role.toUpperCase() === blog.author_name.toUpperCase()
-                    ? blog.author_role
-                    : `${blog.author_role} • ${blog.author_name}`}
+                  {blog.custom_author || 'Pastor'}
                 </span>
                 <span className={styles.date}>
                   {new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -464,9 +460,7 @@ export default function BlogInspiration() {
 
             <div className={styles.modalMeta}>
               <span className={styles.author}>
-                {activeBlogModal.author_role.toUpperCase() === activeBlogModal.author_name.toUpperCase()
-                  ? activeBlogModal.author_role
-                  : `${activeBlogModal.author_role} • ${activeBlogModal.author_name}`}
+                {activeBlogModal.custom_author || 'Pastor'}
               </span>
               <span className={styles.date}>
                 {new Date(activeBlogModal.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}

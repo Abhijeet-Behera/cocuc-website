@@ -13,7 +13,8 @@ export default function PastorPortal() {
   
   const [blogs, setBlogs] = useState([])
   const [editId, setEditId] = useState(null)
-
+  
+  const [customAuthor, setCustomAuthor] = useState('Pastor')
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   
@@ -133,6 +134,7 @@ export default function PastorPortal() {
       let formData = new FormData();
       if (editId) formData.append('id', editId);
       formData.append('title', title);
+      formData.append('custom_author', customAuthor);
       formData.append('content', content);
       if (image1) formData.append('image1', image1);
       if (image2) formData.append('image2', image2);
@@ -187,6 +189,7 @@ export default function PastorPortal() {
 
   const handleEdit = (blog) => {
     setEditId(blog.id);
+    setCustomAuthor(blog.custom_author || blog.author_name || 'Pastor');
     setTitle(blog.title);
     setContent(blog.content);
     // Keep previews of existing files
@@ -229,6 +232,7 @@ export default function PastorPortal() {
 
   const resetForm = () => {
     setEditId(null)
+    setCustomAuthor('Pastor')
     setTitle('')
     setContent('')
     setImage1(null); setImage2(null); setPdf(null);
@@ -388,6 +392,19 @@ export default function PastorPortal() {
         
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative', zIndex: 1 }}>
           
+          <div>
+            <label style={labelStyle}>Author of the Blog</label>
+            <input 
+              type="text" 
+              value={customAuthor}
+              onChange={(e) => setCustomAuthor(e.target.value)}
+              style={inputStyle} 
+              placeholder="e.g., Pastor"
+              onFocus={(e) => { e.target.style.borderColor = 'var(--color-primary)'; e.target.style.backgroundColor = '#fff'; e.target.style.boxShadow = '0 0 0 4px rgba(139,0,0,0.05)'; }}
+              onBlur={(e) => { e.target.style.borderColor = '#eaeaea'; e.target.style.backgroundColor = '#fcfcfc'; e.target.style.boxShadow = 'none'; }}
+            />
+          </div>
+
           <div>
             <label style={labelStyle}>Blog Topic / Title</label>
             <input 

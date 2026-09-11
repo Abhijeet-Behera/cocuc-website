@@ -46,6 +46,17 @@ export default function BusTopologyView({
     selectedWingId || wings[0]?.id || 'general-church'
   );
   const scrollRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize(); // Check immediately on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Force grid view on mobile
+  const effectiveViewMode = isMobile ? 'grid' : viewMode;
 
   // Smooth Pan Controls
   const panBy = (offset) => {
@@ -91,39 +102,36 @@ export default function BusTopologyView({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className={styles.topologyBadge}>
-            <span className={styles.pulseDot} />
-            Interactive Wing Topology
-          </div>
           <h2 className={styles.sectionTitle}>Explore Church Wings &amp; Events</h2>
           <p className={styles.sectionSubtitle}>
-            Click any ministry wing along the horizontal bus backbone to open its dedicated page, view programmes, and explore full Google Drive photo galleries.
+            Click any ministry wing to open its dedicated page, view programmes, and explore full Google Drive photo galleries.
           </p>
         </motion.div>
       </div>
 
-      {/* Controls Bar */}
-      <div className={styles.controlsBar}>
-        {/* View Mode Toggle */}
-        <div className={styles.viewModeToggle}>
-          <button
-            className={`${styles.toggleBtn} ${viewMode === 'topology' ? styles.active : ''}`}
-            onClick={() => setViewMode('topology')}
-            title="Interactive Wing View"
-          >
-            <Layers size={16} />
-            <span>Wing View</span>
-          </button>
-          <button
-            className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.active : ''}`}
-            onClick={() => setViewMode('grid')}
-            title="Responsive Grid View"
-          >
-            <LayoutGrid size={16} />
-            <span>Grid View</span>
-          </button>
+      {/* Controls Bar - Hidden on mobile */}
+      {!isMobile && (
+        <div className={styles.controlsBar}>
+          <div className={styles.viewModeToggle}>
+            <button
+              className={`${styles.toggleBtn} ${effectiveViewMode === 'topology' ? styles.active : ''}`}
+              onClick={() => setViewMode('topology')}
+              title="Interactive Wing View"
+            >
+              <Layers size={16} />
+              <span>Wing View</span>
+            </button>
+            <button
+              className={`${styles.toggleBtn} ${effectiveViewMode === 'grid' ? styles.active : ''}`}
+              onClick={() => setViewMode('grid')}
+              title="Responsive Grid View"
+            >
+              <LayoutGrid size={16} />
+              <span>Grid View</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Quick Wing Navigation Bar */}
       <div className={styles.wingQuickNav}>
@@ -150,7 +158,7 @@ export default function BusTopologyView({
       {/* ========================================================= */}
       {/* 1. HORIZONTAL BUS TOPOLOGY VIEW (Zig-Zag Alternating)      */}
       {/* ========================================================= */}
-      {viewMode === 'topology' && (
+      {effectiveViewMode === 'topology' && (
         <div className={styles.viewportContainer}>
           {/* Floating Pan Navigation Buttons */}
           <div className={styles.floatingNavControls}>
@@ -298,7 +306,7 @@ export default function BusTopologyView({
       {/* ========================================================= */}
       {/* 2. RESPONSIVE MODERN GRID VIEW                            */}
       {/* ========================================================= */}
-      {viewMode === 'grid' && (
+      {effectiveViewMode === 'grid' && (
         <div className={styles.gridContainer}>
           {wings.map((wing, index) => {
             const wingEvents = getWingEvents(wing.id);

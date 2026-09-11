@@ -243,7 +243,7 @@ export default function AdminPortal() {
           </div>
           <div onClick={() => router.push('/admin/events')} style={{ background: 'var(--color-primary)', padding: '2rem', borderRadius: '20px', color: '#fff', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: '0 10px 30px rgba(139, 0, 0, 0.2)' }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 0, 0, 0.4)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 0, 0, 0.2)'; }}>
             <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span>Event Interface</span>
+              <span>Events &amp; Wings</span>
               <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '12px', background: '#3b82f6', color: '#fff', fontWeight: '700' }}>NEW</span>
             </h3>
             <p style={{ opacity: 0.9, fontSize: '0.9rem' }}>Upload wing events with Google Drive photo galleries &amp; word count limits.</p>

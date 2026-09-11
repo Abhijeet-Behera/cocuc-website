@@ -182,7 +182,7 @@ export default function WingClient({ slug }) {
           }}
         >
           <ArrowLeft size={16} />
-          <span>Back to Bus Topology Viewer</span>
+          <span>Back to Events Viewer</span>
         </Link>
 
         {/* 4. TITLE CARDS SECTION (Made dynamically according to the title name given while uploading) */}

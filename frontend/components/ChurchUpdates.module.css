@@ -43,6 +43,7 @@
 /* --- Card Wrapper (receives the tilt transform) --- */
 .churchUpdateCardWrapper {
   perspective: 1100px;
+  height: 100%;
 }
 
 .churchUpdateCard {
@@ -51,6 +52,7 @@
   border-radius: 20px;
   padding: 2.2rem 1.8rem 2rem;
   min-height: 400px;
+  height: 100%;
 
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.06),

@@ -33,8 +33,8 @@ export default function EventsPage() {
       {/* Page Hero Header */}
       <PageHeader
         category="Ministries & Fellowships"
-        title="Events & Wing Topology"
-        description="Explore the vibrant life and active ministries of Church of Christ Union Church Bhubaneswar through our interactive horizontal bus topology."
+        title="Events & Wings"
+        description="Explore the vibrant life and active ministries of Church of Christ Union Church Bhubaneswar through our interactive event viewer."
       />
 
       {/* Main Bus Topology Component (Clicking a wing directly opens its dedicated page) */}

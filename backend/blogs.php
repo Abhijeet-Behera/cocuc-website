@@ -76,6 +76,7 @@ if ($method === 'GET') {
     $id = $_POST['id'] ?? null;
     $title = $_POST['title'] ?? '';
     $content = $_POST['content'] ?? '';
+    $custom_author = $_POST['custom_author'] ?? 'Pastor';
     
     $has_attachment = (isset($_FILES['image1']) && $_FILES['image1']['error'] === UPLOAD_ERR_OK) ||
                       (isset($_FILES['image2']) && $_FILES['image2']['error'] === UPLOAD_ERR_OK) ||
@@ -117,8 +118,8 @@ if ($method === 'GET') {
             $image2_path = handleUpload('image2', $target_dir) ?? $existing['image2_path'];
             $pdf_path = handleUpload('pdf', $target_dir) ?? $existing['pdf_path'];
 
-            $stmt = $pdo->prepare("UPDATE blogs SET title = ?, content = ?, image1_path = ?, image2_path = ?, pdf_path = ? WHERE id = ?");
-            $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $id]);
+            $stmt = $pdo->prepare("UPDATE blogs SET title = ?, content = ?, image1_path = ?, image2_path = ?, pdf_path = ?, custom_author = ? WHERE id = ?");
+            $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $custom_author, $id]);
             
             if ($payload['designation'] === 'Developer') {
                 logDeveloperAction($pdo, $payload['email'], 'UPDATE', 'blogs', "Updated blog ID {$id}");
@@ -132,8 +133,8 @@ if ($method === 'GET') {
             $image2_path = handleUpload('image2', $target_dir);
             $pdf_path = handleUpload('pdf', $target_dir);
 
-            $stmt = $pdo->prepare("INSERT INTO blogs (title, content, image1_path, image2_path, pdf_path, author_id) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $payload['id']]);
+            $stmt = $pdo->prepare("INSERT INTO blogs (title, content, image1_path, image2_path, pdf_path, author_id, custom_author) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $content, $image1_path, $image2_path, $pdf_path, $payload['id'], $custom_author]);
             
             $new_id = $pdo->lastInsertId();
             if ($payload['designation'] === 'Developer') {

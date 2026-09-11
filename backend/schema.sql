@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS blogs (
     image1_path VARCHAR(255),
     image2_path VARCHAR(255),
     pdf_path VARCHAR(255),
+    custom_author VARCHAR(255) DEFAULT 'Pastor',
     author_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE

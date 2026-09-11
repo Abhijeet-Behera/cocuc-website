@@ -2104,5 +2104,13 @@ function formatDate(value) {
 }
 
 function show(value) {
-  return value || '—'
+  if (value === undefined || value === null || value === '') return '—'
+  if (typeof value === 'object') {
+    try {
+      return JSON.stringify(value)
+    } catch {
+      return '—'
+    }
+  }
+  return String(value)
 }
